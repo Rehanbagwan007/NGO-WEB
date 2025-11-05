@@ -1,0 +1,26 @@
+export type Student = {
+  id: string;
+  name: string;
+  avatar: string;
+  email: string;
+  status: 'Active' | 'Inactive' | 'On Hold';
+  medicalNotes: string;
+  dateOfBirth: string;
+};
+
+export type Staff = {
+  id: string;
+  name: string;
+  avatar: string;
+  email: string;
+  role: 'Teacher' | 'Admin' | 'Therapist' | 'Volunteer';
+  department: 'Academics' | 'Administration' | 'Therapy' | 'Support';
+};
+
+export type Donation = {
+  id: string;
+  donorName: string;
+  amount: number;
+  date: string;
+  status: 'Completed' | 'Pending' | 'Failed';
+};
