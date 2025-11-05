@@ -34,15 +34,15 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 py-20 lg:py-32">
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div className="z-10">
-              <p className="text-primary font-semibold mb-2">Change The World</p>
+              <p className="text-primary font-semibold mb-2">Empowering Futures</p>
               <h1 className="text-4xl md:text-5xl font-headline font-bold mb-4 leading-tight">
-                Need Your Big Hand For{' '}
-                <span className="text-primary">Change</span> The World.
+                Your Support, Their{' '}
+                <span className="text-primary">Brighter</span> Tomorrow.
               </h1>
               <p className="text-muted-foreground text-lg mb-8">
                 Sanvedana is dedicated to providing education, therapy, and
                 support for children with special needs, helping them build a
-                brighter future.
+                future filled with hope and independence.
               </p>
               <div className="flex items-center gap-4">
                 <Button size="lg" asChild>
@@ -50,7 +50,7 @@ export default function LandingPage() {
                 </Button>
                 <Button variant="link" asChild className="text-foreground">
                   <Link href="#">
-                    <PlayCircle className="mr-2" /> Watch Video
+                    <PlayCircle className="mr-2" /> Watch Our Story
                   </Link>
                 </Button>
               </div>
@@ -63,11 +63,11 @@ export default function LandingPage() {
                 <div className="relative w-full h-full flex items-center justify-center">
                     <Image
                         src="https://picsum.photos/seed/hero-main/500/500"
-                        alt="Smiling children"
+                        alt="Smiling child with disability"
                         width={450}
                         height={450}
                         className="rounded-full object-cover z-10 aspect-square"
-                        data-ai-hint="smiling children"
+                        data-ai-hint="smiling disabled child"
                     />
                      <div className="absolute bottom-8 -left-8 z-20 bg-white p-4 rounded-full shadow-lg">
                         <div className="w-48 h-48 rounded-full bg-primary text-primary-foreground flex flex-col items-center justify-center text-center p-4">
@@ -109,11 +109,11 @@ export default function LandingPage() {
             <div>
               <Image
                 src="https://picsum.photos/seed/about/600/400"
-                alt="Children at Sanvedana"
+                alt="Children with special needs in a classroom"
                 width={600}
                 height={400}
                 className="rounded-lg shadow-lg"
-                data-ai-hint="children learning"
+                data-ai-hint="disabled children learning"
               />
             </div>
           </div>
