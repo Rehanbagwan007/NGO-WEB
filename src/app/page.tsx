@@ -6,33 +6,12 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { ArrowRight, Calendar, Heart, Target, HeartHandshake, Briefcase } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { events as allEvents } from '@/lib/data';
 
 export default function LandingPage() {
   const heroImage = PlaceHolderImages.find((img) => img.id === 'social-hero');
 
-  const events = [
-    {
-      title: 'Annual Charity Gala',
-      date: '2024-10-26',
-      description: 'Join us for a night of celebration and fundraising to support our programs.',
-      imageUrl: 'https://picsum.photos/seed/event1/400/250',
-      imageHint: 'gala event'
-    },
-    {
-      title: 'Community Sensitization Workshop',
-      date: '2024-11-15',
-      description: 'An interactive workshop to raise awareness about the needs of specially-abled children.',
-      imageUrl: 'https://picsum.photos/seed/event2/400/250',
-      imageHint: 'community workshop'
-    },
-    {
-      title: 'Art for a Cause Exhibition',
-      date: '2024-12-05',
-      description: 'An exhibition showcasing artwork created by our talented students.',
-      imageUrl: 'https://picsum.photos/seed/event3/400/250',
-      imageHint: 'art exhibition'
-    },
-  ];
+  const events = allEvents.filter(e => e.status === 'Published' && e.type === 'Upcoming').slice(0, 3);
 
   return (
     <div className="flex-1">
@@ -153,11 +132,11 @@ export default function LandingPage() {
               <Card key={event.title} className="flex flex-col">
                 <CardHeader className="p-0">
                   <Image
-                    src={event.imageUrl}
+                    src={event.bannerImage}
                     alt={event.title}
                     width={400}
                     height={250}
-                    className="rounded-t-lg object-cover"
+                    className="rounded-t-lg object-cover aspect-[16/10]"
                     data-ai-hint={event.imageHint}
                   />
                 </CardHeader>
@@ -174,13 +153,20 @@ export default function LandingPage() {
                   <CardDescription>{event.description}</CardDescription>
                 </CardContent>
                 <CardFooter>
-                   <Button variant="link" className="p-0">
-                    Learn More <ArrowRight className="ml-2 h-4 w-4" />
+                   <Button variant="link" className="p-0" asChild>
+                    <Link href={`/events`}>
+                      Learn More <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
                   </Button>
                 </CardFooter>
               </Card>
             ))}
           </div>
+           {events.length === 0 && (
+             <div className="text-center text-muted-foreground py-8">
+                No upcoming events. Please check back later.
+            </div>
+           )}
         </div>
       </section>
 

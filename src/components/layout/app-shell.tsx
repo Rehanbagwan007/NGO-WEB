@@ -16,6 +16,8 @@ import { Menu, Heart } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
 import { useState } from 'react';
+import { mainNavLinks } from '@/lib/nav-links';
+
 
 const SanvedanaLogo = () => (
   <div className="flex items-center gap-2">
@@ -31,18 +33,12 @@ const SanvedanaLogo = () => (
     >
       <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
     </svg>
-    <h1 className="text-xl font-headline font-semibold text-primary">
+    <h1 className="text-xl font-headline font-semibold text-primary-600">
       Sanvedana
     </h1>
   </div>
 );
 
-const navLinks = [
-  { href: '/', label: 'Home' },
-  { href: '/about', label: 'About Us' },
-  { href: '/events', label: 'Events' },
-  { href: '/contact', label: 'Contact' },
-];
 
 // This will be replaced with actual user state
 const user = null; // or { name: 'Donor Name', avatar: '...' }
@@ -54,9 +50,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   );
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  // Do not render the shell on admin routes
+  if (pathname.startsWith('/admin')) {
+    return <>{children}</>;
+  }
+
   return (
-    <div className="flex min-h-screen w-full flex-col">
-      <header className="sticky top-0 z-50 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
+    <div className="flex min-h-screen w-full flex-col bg-background">
+      <header className="sticky top-0 z-50 flex h-16 items-center gap-4 border-b bg-background/95 px-4 backdrop-blur md:px-6">
         <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
           <Link
             href="/"
@@ -65,7 +66,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <SanvedanaLogo />
             <span className="sr-only">Sanvedana</span>
           </Link>
-          {navLinks.map((link) => (
+          {mainNavLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -98,7 +99,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <SanvedanaLogo />
                 <span className="sr-only">Sanvedana</span>
               </Link>
-              {navLinks.map((link) => (
+              {mainNavLinks.map((link) => (
                  <Link
                   key={link.href}
                   href={link.href}

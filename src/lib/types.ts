@@ -24,3 +24,16 @@ export type Donation = {
   date: string;
   status: 'Completed' | 'Pending' | 'Failed';
 };
+
+export type Event = {
+  id: string;
+  title: string;
+  date: string;
+  location: string;
+  description: string;
+  bannerImage: string;
+  imageHint: string;
+  gallery: { url: string; hint: string }[];
+  status: 'Draft' | 'Published';
+  type: 'Upcoming' | 'Past';
+};

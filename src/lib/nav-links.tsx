@@ -10,6 +10,11 @@ import {
   Info,
   Calendar,
   Phone,
+  Newspaper,
+  Palette,
+  Sparkles,
+  BookOpenCheck,
+  Globe,
 } from 'lucide-react';
 import type { ReactNode } from 'react';
 
@@ -17,21 +22,32 @@ type NavLink = {
   href: string;
   label: string;
   icon?: ReactNode;
+  match?: 'exact' | 'partial';
 };
 
 export const mainNavLinks: NavLink[] = [
-  { href: '/', label: 'Home', icon: <Home className="h-4 w-4"/> },
-  { href: '/about', label: 'About Us', icon: <Info className="h-4 w-4"/> },
-  { href: '/events', label: 'Events', icon: <Calendar className="h-4 w-4"/> },
-  { href: '/contact', label: 'Contact', icon: <Phone className="h-4 w-4"/> },
+  { href: '/', label: 'Home', icon: <Home /> },
+  { href: '/about', label: 'About Us', icon: <Info /> },
+  { href: '/programs', label: 'Programs', icon: <BookOpenCheck /> },
+  { href: '/gallery', label: 'Gallery', icon: <Palette /> },
+  { href: '/events', label: 'Events', icon: <Calendar /> },
+  { href: '/success-stories', label: 'Success Stories', icon: <Sparkles /> },
+  { href: '/blog', label: 'Blog', icon: <Newspaper /> },
+  { href: '/contact', label: 'Contact', icon: <Phone /> },
 ];
 
 export const adminNavLinks: NavLink[] = [
-  { href: '/admin', label: 'Dashboard', icon: <LayoutDashboard className="h-4 w-4"/> },
-  { href: '/admin/students', label: 'Students', icon: <Users className="h-4 w-4"/> },
-  { href: '/admin/staff', label: 'Staff', icon: <Briefcase className="h-4 w-4"/> },
-  { href: '/admin/donations', label: 'Donations', icon: <HeartHandshake className="h-4 w-4"/> },
-  { href: '/admin/social', label: 'Social Media', icon: <Share2 className="h-4 w-4"/> },
-  { href: '/admin/insights', label: 'AI Insights', icon: <BrainCircuit className="h-4 w-4"/> },
-  { href: '/admin/settings', label: 'Settings', icon: <Settings className="h-4 w-4"/> },
+  { href: '/admin', label: 'Dashboard', icon: <LayoutDashboard />, match: 'exact' },
+  { href: '/admin/students', label: 'Students', icon: <Users />, match: 'partial' },
+  { href: '/admin/staff', label: 'Team', icon: <Briefcase />, match: 'partial' },
+  { href: '/admin/donations', label: 'Donations', icon: <HeartHandshake />, match: 'partial' },
+  { href: '/admin/events', label: 'Events Manager', icon: <Calendar />, match: 'partial' },
+  { href: '/admin/gallery', label: 'Gallery Manager', icon: <Palette />, match: 'partial' },
+  { href: '/admin/blog', label: 'Blog/News Manager', icon: <Newspaper />, match: 'partial' },
+  { href: '/admin/programs', label: 'Programs Manager', icon: <BookOpenCheck />, match: 'partial' },
+  { href: '/admin/stories', label: 'Success Stories', icon: <Sparkles />, match: 'partial' },
+  { href: '/admin/website-settings', label: 'Website Settings', icon: <Globe />, match: 'partial' },
+  { href: '/admin/social', label: 'Social Media', icon: <Share2 />, match: 'partial' },
+  { href: '/admin/insights', label: 'AI Insights', icon: <BrainCircuit />, match: 'partial' },
+  { href: '/admin/settings', label: 'Settings', icon: <Settings />, match: 'partial' },
 ];

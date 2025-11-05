@@ -1,4 +1,4 @@
-import type { Student, Staff, Donation } from './types';
+import type { Student, Staff, Donation, Event } from './types';
 
 export const students: Student[] = [
   {
@@ -120,6 +120,88 @@ export const donations: Donation[] = [
     status: 'Failed',
   },
 ];
+
+export const events: Event[] = [
+  {
+    id: 'EVT001',
+    title: 'Annual Charity Gala 2024',
+    date: '2024-10-26',
+    location: 'Grand Ballroom, Hotel Palace',
+    description: 'Join us for a night of celebration and fundraising to support our programs. An evening of fine dining, entertainment, and auctions.',
+    bannerImage: 'https://picsum.photos/seed/eventGala/1200/400',
+    imageHint: 'charity gala',
+    gallery: [
+      { url: 'https://picsum.photos/seed/gala1/600/400', hint: 'people networking' },
+      { url: 'https://picsum.photos/seed/gala2/600/400', hint: 'stage performance' },
+    ],
+    status: 'Published',
+    type: 'Upcoming',
+  },
+  {
+    id: 'EVT002',
+    title: 'Community Sensitization Workshop',
+    date: '2024-11-15',
+    location: 'Sanvedana Center Auditorium',
+    description: 'An interactive workshop to raise awareness about the needs and capabilities of specially-abled children. Open for all community members.',
+    bannerImage: 'https://picsum.photos/seed/eventWorkshop/1200/400',
+    imageHint: 'community workshop',
+    gallery: [],
+    status: 'Published',
+    type: 'Upcoming',
+  },
+  {
+    id: 'EVT003',
+    title: 'Art for a Cause Exhibition',
+    date: '2024-12-05',
+    location: 'City Art Gallery',
+    description: 'An exhibition showcasing breathtaking artwork created by our talented students. All proceeds from sales go towards art supplies.',
+    bannerImage: 'https://picsum.photos/seed/eventArt/1200/400',
+    imageHint: 'art exhibition',
+    gallery: [],
+    status: 'Draft',
+    type: 'Upcoming',
+  },
+  {
+    id: 'EVT004',
+    title: 'Sports Day 2024',
+    date: '2025-01-20',
+    location: 'Community Sports Complex',
+    description: 'A day of fun, games, and sports, celebrating the spirit and abilities of our students. Families are welcome to cheer!',
+    bannerImage: 'https://picsum.photos/seed/eventSports/1200/400',
+    imageHint: 'children sports',
+    gallery: [],
+    status: 'Published',
+    type: 'Upcoming',
+  },
+  {
+    id: 'EVT005',
+    title: 'World Disability Day Celebration 2023',
+    date: '2023-12-03',
+    location: 'Sanvedana Campus',
+    description: 'We celebrated World Disability Day with special performances by our students, guest speakers, and an inclusive carnival.',
+    bannerImage: 'https://picsum.photos/seed/eventDisabilityDay/1200/400',
+    imageHint: 'inclusive event',
+    gallery: [
+       { url: 'https://picsum.photos/seed/disability1/600/400', hint: 'children performing' },
+       { url: 'https://picsum.photos/seed/disability2/600/400', hint: 'guest speaker' },
+    ],
+    status: 'Published',
+    type: 'Past',
+  },
+  {
+    id: 'EVT006',
+    title: 'Diwali Mela 2023',
+    date: '2023-10-28',
+    location: 'Sanvedana Campus Grounds',
+    description: 'Our annual Diwali Mela featured stalls with handmade crafts by our students, food, and games. A resounding success thanks to community support.',
+    bannerImage: 'https://picsum.photos/seed/eventDiwali/1200/400',
+    imageHint: 'Diwali celebration',
+    gallery: [],
+    status: 'Published',
+    type: 'Past',
+  },
+];
+
 
 export const dashboardMetrics = {
   totalStudents: 78,
