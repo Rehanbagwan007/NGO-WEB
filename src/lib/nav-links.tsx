@@ -46,8 +46,8 @@ export const adminNavLinks: NavLink[] = [
   { href: '/admin/blog', label: 'Blog/News Manager', icon: <Newspaper />, match: 'partial' },
   { href: '/admin/programs', label: 'Programs Manager', icon: <BookOpenCheck />, match: 'partial' },
   { href: '/admin/stories', label: 'Success Stories', icon: <Sparkles />, match: 'partial' },
+  { href: '/admin/insights', label: 'AI Insights', icon: <BrainCircuit />, match: 'partial' },
   { href: '/admin/website-settings', label: 'Website Settings', icon: <Globe />, match: 'partial' },
   { href: '/admin/social', label: 'Social Media', icon: <Share2 />, match: 'partial' },
-  { href: '/admin/insights', label: 'AI Insights', icon: <BrainCircuit />, match: 'partial' },
   { href: '/admin/settings', label: 'Settings', icon: <Settings />, match: 'partial' },
 ];

@@ -56,8 +56,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-background">
-      <header className="sticky top-0 z-50 flex h-16 items-center gap-4 border-b bg-background/95 px-4 backdrop-blur md:px-6">
+    <div className="flex min-h-screen w-full flex-col bg-background justify-center">
+      
+      <header className="sticky top-0 z-50 flex h-16 items-center gap-8 border-b bg-background/95 px-4 backdrop-blur md:px-6 w-22">
         <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
           <Link
             href="/"
@@ -151,7 +152,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </>
           )}
         </div>
-      </header>
+      </header> 
       <main className="flex-1">{children}</main>
        <footer className="border-t bg-muted/40">
           <div className="container mx-auto flex flex-col items-center justify-between gap-4 px-4 py-8 sm:flex-row md:px-6">
