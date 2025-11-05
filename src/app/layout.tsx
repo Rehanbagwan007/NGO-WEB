@@ -4,8 +4,8 @@ import { AppShell } from '@/components/layout/app-shell';
 import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
-  title: 'Sanvedana Admin',
-  description: 'Admin dashboard for Sanvedana',
+  title: 'Sanvedana - Empowering Special Needs Children',
+  description: 'Sanvedana is a non-profit organization dedicated to providing education, therapy, and support for children with special needs.',
 };
 
 export default function RootLayout({

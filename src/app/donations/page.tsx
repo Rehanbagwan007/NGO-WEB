@@ -1,4 +1,4 @@
-import { MoreHorizontal, PlusCircle, Share2 } from 'lucide-react';
+import { MoreHorizontal, Share2 } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -45,31 +45,22 @@ export default function DonationsPage() {
   };
     
   return (
-    <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+    <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 container mx-auto">
       <div className="flex items-center">
-        <h1 className="text-lg font-semibold md:text-2xl font-headline">Donations</h1>
-        <div className="ml-auto flex items-center gap-2">
-          <Button size="sm" variant="outline">
-            Generate Report
-          </Button>
-          <Button size="sm">
-            <PlusCircle className="h-4 w-4 mr-2" />
-            Record Donation
-          </Button>
-        </div>
+        <h1 className="text-lg font-semibold md:text-2xl font-headline">My Donations</h1>
       </div>
       <Card>
         <CardHeader>
           <CardTitle>Donation History</CardTitle>
           <CardDescription>
-            Track and manage all donations to Sanvedana.
+            Thank you for your generous support of Sanvedana.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Donor</TableHead>
+                <TableHead>Donation ID</TableHead>
                 <TableHead>Amount</TableHead>
                 <TableHead className="hidden md:table-cell">Date</TableHead>
                 <TableHead>Status</TableHead>
@@ -81,7 +72,7 @@ export default function DonationsPage() {
             <TableBody>
               {donations.map((donation) => (
                 <TableRow key={donation.id}>
-                  <TableCell className="font-medium">{donation.donorName}</TableCell>
+                  <TableCell className="font-mono text-sm">{donation.id}</TableCell>
                   <TableCell>
                     {new Intl.NumberFormat('en-IN', {
                       style: 'currency',
@@ -110,12 +101,10 @@ export default function DonationsPage() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem>View Details</DropdownMenuItem>
-                        <DropdownMenuItem>Send Thank You Email</DropdownMenuItem>
-                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>View Receipt</DropdownMenuItem>
                         <DropdownMenuItem>
                           <Share2 className="mr-2 h-4 w-4" />
-                          Post Thank You
+                          Share on Social Media
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
