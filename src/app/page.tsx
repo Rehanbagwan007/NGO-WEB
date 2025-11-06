@@ -108,7 +108,7 @@ export default function LandingPage() {
             </div>
             <div>
               <Image
-                src="https://picsum.photos/seed/about/600/400"
+                src="https://smileindiatrust.org/wp-content/uploads/2019/08/ngo-working-for-children-rights-2-1400x462.jpg"
                 alt="Children with special needs in a classroom"
                 width={600}
                 height={400}
