@@ -44,7 +44,7 @@ export default function LandingPage() {
   return (
     <div className="flex-1 bg-background">
       {/* Hero Section */}
-      <section className="relative w-full overflow-hidden bg-primary/10">
+      <section className="relative w-full overflow-hidden bg-background">
         <div className="container mx-auto px-4 py-20 lg:py-32">
             <div className="space-y-6 text-left mb-12">
               <h1 className="text-4xl lg:text-7xl font-headline font-black leading-tight tracking-tighter">
@@ -85,7 +85,7 @@ export default function LandingPage() {
       </section>
 
       {/* About Us Section */}
-      <section id="about" className="py-16 lg:py-24 bg-background">
+      <section id="about" className="py-16 lg:py-24 bg-muted/20">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="relative h-[500px]">
@@ -150,12 +150,11 @@ function HeartIcon(props: React.SVGProps<SVGSVGElement>) {
       {...props}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
-      fill="currentColor"
+      fill="none"
       stroke="currentColor"
       strokeWidth="1"
     >
-      <path d="M12.83,4.64a5,5,0,0,0-7.07,0,5,5,0,0,0,0,7.07l7.07,7.07,7.07-7.07a5,5,0,0,0,0-7.07,5,5,0,0,0-7.07,0Z" fill="none"/>
-      <path d="M16.24,6.05a3,3,0,0,1,0,4.24l-4.24,4.24-4.24-4.24a3,3,0,0,1,4.24-4.24,3,3,0,0,1,4.24,0Z" />
+      <path d="M12.83,4.64a5,5,0,0,0-7.07,0,5,5,0,0,0,0,7.07l7.07,7.07,7.07-7.07a5,5,0,0,0,0-7.07,5,5,0,0,0-7.07,0Z" />
     </svg>
   );
 }

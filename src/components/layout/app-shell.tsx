@@ -20,7 +20,7 @@ import { cn } from '@/lib/utils';
 
 const SanvedanaLogo = () => (
   <Link href="/" className="flex items-center gap-2 font-semibold">
-    <svg
+     <svg
       width="100"
       height="100"
       viewBox="0 0 258 258"
@@ -70,9 +70,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen w-full flex-col bg-background">
       
-      <header className="sticky top-0 z-50 flex h-24 items-center bg-transparent px-4 md:px-6">
+      <header className="sticky top-0 z-50 flex h-24 items-center bg-background/95 px-4 md:px-6 backdrop-blur-sm">
         <div className="container mx-auto flex items-center justify-between w-full">
-            <SanvedanaLogo />
+            <div className="flex items-center gap-2">
+                <SanvedanaLogo />
+            </div>
             
             <nav className="hidden md:flex items-center gap-6">
               {mainNavLinks.map((link) => (
@@ -137,7 +139,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </div>
         </div>
       </header> 
-      <main className="flex-1 -mt-24">{children}</main>
+      <main className="flex-1">{children}</main>
        <footer className="border-t bg-background">
           <div className="container mx-auto flex flex-col items-center justify-between gap-4 px-4 py-8 sm:flex-row md:px-6">
             <div className="text-center sm:text-left">
