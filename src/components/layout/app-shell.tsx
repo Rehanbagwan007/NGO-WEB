@@ -13,7 +13,7 @@ import {
 } from '../ui/dropdown-menu';
 import { Menu, Heart, ShoppingCart } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { mainNavLinks } from '@/lib/nav-links';
 import { cn } from '@/lib/utils';
 
@@ -61,6 +61,17 @@ const user = null;
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   // Do not render the shell on admin routes
   if (pathname.startsWith('/admin')) {
@@ -70,7 +81,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen w-full flex-col bg-background">
       
-      <header className="absolute top-0 z-50 flex h-24 w-full items-center px-4 md:px-6">
+      <header className={cn("sticky top-0 z-50 flex h-24 w-full items-center px-4 md:px-6 transition-colors duration-300",
+        isScrolled ? 'bg-background/80 backdrop-blur-sm' : 'bg-transparent'
+      )}>
         <div className="container mx-auto flex items-center justify-between w-full">
             <div className="flex items-center gap-2">
                 <SanvedanaLogo />

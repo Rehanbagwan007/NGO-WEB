@@ -10,37 +10,35 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import Autoplay from "embla-carousel-autoplay";
-
+import Autoplay from 'embla-carousel-autoplay';
 
 const heroImages = [
   {
-    src: 'https://picsum.photos/seed/hero1/1200/800',
+    src: 'https://picsum.photos/seed/hero1/1200/600',
     alt: 'A beautiful landscape',
     hint: 'landscape mountain',
   },
   {
-    src: 'https://picsum.photos/seed/hero2/1200/800',
+    src: 'https://picsum.photos/seed/hero2/1200/600',
     alt: 'A city street at sunset',
     hint: 'city sunset',
   },
   {
-    src: 'https://picsum.photos/seed/hero3/1200/800',
+    src: 'https://picsum.photos/seed/hero3/1200/600',
     alt: 'A highland cow on a beach',
     hint: 'highland cow',
   },
   {
-    src: 'https://picsum.photos/seed/hero4/1200/800',
+    src: 'https://picsum.photos/seed/hero4/1200/600',
     alt: 'A child painting',
     hint: 'child painting',
   },
-   {
-    src: 'https://picsum.photos/seed/hero5/1200/800',
+  {
+    src: 'https://picsum.photos/seed/hero5/1200/600',
     alt: 'A helping hand',
     hint: 'helping hand',
   },
 ];
-
 
 export default function LandingPage() {
   return (
@@ -48,46 +46,46 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className="relative w-full overflow-hidden bg-background pt-24">
         <div className="container mx-auto px-4 py-20 lg:py-32">
-            <div className="space-y-6 text-left mb-12">
-              <h1 className="text-4xl lg:text-7xl font-headline font-black leading-tight tracking-tighter">
-                Empowering Change,
-                <br />
-                Inspiring H<HeartIcon className="inline-block h-12 w-12 lg:h-20 lg:w-20 -mb-2 text-primary" />pe.
-              </h1>
-            </div>
-            <Carousel
-                opts={{
-                  align: 'start',
-                  loop: true,
-                }}
-                plugins={[
-                  Autoplay({
-                    delay: 4000,
-                  }),
-                ]}
-                className="w-full"
-              >
-                <CarouselContent>
-                  {heroImages.map((image, index) => (
-                    <CarouselItem key={index}>
-                      <div className="p-1">
-                        <div className="relative overflow-hidden rounded-2xl">
-                          <Image
-                            src={image.src}
-                            alt={image.alt}
-                            width={1200}
-                            height={800}
-                            className="object-cover w-full h-full aspect-[16/9] rounded-2xl"
-                            data-ai-hint={image.hint}
-                          />
-                        </div>
-                      </div>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-                <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 z-10" />
-                <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 z-10" />
-            </Carousel>
+          <div className="space-y-6 text-left mb-12">
+            <h1 className="text-5xl lg:text-8xl font-headline font-black leading-none tracking-tighter">
+              Empowering Change,
+              <br />
+              Inspiring H<HeartIcon className="inline-block h-16 w-16 lg:h-24 lg:w-24 -mb-4 text-primary" />
+              pe.
+            </h1>
+          </div>
+          <Carousel
+            opts={{
+              align: 'start',
+              loop: true,
+            }}
+            plugins={[
+              Autoplay({
+                delay: 4000,
+              }),
+            ]}
+            className="w-full"
+          >
+            <CarouselContent>
+              {heroImages.map((image, index) => (
+                <CarouselItem key={index}>
+                  <div className="p-1">
+                    <div className="relative overflow-hidden rounded-2xl h-[60vh]">
+                      <Image
+                        src={image.src}
+                        alt={image.alt}
+                        fill
+                        className="object-cover w-full h-full rounded-2xl"
+                        data-ai-hint={image.hint}
+                      />
+                    </div>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 z-10" />
+            <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 z-10" />
+          </Carousel>
         </div>
       </section>
 
@@ -121,11 +119,9 @@ export default function LandingPage() {
                 compassion, and opportunity are accessible to all. Together,
                 we're building a brighter future, one child at a time.
               </p>
-               <Button asChild size="lg">
-                    <Link href="/about">
-                       Learn More
-                    </Link>
-                </Button>
+              <Button asChild size="lg">
+                <Link href="/about">Learn More</Link>
+              </Button>
             </div>
           </div>
         </div>
@@ -149,7 +145,6 @@ export default function LandingPage() {
     </div>
   );
 }
-
 
 function HeartIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
