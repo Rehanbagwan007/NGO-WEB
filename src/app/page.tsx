@@ -111,7 +111,7 @@ export default function LandingPage() {
                           alt={image.alt}
                           width={800}
                           height={600}
-                          className="rounded-3xl object-cover aspect-[4/5]"
+                          className="rounded-3xl object-cover aspect-[16/9]"
                           data-ai-hint={image.hint}
                         />
                       </div>
