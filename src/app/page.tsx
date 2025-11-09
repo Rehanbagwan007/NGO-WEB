@@ -54,12 +54,8 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 py-16 lg:py-24">
           <div className="grid lg:grid-cols-12 gap-8 items-center">
             {/* Left Column */}
-            <div className="lg:col-span-1 flex flex-col items-center gap-8 self-stretch">
-                <div className="flex-1 flex items-center">
-                    <div className="-rotate-90 whitespace-nowrap text-sm text-muted-foreground">
-                        <p>Together For A Better Tomorrow</p>
-                    </div>
-                </div>
+            <div className="hidden lg:col-span-1 lg:flex flex-col items-center gap-8 self-stretch">
+                 <div className="flex-1"></div>
                  <div className="flex flex-col gap-4">
                     <Facebook className="size-5 text-muted-foreground hover:text-primary transition-colors" />
                     <Twitter className="size-5 text-muted-foreground hover:text-primary transition-colors" />
