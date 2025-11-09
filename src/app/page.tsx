@@ -70,7 +70,7 @@ export default function LandingPage() {
               {heroImages.map((image, index) => (
                 <CarouselItem key={index}>
                   <div className="p-1">
-                    <div className="relative overflow-hidden rounded-2xl h-[60vh]">
+                    <div className="relative overflow-hidden rounded-2xl h-[80vh]">
                       <Image
                         src={image.src}
                         alt={image.alt}
