@@ -10,30 +10,32 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import Autoplay from "embla-carousel-autoplay";
+
 
 const heroImages = [
   {
-    src: 'https://picsum.photos/seed/hero1/800/600',
+    src: 'https://picsum.photos/seed/hero1/1200/800',
     alt: 'A beautiful landscape',
     hint: 'landscape mountain',
   },
   {
-    src: 'https://picsum.photos/seed/hero2/800/600',
+    src: 'https://picsum.photos/seed/hero2/1200/800',
     alt: 'A city street at sunset',
     hint: 'city sunset',
   },
   {
-    src: 'https://picsum.photos/seed/hero3/800/600',
+    src: 'https://picsum.photos/seed/hero3/1200/800',
     alt: 'A highland cow on a beach',
     hint: 'highland cow',
   },
   {
-    src: 'https://picsum.photos/seed/hero4/800/600',
+    src: 'https://picsum.photos/seed/hero4/1200/800',
     alt: 'A child painting',
     hint: 'child painting',
   },
    {
-    src: 'https://picsum.photos/seed/hero5/800/600',
+    src: 'https://picsum.photos/seed/hero5/1200/800',
     alt: 'A helping hand',
     hint: 'helping hand',
   },
@@ -44,7 +46,7 @@ export default function LandingPage() {
   return (
     <div className="flex-1 bg-background">
       {/* Hero Section */}
-      <section className="relative w-full overflow-hidden bg-background">
+      <section className="relative w-full overflow-hidden bg-background pt-24">
         <div className="container mx-auto px-4 py-20 lg:py-32">
             <div className="space-y-6 text-left mb-12">
               <h1 className="text-4xl lg:text-7xl font-headline font-black leading-tight tracking-tighter">
@@ -58,19 +60,24 @@ export default function LandingPage() {
                   align: 'start',
                   loop: true,
                 }}
+                plugins={[
+                  Autoplay({
+                    delay: 4000,
+                  }),
+                ]}
                 className="w-full"
               >
                 <CarouselContent>
                   {heroImages.map((image, index) => (
-                    <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
+                    <CarouselItem key={index}>
                       <div className="p-1">
                         <div className="relative overflow-hidden rounded-2xl">
                           <Image
                             src={image.src}
                             alt={image.alt}
-                            width={800}
-                            height={600}
-                            className="object-cover w-full h-full aspect-[4/3] rounded-2xl"
+                            width={1200}
+                            height={800}
+                            className="object-cover w-full h-full aspect-[16/9] rounded-2xl"
                             data-ai-hint={image.hint}
                           />
                         </div>

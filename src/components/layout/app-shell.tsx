@@ -70,27 +70,27 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen w-full flex-col bg-background">
       
-      <header className="sticky top-0 z-50 flex h-24 items-center bg-background/95 px-4 md:px-6 backdrop-blur-sm">
+      <header className="absolute top-0 z-50 flex h-24 w-full items-center px-4 md:px-6">
         <div className="container mx-auto flex items-center justify-between w-full">
             <div className="flex items-center gap-2">
                 <SanvedanaLogo />
             </div>
-            
-            <nav className="hidden md:flex items-center gap-6">
-              {mainNavLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={cn(`font-semibold transition-colors hover:text-primary`,
-                    pathname === link.href ? 'text-primary' : 'text-foreground/70'
-                  )}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
 
             <div className="flex items-center gap-4">
+                <nav className="hidden md:flex items-center gap-6">
+                  {mainNavLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className={cn(`font-semibold transition-colors hover:text-primary`,
+                        pathname === link.href ? 'text-primary' : 'text-foreground/70'
+                      )}
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                </nav>
+
                  <Button variant="ghost" size="icon">
                     <ShoppingCart className="h-5 w-5" />
                     <span className="sr-only">Shopping Cart</span>
