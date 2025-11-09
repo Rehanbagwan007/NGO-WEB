@@ -2,235 +2,195 @@
 
 import { Button } from '@/components/ui/button';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import {
   ArrowRight,
-  Calendar,
-  Heart,
-  Target,
   HeartHandshake,
-  Briefcase,
-  PlayCircle,
+  Facebook,
+  Twitter,
+  Instagram,
+  Linkedin,
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { events as allEvents } from '@/lib/data';
+
+const StatCard = ({
+  value,
+  label,
+  bgColor,
+  textColor,
+  imageSrc,
+  imageAlt,
+  imagePosition,
+}: {
+  value: string;
+  label: string;
+  bgColor: string;
+  textColor: string;
+  imageSrc?: string;
+  imageAlt?: string;
+  imagePosition?: 'top' | 'bottom';
+}) => (
+  <div className={`relative rounded-3xl overflow-hidden ${bgColor} ${textColor} flex flex-col justify-center items-center text-center p-8`}>
+    {imageSrc && imagePosition === 'top' && (
+       <div className="w-full h-32 mb-4">
+        <Image src={imageSrc} alt={imageAlt!} width={400} height={200} className="w-full h-full object-cover" data-ai-hint={imageAlt} />
+       </div>
+    )}
+    <p className="text-5xl font-bold font-headline">{value}</p>
+    <p>{label}</p>
+    {imageSrc && imagePosition === 'bottom' && (
+      <div className="w-full h-32 mt-4">
+       <Image src={imageSrc} alt={imageAlt!} width={400} height={200} className="w-full h-full object-cover" data-ai-hint={imageAlt} />
+      </div>
+    )}
+  </div>
+);
+
 
 export default function LandingPage() {
-  const events = allEvents
-    .filter((e) => e.status === 'Published' && e.type === 'Upcoming')
-    .slice(0, 3);
-
   return (
-    <div className="flex-1">
+    <div className="flex-1 bg-background">
       {/* Hero Section */}
       <section className="relative bg-background overflow-hidden">
-        <div className="container mx-auto px-4 py-20 lg:py-32">
-          <div className="grid md:grid-cols-2 gap-8 items-center">
-            <div className="z-10">
-              <p className="text-primary font-semibold mb-2">Empowering Futures</p>
-              <h1 className="text-4xl md:text-5xl font-headline font-bold mb-4 leading-tight">
-                Your Support, Their{' '}
-                <span className="text-primary">Brighter</span> Tomorrow.
-              </h1>
-              <p className="text-muted-foreground text-lg mb-8">
-                Sanvedana is dedicated to providing education, therapy, and
-                support for children with special needs, helping them build a
-                future filled with hope and independence.
-              </p>
-              <div className="flex items-center gap-4">
-                <Button size="lg" asChild>
-                  <Link href="/donations">Donate Now</Link>
-                </Button>
-                <Button variant="link" asChild className="text-foreground">
-                  <Link href="#">
-                    <PlayCircle className="mr-2" /> Watch Our Story
-                  </Link>
-                </Button>
-              </div>
-            </div>
-            <div className="relative h-96 md:h-auto">
-                {/* Abstract shapes */}
-                <div className="absolute -top-16 -right-16 w-72 h-72 bg-accent/20 rounded-full blur-2xl"></div>
-                <div className="absolute -bottom-16 -left-16 w-72 h-72 bg-primary/10 rounded-full blur-2xl"></div>
-                
-                <div className="relative w-full h-full flex items-center justify-center">
-                    <Image
-                        src="https://picsum.photos/seed/hero-main/500/500"
-                        alt="Smiling child with disability"
-                        width={450}
-                        height={450}
-                        className="rounded-full object-cover z-10 aspect-square"
-                        data-ai-hint="smiling disabled child"
-                    />
-                     <div className="absolute bottom-8 -left-8 z-20 bg-white p-4 rounded-full shadow-lg">
-                        <div className="w-48 h-48 rounded-full bg-primary text-primary-foreground flex flex-col items-center justify-center text-center p-4">
-                            <p className="font-headline text-4xl font-bold">₹8.6Cr</p>
-                            <p className="text-sm">Total Raised</p>
-                        </div>
-                    </div>
-                    <div className="absolute top-0 right-0 w-20 h-20 bg-primary/80 rounded-full z-0"></div>
-                     <div className="absolute bottom-1/4 -right-4 w-12 h-12 bg-accent/50 rounded-full z-0"></div>
+        <div className="container mx-auto px-4 py-16 lg:py-24">
+          <div className="grid lg:grid-cols-12 gap-8 items-center">
+            {/* Left Column */}
+            <div className="lg:col-span-1 flex flex-col items-center gap-8">
+                <div className="-rotate-90 whitespace-nowrap text-sm text-muted-foreground">
+                    <p>Together For A Better Tomorrow</p>
+                </div>
+                 <div className="flex flex-col gap-4">
+                    <Facebook className="size-5 text-muted-foreground hover:text-primary transition-colors" />
+                    <Twitter className="size-5 text-muted-foreground hover:text-primary transition-colors" />
+                    <Instagram className="size-5 text-muted-foreground hover:text-primary transition-colors" />
+                    <Linkedin className="size-5 text-muted-foreground hover:text-primary transition-colors" />
                 </div>
             </div>
+
+            {/* Middle Column */}
+            <div className="lg:col-span-11">
+              <h1 className="text-5xl md:text-7xl font-headline font-black mb-6 leading-tight tracking-tighter">
+                Empowering Change,
+                <br />
+                Inspiring H
+                <span className="inline-flex items-center align-middle">
+                  <HeartHandshake className="size-12 md:size-16 text-primary" />
+                </span>
+                pe
+              </h1>
+              <div className="grid grid-cols-3 gap-4">
+                 <Image
+                  src="https://picsum.photos/seed/hero1/400/500"
+                  alt="Child smiling"
+                  width={400}
+                  height={500}
+                  className="rounded-3xl object-cover w-full h-full"
+                  data-ai-hint="smiling child learning"
+                />
+                <Image
+                   src="https://picsum.photos/seed/hero2/400/500"
+                  alt="Therapist with child"
+                  width={400}
+                  height={500}
+                  className="rounded-3xl object-cover w-full h-full mt-12"
+                   data-ai-hint="therapist disabled child"
+                />
+                <Image
+                   src="https://picsum.photos/seed/hero3/400/500"
+                  alt="Children playing together"
+                  width={400}
+                  height={500}
+                  className="rounded-3xl object-cover w-full h-full"
+                   data-ai-hint="disabled children playing"
+                />
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
 
       {/* About Us Section */}
-      <section id="about" className="py-16 lg:py-24 bg-muted/40">
+      <section id="about" className="py-16 lg:py-24 bg-background">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-center">
-            <div className="space-y-4">
-              <h2 className="text-3xl font-headline font-bold">About Sanvedana</h2>
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div className="relative h-[500px]">
+               <Image
+                src="https://picsum.photos/seed/about-main/600/700"
+                alt="Children in a classroom"
+                width={600}
+                height={700}
+                className="rounded-3xl shadow-lg object-cover w-full h-full"
+                data-ai-hint="disabled children classroom"
+              />
+              <div className="absolute -bottom-8 -left-8 bg-primary rounded-full p-4">
+                <div className="bg-background rounded-full p-4">
+                    <Button size="icon" className="w-16 h-16 rounded-full bg-primary hover:bg-primary/90">
+                        <ArrowRight className="size-8" />
+                    </Button>
+                </div>
+              </div>
+            </div>
+            <div className="space-y-6">
+              <h2 className="text-5xl font-headline font-black leading-tight tracking-tighter">
+                One World,
+                <br />
+                One Mission
+              </h2>
               <p className="text-muted-foreground text-lg">
-                Sanvedana is a non-profit organization committed to the
-                well-being and development of specially-abled children. We
-                believe every child deserves a chance to reach their full
-                potential, regardless of their challenges.
+                "One World, One Mission" encapsulates our commitment to a united, inclusive future. At Sanvedana, we believe that every child deserves the chance to thrive in a healthy, safe, and supportive world. Our mission transcends borders and disabilities, bringing together individuals from all walks of life.
               </p>
               <p className="text-muted-foreground">
-                Our comprehensive approach combines specialized education,
-                therapeutic interventions, and vocational training to foster
-                independence and integrate our children into mainstream society.
+                Through collaborative efforts in education, therapy, and community building, we aim to create a world where equality, compassion, and opportunity are accessible to all. Together, we're building a brighter future, one child at a time.
               </p>
-              <Button variant="outline" asChild>
-                <Link href="/about">
-                  Learn More <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
-            <div>
-              <Image
-                src="https://smileindiatrust.org/wp-content/uploads/2019/08/ngo-working-for-children-rights-2-1400x462.jpg"
-                alt="Children with special needs in a classroom"
-                width={600}
-                height={400}
-                className="rounded-lg shadow-lg"
-                data-ai-hint="disabled children learning"
-              />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Our Focus Section */}
-      <section id="focus" className="py-16 lg:py-24 bg-background">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-headline font-bold mb-2">Our Focus</h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-12">
-            We concentrate on key areas to provide holistic development for our
-            children.
-          </p>
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card>
-              <CardHeader className="items-center">
-                <div className="p-4 bg-primary/10 rounded-full">
-                  <Target className="h-8 w-8 text-primary" />
-                </div>
-                <CardTitle className="font-headline mt-4">
-                  Specialized Education
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Tailored academic programs designed to meet the unique
-                  learning needs of each child.
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="items-center">
-                <div className="p-4 bg-primary/10 rounded-full">
-                  <HeartHandshake className="h-8 w-8 text-primary" />
-                </div>
-                <CardTitle className="font-headline mt-4">
-                  Therapy & Rehabilitation
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Offering speech therapy, occupational therapy, and
-                  physiotherapy to improve life skills.
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="items-center">
-                <div className="p-4 bg-primary/10 rounded-full">
-                  <Briefcase className="h-8 w-8 text-primary" />
-                </div>
-                <CardTitle className="font-headline mt-4">
-                  Vocational Training
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Equipping students with practical skills for future
-                  employment and independence.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Events Section */}
-      <section id="events" className="py-16 lg:py-24 bg-muted/40">
+       {/* Stats Section */}
+      <section id="stats" className="py-16 lg:py-24 bg-background">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-headline font-bold text-center mb-12">
-            Upcoming Events
-          </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {events.map((event) => (
-              <Card key={event.title} className="flex flex-col">
-                <CardHeader className="p-0">
-                  <Image
-                    src={event.bannerImage}
-                    alt={event.title}
-                    width={400}
-                    height={250}
-                    className="rounded-t-lg object-cover aspect-[16/10]"
-                    data-ai-hint={event.imageHint}
-                  />
-                </CardHeader>
-                <CardContent className="flex-1 pt-6">
-                  <CardTitle className="font-headline text-xl mb-2">
-                    {event.title}
-                  </CardTitle>
-                  <div className="flex items-center text-sm text-muted-foreground mb-4">
-                    <Calendar className="h-4 w-4 mr-2" />
-                    {new Date(event.date).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                    })}
-                  </div>
-                  <CardDescription>{event.description}</CardDescription>
-                </CardContent>
-                <CardFooter>
-                  <Button variant="link" className="p-0" asChild>
-                    <Link href={`/events`}>
-                      Learn More <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
-          {events.length === 0 && (
-            <div className="text-center text-muted-foreground py-8">
-              No upcoming events. Please check back later.
-            </div>
-          )}
+           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <StatCard
+                value="500+"
+                label="Active Students"
+                bgColor="bg-accent"
+                textColor="text-black"
+                imageSrc="https://picsum.photos/seed/stat1/400/200"
+                imageAlt="students in classroom"
+                imagePosition="bottom"
+              />
+               <StatCard
+                value="200+"
+                label="Community Projects"
+                bgColor="bg-accent"
+                textColor="text-black"
+                imageSrc="https://picsum.photos/seed/stat2/400/200"
+                imageAlt="community event"
+                imagePosition="top"
+              />
+               <StatCard
+                value="100+"
+                label="Dedicated Staff"
+                bgColor="bg-primary"
+                textColor="text-primary-foreground"
+                imageSrc="https://picsum.photos/seed/stat3/400/200"
+                imageAlt="staff members"
+                imagePosition="bottom"
+              />
+               <StatCard
+                value="300+"
+                label="Educational Programs"
+                bgColor="bg-primary"
+                textColor="text-primary-foreground"
+                imageSrc="https://picsum.photos/seed/stat4/400/200"
+                imageAlt="educational materials"
+                imagePosition="top"
+              />
+           </div>
         </div>
       </section>
+
 
       {/* Footer CTA */}
       <section className="py-16 lg:py-24 bg-primary text-primary-foreground">
