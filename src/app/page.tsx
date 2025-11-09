@@ -46,12 +46,19 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className="relative w-full overflow-hidden bg-primary/10">
         <div className="container mx-auto px-4 py-20 lg:py-32">
+            <div className="space-y-6 text-center mb-12">
+              <h1 className="text-4xl lg:text-7xl font-headline font-black leading-tight tracking-tighter">
+                Empowering Change,
+                <br />
+                Inspiring Hope.
+              </h1>
+            </div>
             <Carousel
                 opts={{
                   align: 'start',
                   loop: true,
                 }}
-                className="w-full mb-12"
+                className="w-full"
               >
                 <CarouselContent>
                   {heroImages.map((image, index) => (
@@ -74,13 +81,6 @@ export default function LandingPage() {
                 <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 z-10 hidden sm:flex" />
                 <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 z-10 hidden sm:flex" />
             </Carousel>
-            <div className="space-y-6 text-center">
-              <h1 className="text-4xl lg:text-7xl font-headline font-black leading-tight tracking-tighter">
-                Empowering Change,
-                <br />
-                Inspiring Hope.
-              </h1>
-            </div>
         </div>
       </section>
 
