@@ -1,38 +1,85 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { Play } from 'lucide-react';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+
+const heroImages = [
+  {
+    src: 'https://picsum.photos/seed/hero1/1200/800',
+    alt: 'Children in a classroom',
+    hint: 'children classroom',
+  },
+  {
+    src: 'https://picsum.photos/seed/hero2/1200/800',
+    alt: 'A child smiling',
+    hint: 'child smiling',
+  },
+  {
+    src: 'https://picsum.photos/seed/hero3/1200/800',
+    alt: 'A group of volunteers',
+    hint: 'volunteers working',
+  },
+  {
+    src: 'https://picsum.photos/seed/hero4/1200/800',
+    alt: 'A child painting',
+    hint: 'child painting',
+  },
+];
+
 
 export default function LandingPage() {
   return (
     <div className="flex-1 bg-background">
       {/* Hero Section */}
-      <section className="relative h-screen w-full overflow-hidden">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute top-0 left-0 w-full h-full object-cover"
-          poster="https://picsum.photos/seed/hero-poster/1920/1080"
-        >
-          {/* Using a placeholder video */}
-          <source
-            src="https://firebasestorage.googleapis.com/v0/b/builder-29b56.appspot.com/o/assets%2Fkimia-zarifi-DLIETO3o8hA-unsplash.mp4?alt=media&token=8669d3c3-b44c-4491-a912-32a8a816e87f"
-            type="video/mp4"
-          />
-          Your browser does not support the video tag.
-        </video>
-        <div className="absolute inset-0 bg-black/30" />
-        <div className="relative z-10 flex h-full items-center justify-center">
-          <Button
-            variant="default"
-            className="h-24 w-24 rounded-full bg-black/80 text-white backdrop-blur-sm hover:bg-black"
-          >
-            <Play className="h-10 w-10 fill-white" />
-          </Button>
+      <section className="relative w-full overflow-hidden bg-primary/10">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-2 gap-8 items-center py-20 lg:py-32">
+            <div className="space-y-6 text-center md:text-left">
+              <h1 className="text-4xl lg:text-6xl font-headline font-black leading-tight tracking-tighter">
+                Empowering Change,
+                <br />
+                Inspiring Hope.
+              </h1>
+            </div>
+            <div>
+              <Carousel
+                opts={{
+                  align: 'start',
+                  loop: true,
+                }}
+                className="w-full"
+              >
+                <CarouselContent>
+                  {heroImages.map((image, index) => (
+                    <CarouselItem key={index} className="md:basis-1/1 lg:basis-1/1">
+                      <div className="p-1">
+                        <div className="relative overflow-hidden rounded-2xl">
+                          <Image
+                            src={image.src}
+                            alt={image.alt}
+                            width={1200}
+                            height={800}
+                            className="object-cover w-full h-full aspect-[16/9]"
+                            data-ai-hint={image.hint}
+                          />
+                        </div>
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 z-10 hidden sm:flex" />
+                <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 z-10 hidden sm:flex" />
+              </Carousel>
+            </div>
+          </div>
         </div>
       </section>
 
