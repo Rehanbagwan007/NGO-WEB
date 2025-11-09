@@ -32,6 +32,11 @@ const heroImages = [
     alt: 'A child painting',
     hint: 'child painting',
   },
+   {
+    src: 'https://picsum.photos/seed/hero5/1200/800',
+    alt: 'A helping hand',
+    hint: 'helping hand',
+  },
 ];
 
 
@@ -40,34 +45,25 @@ export default function LandingPage() {
     <div className="flex-1 bg-background">
       {/* Hero Section */}
       <section className="relative w-full overflow-hidden bg-primary/10">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-8 items-center py-20 lg:py-32">
-            <div className="space-y-6 text-center md:text-left">
-              <h1 className="text-4xl lg:text-6xl font-headline font-black leading-tight tracking-tighter">
-                Empowering Change,
-                <br />
-                Inspiring Hope.
-              </h1>
-            </div>
-            <div>
-              <Carousel
+        <div className="container mx-auto px-4 py-20 lg:py-32">
+            <Carousel
                 opts={{
                   align: 'start',
                   loop: true,
                 }}
-                className="w-full"
+                className="w-full mb-12"
               >
                 <CarouselContent>
                   {heroImages.map((image, index) => (
-                    <CarouselItem key={index} className="md:basis-1/1 lg:basis-1/1">
+                    <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
                       <div className="p-1">
                         <div className="relative overflow-hidden rounded-2xl">
                           <Image
                             src={image.src}
                             alt={image.alt}
-                            width={1200}
-                            height={800}
-                            className="object-cover w-full h-full aspect-[16/9]"
+                            width={800}
+                            height={600}
+                            className="object-cover w-full h-full aspect-[4/3]"
                             data-ai-hint={image.hint}
                           />
                         </div>
@@ -77,9 +73,14 @@ export default function LandingPage() {
                 </CarouselContent>
                 <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 z-10 hidden sm:flex" />
                 <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 z-10 hidden sm:flex" />
-              </Carousel>
+            </Carousel>
+            <div className="space-y-6 text-center">
+              <h1 className="text-4xl lg:text-7xl font-headline font-black leading-tight tracking-tighter">
+                Empowering Change,
+                <br />
+                Inspiring Hope.
+              </h1>
             </div>
-          </div>
         </div>
       </section>
 
