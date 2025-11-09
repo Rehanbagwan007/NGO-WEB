@@ -18,39 +18,49 @@ import { mainNavLinks } from '@/lib/nav-links';
 import { cn } from '@/lib/utils';
 
 
-const SanvedanaLogo = () => (
-  <Link href="/" className="flex items-center gap-2 font-semibold">
-     <svg
-      width="100"
-      height="100"
-      viewBox="0 0 258 258"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className="w-16 h-16"
-    >
-      <circle cx="129" cy="129" r="129" fill="#FFFBEB" />
-      <text
-        x="129"
-        y="120"
-        fontFamily="'Space Grotesk', sans-serif"
-        fontSize="60"
-        fontWeight="bold"
-        textAnchor="middle"
-        fill="#333333"
-      >
-        संवेदना
-      </text>
-       <text
-        x="129"
-        y="160"
-        fontFamily="'Space Grotesk', sans-serif"
-        fontSize="20"
-        textAnchor="middle"
-        fill="#666"
-      >
-       Together For A Better Tomorrow
-      </text>
-    </svg>
+const SanvedanaLogo = ({ scrolled = false }: { scrolled?: boolean }) => (
+  <Link href="/" className="flex items-center gap-2 font-semibold transition-all duration-300">
+    <div className={cn("relative w-16 h-16", { 'w-10 h-10': scrolled })}>
+      <div className={cn("absolute inset-0 transition-opacity duration-300", scrolled ? 'opacity-0' : 'opacity-100')}>
+         <svg
+          width="100"
+          height="100"
+          viewBox="0 0 258 258"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-16 h-16"
+        >
+          <circle cx="129" cy="129" r="129" fill="#FFFBEB" />
+          <text
+            x="129"
+            y="120"
+            fontFamily="'Space Grotesk', sans-serif"
+            fontSize="60"
+            fontWeight="bold"
+            textAnchor="middle"
+            fill="#333333"
+          >
+            संवेदना
+          </text>
+           <text
+            x="129"
+            y="160"
+            fontFamily="'Space Grotesk', sans-serif"
+            fontSize="20"
+            textAnchor="middle"
+            fill="#666"
+          >
+           Together For A Better Tomorrow
+          </text>
+        </svg>
+      </div>
+      <div className={cn("absolute inset-0 flex items-center justify-center transition-opacity duration-300", scrolled ? 'opacity-100' : 'opacity-0')}>
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4.125 4.125L9.875 9.875M9.875 4.125L4.125 9.875" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M14.125 14.125L19.875 19.875M19.875 14.125L14.125 19.875" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+      </div>
+    </div>
   </Link>
 );
 
@@ -81,16 +91,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen w-full flex-col bg-background">
       
-      <header className={cn("sticky top-0 z-50 flex h-24 w-full items-center px-4 md:px-6 transition-colors duration-300",
-        isScrolled ? 'bg-background/80 backdrop-blur-sm' : 'bg-transparent'
+      <header className={cn("sticky top-0 z-50 flex h-24 w-full items-center px-4 md:px-6 transition-all duration-300",
+        isScrolled ? 'bg-background/80 backdrop-blur-sm shadow-sm' : 'bg-transparent'
       )}>
         <div className="container mx-auto flex items-center justify-between w-full">
             <div className="flex items-center gap-2">
-                <SanvedanaLogo />
+                <SanvedanaLogo scrolled={isScrolled} />
             </div>
 
             <div className="flex items-center gap-4">
-                <nav className="hidden md:flex items-center gap-6">
+                <nav className={cn("hidden md:flex items-center gap-6 transition-opacity duration-300", isScrolled ? "opacity-0 pointer-events-none" : "opacity-100")}>
                   {mainNavLinks.map((link) => (
                     <Link
                       key={link.href}
@@ -104,22 +114,26 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   ))}
                 </nav>
 
+                <div className={cn("hidden md:flex items-center gap-4 transition-opacity duration-300", isScrolled ? "opacity-0 pointer-events-none" : "opacity-100")}>
+                    <Button asChild>
+                        <Link href="/donations">
+                            <Heart className="mr-2 h-4 w-4" />
+                            Donate
+                        </Link>
+                    </Button>
+                </div>
+                
                  <Button variant="ghost" size="icon">
                     <ShoppingCart className="h-5 w-5" />
                     <span className="sr-only">Shopping Cart</span>
                 </Button>
-                 <Button asChild>
-                    <Link href="/donations">
-                        <Heart className="mr-2 h-4 w-4" />
-                        Donate
-                    </Link>
-                </Button>
+
                 <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                     <SheetTrigger asChild>
                         <Button
                         variant="ghost"
                         size="icon"
-                        className="shrink-0 md:hidden"
+                        className="shrink-0"
                         >
                         <Menu className="h-6 w-6" />
                         <span className="sr-only">Toggle navigation menu</span>

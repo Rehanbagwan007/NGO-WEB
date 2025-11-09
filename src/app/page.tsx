@@ -14,27 +14,27 @@ import Autoplay from 'embla-carousel-autoplay';
 
 const heroImages = [
   {
-    src: 'https://picsum.photos/seed/hero1/1200/600',
+    src: 'https://picsum.photos/seed/hero1/1200/800',
     alt: 'A beautiful landscape',
     hint: 'landscape mountain',
   },
   {
-    src: 'https://picsum.photos/seed/hero2/1200/600',
+    src: 'https://picsum.photos/seed/hero2/1200/800',
     alt: 'A city street at sunset',
     hint: 'city sunset',
   },
   {
-    src: 'https://picsum.photos/seed/hero3/1200/600',
+    src: 'https://picsum.photos/seed/hero3/1200/800',
     alt: 'A highland cow on a beach',
     hint: 'highland cow',
   },
   {
-    src: 'https://picsum.photos/seed/hero4/1200/600',
+    src: 'https://picsum.photos/seed/hero4/1200/800',
     alt: 'A child painting',
     hint: 'child painting',
   },
   {
-    src: 'https://picsum.photos/seed/hero5/1200/600',
+    src: 'https://picsum.photos/seed/hero5/1200/800',
     alt: 'A helping hand',
     hint: 'helping hand',
   },
@@ -44,7 +44,7 @@ export default function LandingPage() {
   return (
     <div className="flex-1 bg-background">
       {/* Hero Section */}
-      <section className="relative w-full overflow-hidden bg-background pt-24">
+      <section className="relative w-full overflow-hidden bg-background pt-8 md:pt-16 -mt-24">
         <div className="container mx-auto px-4 py-20 lg:py-32">
           <div className="space-y-6 text-left mb-12">
             <h1 className="text-5xl lg:text-8xl font-headline font-black leading-none tracking-tighter">
