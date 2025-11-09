@@ -28,6 +28,7 @@ type NavLink = {
 export const mainNavLinks: NavLink[] = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
+  { href: '/events', label: 'Events' },
   { href: '/gallery', label: 'Gallery' },
   { href: '/contact', label: 'Contact' },
 ];
