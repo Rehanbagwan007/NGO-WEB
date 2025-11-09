@@ -31,16 +31,14 @@ const SanvedanaLogo = ({ inSheet = false }: { inSheet?: boolean }) => (
     >
       <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
     </svg>
-    <span className={cn(inSheet ? '' : 'hidden xl:block')}>Sanvedana</span>
+    <span className={cn(inSheet ? '' : 'xl:block')}>Sanvedana</span>
   </Link>
 );
 
 const NavLink = ({
   link,
-  isCollapsed,
 }: {
   link: (typeof adminNavLinks)[0];
-  isCollapsed: boolean;
 }) => {
   const pathname = usePathname();
   const isActive =
@@ -53,12 +51,11 @@ const NavLink = ({
       href={link.href}
       className={cn(
         'flex items-center gap-3 rounded-lg px-3 py-2 text-sidebar-foreground/70 transition-all hover:text-sidebar-foreground',
-        { 'bg-sidebar-accent text-sidebar-foreground': isActive },
-        { 'justify-center': isCollapsed }
+        { 'bg-sidebar-accent text-sidebar-foreground': isActive }
       )}
     >
       {link.icon}
-      <span className={cn('truncate', { 'hidden': isCollapsed })}>{link.label}</span>
+      <span className='truncate'>{link.label}</span>
     </Link>
   );
 };
@@ -68,12 +65,9 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // For this example, we'll manage a simple collapsed state.
-  // In a real app, you might use context or a state management library.
-  const isCollapsed = false;
 
   return (
-    <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
+    <div className="grid min-h-screen w-full md:grid-cols-[280px_1fr]">
       <div className="hidden border-r bg-sidebar text-sidebar-foreground md:block">
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
@@ -82,7 +76,7 @@ export default function AdminLayout({
           <div className="flex-1">
             <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
               {adminNavLinks.map((link) => (
-                <NavLink key={link.href} link={link} isCollapsed={isCollapsed} />
+                <NavLink key={link.href} link={link} />
               ))}
             </nav>
           </div>
@@ -107,7 +101,7 @@ export default function AdminLayout({
               </div>
               <nav className="grid gap-2 text-lg font-medium">
                 {adminNavLinks.map((link) => (
-                  <NavLink key={link.href} link={link} isCollapsed={false} />
+                  <NavLink key={link.href} link={link} />
                 ))}
               </nav>
             </SheetContent>

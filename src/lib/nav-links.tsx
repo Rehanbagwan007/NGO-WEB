@@ -28,11 +28,8 @@ type NavLink = {
 export const mainNavLinks: NavLink[] = [
   { href: '/', label: 'Home', icon: <Home /> },
   { href: '/about', label: 'About Us', icon: <Info /> },
-  { href: '/programs', label: 'Programs', icon: <BookOpenCheck /> },
   { href: '/gallery', label: 'Gallery', icon: <Palette /> },
   { href: '/events', label: 'Events', icon: <Calendar /> },
-  { href: '/success-stories', label: 'Success Stories', icon: <Sparkles /> },
-  { href: '/blog', label: 'Blog', icon: <Newspaper /> },
   { href: '/contact', label: 'Contact', icon: <Phone /> },
 ];
 

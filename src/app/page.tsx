@@ -54,9 +54,11 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 py-16 lg:py-24">
           <div className="grid lg:grid-cols-12 gap-8 items-center">
             {/* Left Column */}
-            <div className="lg:col-span-1 flex flex-col items-center gap-8">
-                <div className="-rotate-90 whitespace-nowrap text-sm text-muted-foreground">
-                    <p>Together For A Better Tomorrow</p>
+            <div className="lg:col-span-1 flex flex-col items-center gap-8 self-stretch">
+                <div className="flex-1 flex items-center">
+                    <div className="-rotate-90 whitespace-nowrap text-sm text-muted-foreground">
+                        <p>Together For A Better Tomorrow</p>
+                    </div>
                 </div>
                  <div className="flex flex-col gap-4">
                     <Facebook className="size-5 text-muted-foreground hover:text-primary transition-colors" />
@@ -80,15 +82,15 @@ export default function LandingPage() {
               <div className="grid grid-cols-3 gap-4">
                  <Image
                   src="https://picsum.photos/seed/hero1/400/500"
-                  alt="Child smiling"
+                  alt="Child with disability smiling while learning"
                   width={400}
                   height={500}
                   className="rounded-3xl object-cover w-full h-full"
-                  data-ai-hint="smiling child learning"
+                  data-ai-hint="smiling disabled child"
                 />
                 <Image
                    src="https://picsum.photos/seed/hero2/400/500"
-                  alt="Therapist with child"
+                  alt="Therapist assisting a child with special needs"
                   width={400}
                   height={500}
                   className="rounded-3xl object-cover w-full h-full mt-12"
@@ -96,7 +98,7 @@ export default function LandingPage() {
                 />
                 <Image
                    src="https://picsum.photos/seed/hero3/400/500"
-                  alt="Children playing together"
+                  alt="Children with disabilities playing together joyfully"
                   width={400}
                   height={500}
                   className="rounded-3xl object-cover w-full h-full"
@@ -116,7 +118,7 @@ export default function LandingPage() {
             <div className="relative h-[500px]">
                <Image
                 src="https://picsum.photos/seed/about-main/600/700"
-                alt="Children in a classroom"
+                alt="Diverse group of children with special needs in a classroom setting"
                 width={600}
                 height={700}
                 className="rounded-3xl shadow-lg object-cover w-full h-full"
@@ -124,8 +126,10 @@ export default function LandingPage() {
               />
               <div className="absolute -bottom-8 -left-8 bg-primary rounded-full p-4">
                 <div className="bg-background rounded-full p-4">
-                    <Button size="icon" className="w-16 h-16 rounded-full bg-primary hover:bg-primary/90">
-                        <ArrowRight className="size-8" />
+                    <Button asChild size="icon" className="w-16 h-16 rounded-full bg-primary hover:bg-primary/90">
+                        <Link href="/about">
+                            <ArrowRight className="size-8" />
+                        </Link>
                     </Button>
                 </div>
               </div>
