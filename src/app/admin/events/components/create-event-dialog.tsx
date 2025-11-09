@@ -32,6 +32,7 @@ import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import type { Event } from '@/lib/types';
+import Image from 'next/image';
 
 const formSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters.'),
@@ -40,7 +41,7 @@ const formSchema = z.object({
     required_error: 'A date for the event is required.',
   }),
   location: z.string().min(3, 'Location is required.'),
-  bannerImage: z.string().url('Please enter a valid image URL.'),
+  bannerImage: z.any().refine(files => files?.length > 0, 'Banner image is required.'),
   status: z.enum(['Draft', 'Published']),
   type: z.enum(['Upcoming', 'Past']),
 });
@@ -61,6 +62,7 @@ export function CreateEventDialog({
   onEventCreated,
 }: CreateEventDialogProps) {
   const [loading, setLoading] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const form = useForm<CreateEventFormValues>({
     resolver: zodResolver(formSchema),
@@ -68,24 +70,47 @@ export function CreateEventDialog({
       title: '',
       description: '',
       location: '',
-      bannerImage: 'https://picsum.photos/seed/newEvent/1200/400',
       status: 'Draft',
       type: 'Upcoming',
     },
   });
+  
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setImagePreview(null);
+    }
+  };
 
   async function onSubmit(values: CreateEventFormValues) {
     setLoading(true);
-    // In a real app, you'd upload this to your backend
+    // In a real app, you'd upload the file and then save the form
     console.log('Form Submitted', values);
+    const eventData = {
+        ...values,
+        bannerImage: values.bannerImage[0].name, // a real app would have the URL after upload
+    };
     await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network request
-    onEventCreated(values);
+    onEventCreated(eventData as any); // Casting as we are not uploading file
     setLoading(false);
     form.reset();
+    setImagePreview(null);
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={(isOpen) => {
+        if (!isOpen) {
+            form.reset();
+            setImagePreview(null);
+        }
+        onOpenChange(isOpen);
+    }}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
@@ -190,17 +215,30 @@ export function CreateEventDialog({
               name="bannerImage"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Banner Image URL</FormLabel>
+                  <FormLabel>Banner Image</FormLabel>
                   <FormControl>
-                    <Input placeholder="https://example.com/image.jpg" {...field} />
+                     <Input 
+                        type="file" 
+                        accept="image/*"
+                        onChange={(e) => {
+                            field.onChange(e.target.files);
+                            handleImageChange(e);
+                        }}
+                     />
                   </FormControl>
                    <FormDescription>
-                    Provide a URL for the event's main banner image.
+                    Upload a banner image for the event.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
+            {imagePreview && (
+                <div className="relative w-full h-64 rounded-md overflow-hidden border">
+                    <Image src={imagePreview} alt="Banner preview" fill style={{ objectFit: 'cover' }} />
+                </div>
+            )}
+
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
@@ -278,3 +316,5 @@ export function CreateEventDialog({
     </Dialog>
   );
 }
+
+    
