@@ -13,27 +13,27 @@ import { Button } from '@/components/ui/button';
 
 const heroImages = [
   {
-    src: 'https://picsum.photos/seed/hero1/1200/800',
-    alt: 'Children in a classroom',
-    hint: 'children classroom',
+    src: 'https://picsum.photos/seed/hero1/800/600',
+    alt: 'A beautiful landscape',
+    hint: 'landscape mountain',
   },
   {
-    src: 'https://picsum.photos/seed/hero2/1200/800',
-    alt: 'A child smiling',
-    hint: 'child smiling',
+    src: 'https://picsum.photos/seed/hero2/800/600',
+    alt: 'A city street at sunset',
+    hint: 'city sunset',
   },
   {
-    src: 'https://picsum.photos/seed/hero3/1200/800',
-    alt: 'A group of volunteers',
-    hint: 'volunteers working',
+    src: 'https://picsum.photos/seed/hero3/800/600',
+    alt: 'A highland cow on a beach',
+    hint: 'highland cow',
   },
   {
-    src: 'https://picsum.photos/seed/hero4/1200/800',
+    src: 'https://picsum.photos/seed/hero4/800/600',
     alt: 'A child painting',
     hint: 'child painting',
   },
    {
-    src: 'https://picsum.photos/seed/hero5/1200/800',
+    src: 'https://picsum.photos/seed/hero5/800/600',
     alt: 'A helping hand',
     hint: 'helping hand',
   },
@@ -46,11 +46,11 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className="relative w-full overflow-hidden bg-primary/10">
         <div className="container mx-auto px-4 py-20 lg:py-32">
-            <div className="space-y-6 text-center mb-12">
+            <div className="space-y-6 text-left mb-12">
               <h1 className="text-4xl lg:text-7xl font-headline font-black leading-tight tracking-tighter">
                 Empowering Change,
                 <br />
-                Inspiring Hope.
+                Inspiring H<HeartIcon className="inline-block h-12 w-12 lg:h-20 lg:w-20 -mb-2 text-primary" />pe.
               </h1>
             </div>
             <Carousel
@@ -70,7 +70,7 @@ export default function LandingPage() {
                             alt={image.alt}
                             width={800}
                             height={600}
-                            className="object-cover w-full h-full aspect-[4/3]"
+                            className="object-cover w-full h-full aspect-[4/3] rounded-2xl"
                             data-ai-hint={image.hint}
                           />
                         </div>
@@ -78,8 +78,8 @@ export default function LandingPage() {
                     </CarouselItem>
                   ))}
                 </CarouselContent>
-                <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 z-10 hidden sm:flex" />
-                <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 z-10 hidden sm:flex" />
+                <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 z-10" />
+                <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 z-10" />
             </Carousel>
         </div>
       </section>
@@ -140,5 +140,22 @@ export default function LandingPage() {
         </div>
       </section>
     </div>
+  );
+}
+
+
+function HeartIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      stroke="currentColor"
+      strokeWidth="1"
+    >
+      <path d="M12.83,4.64a5,5,0,0,0-7.07,0,5,5,0,0,0,0,7.07l7.07,7.07,7.07-7.07a5,5,0,0,0,0-7.07,5,5,0,0,0-7.07,0Z" fill="none"/>
+      <path d="M16.24,6.05a3,3,0,0,1,0,4.24l-4.24,4.24-4.24-4.24a3,3,0,0,1,4.24-4.24,3,3,0,0,1,4.24,0Z" />
+    </svg>
   );
 }

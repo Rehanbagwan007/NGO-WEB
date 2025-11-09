@@ -28,68 +28,29 @@ const SanvedanaLogo = () => (
       xmlns="http://www.w3.org/2000/svg"
       className="w-16 h-16"
     >
-      <circle cx="129" cy="129" r="129" fill="#FFFAF0" />
-      <path
-        d="M129 65C158.376 65 182 88.6243 182 118C182 132.849 174.971 146.223 163.754 155.026C163.094 155.539 162.38 155.992 161.621 156.389L161.536 156.441C152.213 162.1 141.039 165.5 129 165.5C99.6243 165.5 76 141.876 76 112.5C76 96.2575 84.0537 81.705 97.5937 72.8489"
-        stroke="#E57373"
-        strokeWidth="10"
-        strokeMiterlimit="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M109.11 96.2891L113.898 102.328C114.156 102.664 114.542 102.859 114.949 102.859C115.356 102.859 115.742 102.664 116.001 102.328L120.789 96.2891C122.309 94.3359 124.962 93.9844 126.856 95.5391C128.751 97.0938 129.063 99.7891 127.544 101.742L121.235 110.055C122.915 110.391 124.434 111.125 125.761 112.195L126.019 112.383C128.024 113.828 128.409 116.523 126.856 118.414C125.302 120.305 122.649 120.656 120.724 119.211L115.649 115.289C115.242 114.9805 114.657 114.9805 114.251 115.289L109.176 119.211C107.251 120.656 104.598 120.305 103.044 118.414C101.491 116.523 101.876 113.828 103.882 112.383L104.139 112.195C105.466 111.125 106.985 110.391 108.665 110.055L102.356 101.742C100.837 99.7891 101.149 97.0938 103.044 95.5391C104.938 93.9844 107.591 94.3359 109.11 96.2891Z"
-        fill="#FFB74D"
-      />
-      <path
-        d="M93 168.5L100.5 175.5L111 164"
-        stroke="#4CAF50"
-        strokeWidth="8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M129 178C142.255 178 153 167.255 153 154C153 140.745 142.255 130 129 130C115.745 130 105 140.745 105 154C105 167.255 115.745 178 129 178Z"
-        stroke="#4CAF50"
-        strokeWidth="8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M152 165L160.5 175.5L174 158.5"
-        stroke="#4CAF50"
-        strokeWidth="8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M110 197L116 204L129 191L142 204L148 197"
-        stroke="#4CAF50"
-        strokeWidth="8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M93.3022 51.5C100.906 43.033 114.072 38 129 38C156.062 38 178 59.938 178 87"
-        stroke="#E57373"
-        strokeWidth="10"
-        strokeMiterlimit="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <circle cx="129" cy="129" r="129" fill="#FFFBEB" />
       <text
         x="129"
-        y="235"
+        y="120"
         fontFamily="'Space Grotesk', sans-serif"
-        fontSize="24"
+        fontSize="60"
         fontWeight="bold"
         textAnchor="middle"
         fill="#333333"
       >
         संवेदना
       </text>
+       <text
+        x="129"
+        y="160"
+        fontFamily="'Space Grotesk', sans-serif"
+        fontSize="20"
+        textAnchor="middle"
+        fill="#666"
+      >
+       Together For A Better Tomorrow
+      </text>
     </svg>
-    <span className={'hidden xl:block text-foreground'}>Sanvedana</span>
   </Link>
 );
 
@@ -128,7 +89,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </nav>
 
             <div className="flex items-center gap-4">
-                 <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+                 <Button variant="ghost" size="icon">
+                    <ShoppingCart className="h-5 w-5" />
+                    <span className="sr-only">Shopping Cart</span>
+                </Button>
+                 <Button asChild>
+                    <Link href="/donations">
+                        <Heart className="mr-2 h-4 w-4" />
+                        Donate
+                    </Link>
+                </Button>
+                <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                     <SheetTrigger asChild>
                         <Button
                         variant="ghost"
@@ -163,12 +134,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                         </nav>
                     </SheetContent>
                 </Sheet>
-                 <Button asChild>
-                    <Link href="/donations">
-                        <Heart className="mr-2" />
-                        Donate
-                    </Link>
-                </Button>
             </div>
         </div>
       </header> 
