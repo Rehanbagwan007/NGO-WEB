@@ -11,6 +11,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import Autoplay from 'embla-carousel-autoplay';
+import { events } from '@/lib/data';
+import { ArrowRight, Calendar, MapPin } from 'lucide-react';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import type { Event } from '@/lib/types';
+
 
 const heroImages = [
   {
@@ -40,7 +45,46 @@ const heroImages = [
   },
 ];
 
+const EventCard = ({ event }: { event: Event }) => (
+    <Card className="flex flex-col overflow-hidden">
+      <CardHeader className="p-0">
+        <Image
+          src={event.bannerImage}
+          alt={event.title}
+          width={600}
+          height={320}
+          className="object-cover"
+          data-ai-hint={event.imageHint}
+        />
+      </CardHeader>
+      <CardContent className="flex flex-1 flex-col p-6">
+        <CardTitle className="mb-2 font-headline text-xl">
+          {event.title}
+        </CardTitle>
+        <div className="mb-4 flex flex-col gap-2 text-sm text-muted-foreground">
+          <div className="flex items-center">
+            <Calendar className="mr-2 h-4 w-4" />
+            <span>{new Date(event.date).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+          </div>
+          <div className="flex items-center">
+            <MapPin className="mr-2 h-4 w-4" />
+            <span>{event.location}</span>
+          </div>
+        </div>
+        <p className="flex-1 text-muted-foreground line-clamp-3">{event.description}</p>
+      </CardContent>
+      <CardFooter>
+        <Button asChild variant="secondary" className="w-full">
+          <Link href={`/events/${event.id}`}>
+            View Details <ArrowRight className="ml-2 h-4 w-4" />
+          </Link>
+        </Button>
+      </CardFooter>
+    </Card>
+);
+
 export default function LandingPage() {
+    const upcomingEvents = events.filter((e) => e.type === 'Upcoming' && e.status === 'Published').slice(0, 3);
   return (
     <div className="flex-1 bg-background">
       {/* Hero Section */}
@@ -50,7 +94,17 @@ export default function LandingPage() {
             <h1 className="text-5xl lg:text-8xl font-headline font-black leading-none tracking-tighter">
               Empowering Change,
               <br />
-              Inspiring H<HeartIcon className="inline-block h-16 w-16 lg:h-24 lg:w-24 -mb-4 text-primary" />
+              Inspiring H
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1"
+                className="inline-block h-16 w-16 lg:h-24 lg:w-24 -mb-4 text-primary"
+              >
+                <path d="M12.83,4.64a5,5,0,0,0-7.07,0,5,5,0,0,0,0,7.07l7.07,7.07,7.07-7.07a5,5,0,0,0,0-7.07,5,5,0,0,0-7.07,0Z" />
+              </svg>
               pe.
             </h1>
           </div>
@@ -126,6 +180,32 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* Upcoming Events Section */}
+       <section className="py-16 lg:py-24">
+        <div className="container">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-3xl font-bold font-headline">Upcoming Events</h2>
+             <Button asChild variant="outline">
+              <Link href="/events">
+                View All Events <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
+          {upcomingEvents.length > 0 ? (
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+              {upcomingEvents.map((event) => (
+                <EventCard key={event.id} event={event} />
+              ))}
+            </div>
+          ) : (
+            <div className="flex h-40 items-center justify-center rounded-lg border-2 border-dashed bg-muted/50">
+              <p className="text-muted-foreground">No upcoming events scheduled. Please check back soon!</p>
+            </div>
+          )}
+        </div>
+      </section>
+
 
       {/* Footer CTA */}
       <section className="py-16 lg:py-24 bg-primary text-primary-foreground">
