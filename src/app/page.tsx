@@ -2,12 +2,15 @@
 
 import { Button } from '@/components/ui/button';
 import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel';
+import {
   ArrowRight,
   HeartHandshake,
-  Facebook,
-  Twitter,
-  Instagram,
-  Linkedin,
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -47,6 +50,34 @@ const StatCard = ({
 
 
 export default function LandingPage() {
+  const sliderImages = [
+    {
+      src: 'https://picsum.photos/seed/hero1/800/600',
+      alt: 'Child with disability smiling while learning',
+      hint: 'smiling disabled child',
+    },
+    {
+      src: 'https://picsum.photos/seed/hero2/800/600',
+      alt: 'Therapist assisting a child with special needs',
+      hint: 'therapist disabled child',
+    },
+    {
+      src: 'https://picsum.photos/seed/hero3/800/600',
+      alt: 'Children with disabilities playing together joyfully',
+      hint: 'disabled children playing',
+    },
+     {
+      src: 'https://picsum.photos/seed/hero4/800/600',
+      alt: 'Student in a wheelchair working on a computer',
+      hint: 'disabled student technology',
+    },
+     {
+      src: 'https://picsum.photos/seed/hero5/800/600',
+      alt: 'Children in an art therapy session',
+      hint: 'art therapy children',
+    },
+  ];
+
   return (
     <div className="flex-1 bg-background">
       {/* Hero Section */}
@@ -64,32 +95,32 @@ export default function LandingPage() {
                 </span>
                 pe
               </h1>
-              <div className="grid grid-cols-3 gap-4">
-                 <Image
-                  src="https://picsum.photos/seed/hero1/400/500"
-                  alt="Child with disability smiling while learning"
-                  width={400}
-                  height={500}
-                  className="rounded-3xl object-cover w-full h-full"
-                  data-ai-hint="smiling disabled child"
-                />
-                <Image
-                   src="https://picsum.photos/seed/hero2/400/500"
-                  alt="Therapist assisting a child with special needs"
-                  width={400}
-                  height={500}
-                  className="rounded-3xl object-cover w-full h-full mt-12"
-                   data-ai-hint="therapist disabled child"
-                />
-                <Image
-                   src="https://picsum.photos/seed/hero3/400/500"
-                  alt="Children with disabilities playing together joyfully"
-                  width={400}
-                  height={500}
-                  className="rounded-3xl object-cover w-full h-full"
-                   data-ai-hint="disabled children playing"
-                />
-              </div>
+              <Carousel
+                opts={{
+                  align: 'start',
+                  loop: true,
+                }}
+                className="w-full"
+              >
+                <CarouselContent>
+                  {sliderImages.map((image, index) => (
+                    <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
+                      <div className="p-1">
+                        <Image
+                          src={image.src}
+                          alt={image.alt}
+                          width={800}
+                          height={600}
+                          className="rounded-3xl object-cover aspect-[4/5]"
+                          data-ai-hint={image.hint}
+                        />
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="ml-16" />
+                <CarouselNext className="mr-16"/>
+              </Carousel>
             </div>
 
           </div>
