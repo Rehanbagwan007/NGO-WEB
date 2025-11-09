@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from '../ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,7 +12,6 @@ import {
   DropdownMenuLabel,
 } from '../ui/dropdown-menu';
 import { Menu, Heart, ShoppingCart } from 'lucide-react';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
 import { useState } from 'react';
 import { mainNavLinks } from '@/lib/nav-links';
@@ -46,7 +44,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen w-full flex-col bg-background">
       
-      <header className="sticky top-0 z-50 flex h-24 items-center border-b bg-background/95 px-4 backdrop-blur md:px-6">
+      <header className="sticky top-0 z-50 flex h-24 items-center border-b border-transparent bg-transparent px-4 md:px-6">
         <div className="flex items-center justify-between w-full">
             <SanvedanaLogo />
             
@@ -108,7 +106,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </div>
         </div>
       </header> 
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 -mt-24">{children}</main>
        <footer className="border-t bg-background">
           <div className="container mx-auto flex flex-col items-center justify-between gap-4 px-4 py-8 sm:flex-row md:px-6">
             <div className="text-center sm:text-left">
