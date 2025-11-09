@@ -52,20 +52,9 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className="relative bg-primary/10 overflow-hidden">
         <div className="container mx-auto px-4 py-16 lg:py-24">
-          <div className="grid lg:grid-cols-12 gap-8 items-center">
-            {/* Left Column */}
-            <div className="hidden lg:col-span-1 lg:flex flex-col items-center gap-8 self-stretch">
-                 <div className="flex-1"></div>
-                 <div className="flex flex-col gap-4">
-                    <Facebook className="size-5 text-muted-foreground hover:text-primary transition-colors" />
-                    <Twitter className="size-5 text-muted-foreground hover:text-primary transition-colors" />
-                    <Instagram className="size-5 text-muted-foreground hover:text-primary transition-colors" />
-                    <Linkedin className="size-5 text-muted-foreground hover:text-primary transition-colors" />
-                </div>
-            </div>
-
+          <div className="grid lg:grid-cols-1 gap-8 items-center">
             {/* Middle Column */}
-            <div className="lg:col-span-11">
+            <div className="">
               <h1 className="text-5xl md:text-7xl font-headline font-black mb-6 leading-tight tracking-tighter">
                 Empowering Change,
                 <br />
