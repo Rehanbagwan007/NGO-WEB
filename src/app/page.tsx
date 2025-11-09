@@ -50,7 +50,7 @@ export default function LandingPage() {
   return (
     <div className="flex-1 bg-background">
       {/* Hero Section */}
-      <section className="relative bg-background overflow-hidden">
+      <section className="relative bg-primary/10 overflow-hidden">
         <div className="container mx-auto px-4 py-16 lg:py-24">
           <div className="grid lg:grid-cols-12 gap-8 items-center">
             {/* Left Column */}
@@ -158,8 +158,8 @@ export default function LandingPage() {
               <StatCard
                 value="500+"
                 label="Active Students"
-                bgColor="bg-accent"
-                textColor="text-black"
+                bgColor="bg-secondary"
+                textColor="text-secondary-foreground"
                 imageSrc="https://picsum.photos/seed/stat1/400/200"
                 imageAlt="students in classroom"
                 imagePosition="bottom"
@@ -167,8 +167,8 @@ export default function LandingPage() {
                <StatCard
                 value="200+"
                 label="Community Projects"
-                bgColor="bg-accent"
-                textColor="text-black"
+                bgColor="bg-secondary"
+                textColor="text-secondary-foreground"
                 imageSrc="https://picsum.photos/seed/stat2/400/200"
                 imageAlt="community event"
                 imagePosition="top"
