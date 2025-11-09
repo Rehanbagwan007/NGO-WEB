@@ -19,19 +19,41 @@ import { Input } from '@/components/ui/input';
 
 const SanvedanaLogo = ({ inSheet = false }: { inSheet?: boolean }) => (
   <Link href="/" className="flex items-center gap-2 font-semibold">
-    <svg
+     <svg
+      width="40"
+      height="40"
+      viewBox="0 0 220 220"
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="size-6"
     >
-      <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+      <circle cx="110" cy="110" r="108" fill="#FFF9E9" stroke="#E0E0E0" strokeWidth="1" />
+      <g transform="translate(110, 100)">
+        {Array.from({ length: 25 }).map((_, i) => {
+          const angle = -90 + (i * 180) / 24;
+          const isRed = i % 4 === 0;
+          const length = isRed ? 20 : (i % 2 === 0 ? 15 : 10);
+          return (
+            <line
+              key={i}
+              x1="0"
+              y1="-60"
+              x2="0"
+              y2={`-${60 + length}`}
+              stroke={isRed ? "#d9534f" : "#333"}
+              strokeWidth="2.5"
+              transform={`rotate(${angle})`}
+            />
+          );
+        })}
+        <line x1="-80" y1="0" x2="80" y2="0" stroke="#333" strokeWidth="2.5" />
+      </g>
+      <path d="M 80 100 L 110 130 L 140 100" stroke="#4285F4" strokeWidth="3" fill="none" />
+      <path d="M 85 105 L 85 125 L 110 145 L 135 125 L 135 105" stroke="#4285F4" strokeWidth="3" fill="none" strokeLinejoin="round" strokeLinecap="round" />
+      
+      <text x="110" y="95" fontFamily="Arial, sans-serif" fontSize="36" fontWeight="bold" textAnchor="middle" fill="#333333">
+        संवेदना
+      </text>
     </svg>
-    <span className={cn(inSheet ? '' : 'xl:block')}>Sanvedana</span>
+    <span className={cn(inSheet ? '' : 'xl:block text-foreground')}>Sanvedana</span>
   </Link>
 );
 
