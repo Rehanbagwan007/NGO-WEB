@@ -93,16 +93,18 @@ export function CreateEventDialog({
   const handleGalleryImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
-      const previews: string[] = [];
+      const newPreviews: string[] = [];
       const fileList = Array.from(files);
       
+      let filesRead = 0;
       fileList.forEach(file => {
         const reader = new FileReader();
         reader.onloadend = () => {
-            previews.push(reader.result as string);
+            newPreviews.push(reader.result as string);
+            filesRead++;
             // This check ensures we only update state once all files are read
-            if (previews.length === fileList.length) {
-                setGalleryPreviews(previews);
+            if (filesRead === fileList.length) {
+                setGalleryPreviews(newPreviews);
             }
         };
         reader.readAsDataURL(file);
@@ -381,3 +383,5 @@ export function CreateEventDialog({
     </Dialog>
   );
 }
+
+    
