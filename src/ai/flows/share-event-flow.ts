@@ -7,7 +7,7 @@
  */
 
 import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+import { z } from 'zod';
 
 export const ShareEventInputSchema = z.object({
   title: z.string().describe('The title of the event.'),
@@ -20,9 +20,6 @@ export const ShareEventInputSchema = z.object({
 });
 export type ShareEventInput = z.infer<typeof ShareEventInputSchema>;
 
-export async function shareEventOnSocialMedia(input: ShareEventInput): Promise<{ success: boolean; message: string }> {
-    return shareEventFlow(input);
-}
 
 const shareEventFlow = ai.defineFlow(
   {
@@ -74,4 +71,7 @@ const shareEventFlow = ai.defineFlow(
   }
 );
 
+export async function shareEventOnSocialMedia(input: ShareEventInput): Promise<{ success: boolean; message: string }> {
+    return shareEventFlow(input);
+}
     
