@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
-import { Menu, Search, LogOut } from 'lucide-react';
+import { Menu, Search, LogOut, ShieldAlert } from 'lucide-react';
 import { adminNavLinks } from '@/lib/nav-links';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/hooks/use-auth';
@@ -85,12 +85,24 @@ const NavLink = ({
   );
 };
 
+const NotAdminScreen = () => (
+    <div className="flex h-screen w-full items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-4 text-center p-4">
+            <ShieldAlert className="w-16 h-16 text-destructive" />
+            <h1 className="text-2xl font-bold">Access Denied</h1>
+            <p className="text-muted-foreground max-w-md">You do not have the necessary permissions to access this page. Please contact the system administrator if you believe this is an error.</p>
+            <Button onClick={() => window.location.href = '/'}>Go to Homepage</Button>
+        </div>
+    </div>
+);
+
+
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { user, loading, signOut } = useAuth();
+  const { user, isAdmin, loading, signOut } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -99,7 +111,7 @@ export default function AdminLayout({
     }
   }, [user, loading, router]);
 
-  if (loading || !user) {
+  if (loading) {
     return (
         <div className="flex h-screen w-full items-center justify-center">
             <div className="flex flex-col items-center gap-4">
@@ -109,6 +121,15 @@ export default function AdminLayout({
         </div>
     );
   }
+  
+  if (!user) {
+      return null; // Or a redirect component, though useEffect handles it
+  }
+
+  if (!isAdmin) {
+      return <NotAdminScreen />;
+  }
+
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[280px_1fr]">

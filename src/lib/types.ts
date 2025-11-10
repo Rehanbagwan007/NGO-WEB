@@ -1,4 +1,14 @@
 
+
+export type UserProfile = {
+  uid: string;
+  email: string;
+  role: 'admin' | 'user';
+  name?: string;
+  avatar?: string;
+};
+
+
 export type Student = {
   id: string;
   name: string;
