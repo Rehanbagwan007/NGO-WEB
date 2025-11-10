@@ -42,6 +42,7 @@ const formSchema = z.object({
   }),
   location: z.string().min(3, 'Location is required.'),
   bannerImage: z.any().refine(files => files?.length > 0, 'Banner image is required.'),
+  galleryImages: z.any().optional(),
   status: z.enum(['Draft', 'Published']),
   type: z.enum(['Upcoming', 'Past']),
 });
@@ -62,7 +63,8 @@ export function CreateEventDialog({
   onEventCreated,
 }: CreateEventDialogProps) {
   const [loading, setLoading] = useState(false);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [bannerPreview, setBannerPreview] = useState<string | null>(null);
+  const [galleryPreviews, setGalleryPreviews] = useState<string[]>([]);
 
   const form = useForm<CreateEventFormValues>({
     resolver: zodResolver(formSchema),
@@ -75,18 +77,43 @@ export function CreateEventDialog({
     },
   });
   
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleBannerImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result as string);
+        setBannerPreview(reader.result as string);
       };
       reader.readAsDataURL(file);
     } else {
-      setImagePreview(null);
+      setBannerPreview(null);
     }
   };
+
+  const handleGalleryImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      const newPreviews: string[] = [];
+      Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          newPreviews.push(reader.result as string);
+          if (newPreviews.length === files.length) {
+            setGalleryPreviews(newPreviews);
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    } else {
+      setGalleryPreviews([]);
+    }
+  };
+
+  const resetFormState = () => {
+    form.reset();
+    setBannerPreview(null);
+    setGalleryPreviews([]);
+  }
 
   async function onSubmit(values: CreateEventFormValues) {
     setLoading(true);
@@ -95,19 +122,18 @@ export function CreateEventDialog({
     const eventData = {
         ...values,
         bannerImage: values.bannerImage[0].name, // a real app would have the URL after upload
+        galleryImages: values.galleryImages ? Array.from(values.galleryImages).map((file: any) => file.name) : [],
     };
     await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network request
-    onEventCreated(eventData as any); // Casting as we are not uploading file
+    onEventCreated(eventData as any); // Casting as we are not uploading files
     setLoading(false);
-    form.reset();
-    setImagePreview(null);
+    resetFormState();
   }
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => {
         if (!isOpen) {
-            form.reset();
-            setImagePreview(null);
+            resetFormState();
         }
         onOpenChange(isOpen);
     }}>
@@ -222,20 +248,55 @@ export function CreateEventDialog({
                         accept="image/*"
                         onChange={(e) => {
                             field.onChange(e.target.files);
-                            handleImageChange(e);
+                            handleBannerImageChange(e);
                         }}
                      />
                   </FormControl>
                    <FormDescription>
-                    Upload a banner image for the event.
+                    The main image for the event page.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            {imagePreview && (
+            {bannerPreview && (
                 <div className="relative w-full h-64 rounded-md overflow-hidden border">
-                    <Image src={imagePreview} alt="Banner preview" fill style={{ objectFit: 'cover' }} />
+                    <Image src={bannerPreview} alt="Banner preview" fill style={{ objectFit: 'cover' }} />
+                </div>
+            )}
+            
+            <FormField
+              control={form.control}
+              name="galleryImages"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Gallery Images</FormLabel>
+                  <FormControl>
+                     <Input 
+                        type="file" 
+                        accept="image/*"
+                        multiple
+                        onChange={(e) => {
+                            field.onChange(e.target.files);
+                            handleGalleryImagesChange(e);
+                        }}
+                     />
+                  </FormControl>
+                   <FormDescription>
+                    Upload multiple images for the event gallery.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {galleryPreviews.length > 0 && (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {galleryPreviews.map((src, index) => (
+                        <div key={index} className="relative w-full h-32 rounded-md overflow-hidden border">
+                            <Image src={src} alt={`Gallery preview ${index + 1}`} fill style={{ objectFit: 'cover' }} />
+                        </div>
+                    ))}
                 </div>
             )}
 
@@ -316,5 +377,3 @@ export function CreateEventDialog({
     </Dialog>
   );
 }
-
-    
