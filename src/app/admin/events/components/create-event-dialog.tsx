@@ -92,13 +92,17 @@ export function CreateEventDialog({
 
   const handleGalleryImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (files) {
+    if (files && files.length > 0) {
       const newPreviews: string[] = [];
-      Array.from(files).forEach(file => {
+      const fileList = Array.from(files);
+      
+      let loadedCount = 0;
+      fileList.forEach(file => {
         const reader = new FileReader();
         reader.onloadend = () => {
           newPreviews.push(reader.result as string);
-          if (newPreviews.length === files.length) {
+          loadedCount++;
+          if (loadedCount === fileList.length) {
             setGalleryPreviews(newPreviews);
           }
         };
@@ -108,6 +112,7 @@ export function CreateEventDialog({
       setGalleryPreviews([]);
     }
   };
+
 
   const resetFormState = () => {
     form.reset();
