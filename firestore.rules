@@ -1,0 +1,28 @@
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    //
+    // Rules for the users collection
+    //
+    match /users/{userId} {
+      // Allow a user to read their own document to check their role.
+      allow read: if request.auth != null && request.auth.uid == userId;
+
+      // Only admins can create, update, or delete user profiles.
+      allow write: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    //
+    // Rules for the events collection
+    //
+    match /events/{eventId} {
+      // Allow anyone to read events for the public-facing pages.
+      allow get, list: if true;
+
+      // Only authenticated users with an 'admin' role can create, update, or delete events.
+      allow write: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+  }
+}
