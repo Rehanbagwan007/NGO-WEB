@@ -13,6 +13,8 @@ type CreateEventArgs = Omit<Event, 'id' | 'createdAt'> & {
 }
 
 export async function createEventAction(args: CreateEventArgs) {
+    console.log("createEventAction received args:", JSON.stringify(args, null, 2));
+
   try {
     // Destructure properties from the 'args' object passed to the function
     const { title, description, date, location, address, city, state, zipCode, status, bannerImage, storagePath, imageHint, gallery, socialPlatforms } = args;
