@@ -1,5 +1,7 @@
+
 'use client';
 
+import { useEffect, useState } from 'react';
 import { MoreHorizontal, PlusCircle } from 'lucide-react';
 import {
   Table,
@@ -17,8 +19,6 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { events } from '@/lib/data';
-import type { Event } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import {
@@ -29,8 +29,41 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
+import { collection, onSnapshot, query, orderBy, Timestamp } from 'firebase/firestore';
+import { db } from '@/lib/firebase/config';
+import type { Event } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
+
+// Helper to convert Firestore Timestamp to Date
+const toEvent = (doc: any): Event => {
+  const data = doc.data();
+  return {
+    id: doc.id,
+    ...data,
+    date: (data.date as Timestamp)?.toDate(),
+    createdAt: (data.createdAt as Timestamp)?.toDate(),
+  } as Event;
+};
+
 
 export default function EventsManagerPage() {
+  const [events, setEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const q = query(collection(db, 'events'), orderBy('date', 'desc'));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const eventsData = querySnapshot.docs.map(toEvent);
+      setEvents(eventsData);
+      setLoading(false);
+    }, (error) => {
+      console.error("Error fetching events: ", error);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
 
   const getStatusVariant = (status: Event['status']) => {
     switch (status) {
@@ -78,44 +111,62 @@ export default function EventsManagerPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {events.map((event) => (
-                <TableRow key={event.id}>
-                  <TableCell className="font-medium">{event.title}</TableCell>
-                  <TableCell>
-                    <Badge variant={getStatusVariant(event.status)}>
-                      {event.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="hidden md:table-cell">
-                    {format(new Date(event.date), 'PPP')}
-                  </TableCell>
-                  <TableCell className="hidden md:table-cell">
-                    {event.location}
-                  </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          aria-haspopup="true"
-                          size="icon"
-                          variant="ghost"
-                        >
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Toggle menu</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem>Edit</DropdownMenuItem>
-                        <DropdownMenuItem>Publish</DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive">
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+              {loading ? (
+                Array.from({ length: 5 }).map((_, i) => (
+                  <TableRow key={i}>
+                    <TableCell><Skeleton className="h-5 w-32" /></TableCell>
+                    <TableCell><Skeleton className="h-6 w-20 rounded-full" /></TableCell>
+                    <TableCell className="hidden md:table-cell"><Skeleton className="h-5 w-24" /></TableCell>
+                    <TableCell className="hidden md:table-cell"><Skeleton className="h-5 w-40" /></TableCell>
+                    <TableCell><Skeleton className="h-8 w-8" /></TableCell>
+                  </TableRow>
+                ))
+              ) : events.length > 0 ? (
+                events.map((event) => (
+                  <TableRow key={event.id}>
+                    <TableCell className="font-medium">{event.title}</TableCell>
+                    <TableCell>
+                      <Badge variant={getStatusVariant(event.status)}>
+                        {event.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell">
+                      {event.date ? format(event.date, 'PPP') : 'No date'}
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell">
+                      {event.location}
+                    </TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            aria-haspopup="true"
+                            size="icon"
+                            variant="ghost"
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                            <span className="sr-only">Toggle menu</span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                          <DropdownMenuItem>Edit</DropdownMenuItem>
+                          <DropdownMenuItem>Publish</DropdownMenuItem>
+                          <DropdownMenuItem className="text-destructive">
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={5} className="h-24 text-center">
+                    No events found.
                   </TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </CardContent>

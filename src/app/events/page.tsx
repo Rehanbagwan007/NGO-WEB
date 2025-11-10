@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import { ArrowRight, Calendar, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -8,17 +9,37 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { events } from '@/lib/data';
-import type { Event } from '@/lib/types';
 import Link from 'next/link';
+import { collection, getDocs, query, where, orderBy, Timestamp } from 'firebase/firestore';
+import { db } from '@/lib/firebase/config';
+import type { Event } from '@/lib/types';
 
-export default function EventsPage() {
-  const upcomingEvents = events.filter((e) => e.type === 'Upcoming' && e.status === 'Published');
-  const pastEvents = events.filter((e) => e.type === 'Past' && e.status === 'Published');
 
-  const EventCard = ({ event }: { event: Event }) => (
-    <Card className="flex flex-col overflow-hidden">
-      <CardHeader className="p-0">
+async function getEvents(): Promise<Event[]> {
+  const eventsCollection = collection(db, 'events');
+  const q = query(eventsCollection, where('status', '==', 'Published'), orderBy('date', 'desc'));
+  
+  try {
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        ...data,
+        date: (data.date as Timestamp)?.toDate(),
+        createdAt: (data.createdAt as Timestamp)?.toDate(),
+      } as Event;
+    });
+  } catch (error) {
+    console.error("Error fetching published events: ", error);
+    return [];
+  }
+}
+
+const EventCard = ({ event }: { event: Event }) => (
+  <Card className="flex flex-col overflow-hidden">
+    <CardHeader className="p-0">
+      {event.bannerImage ? (
         <Image
           src={event.bannerImage}
           alt={event.title}
@@ -27,32 +48,40 @@ export default function EventsPage() {
           className="object-cover"
           data-ai-hint={event.imageHint}
         />
-      </CardHeader>
-      <CardContent className="flex flex-1 flex-col p-6">
-        <CardTitle className="mb-2 font-headline text-xl">
-          {event.title}
-        </CardTitle>
-        <div className="mb-4 flex flex-col gap-2 text-sm text-muted-foreground">
-          <div className="flex items-center">
-            <Calendar className="mr-2 h-4 w-4" />
-            <span>{new Date(event.date).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-          </div>
-          <div className="flex items-center">
-            <MapPin className="mr-2 h-4 w-4" />
-            <span>{event.location}</span>
-          </div>
+      ) : (
+        <div className="w-[600px] h-[320px] bg-muted flex items-center justify-center">
+          <p className="text-muted-foreground">No Image</p>
         </div>
-        <p className="flex-1 text-muted-foreground">{event.description}</p>
-      </CardContent>
-      <CardFooter>
-        <Button asChild variant="secondary" className="w-full">
-          <Link href={`/events/${event.id}`}>
-            View Details <ArrowRight className="ml-2 h-4 w-4" />
-          </Link>
-        </Button>
-      </CardFooter>
-    </Card>
-  );
+      )}
+    </CardHeader>
+    <CardContent className="flex flex-1 flex-col p-6">
+      <CardTitle className="mb-2 font-headline text-xl">
+        {event.title}
+      </CardTitle>
+      <div className="mb-4 flex flex-col gap-2 text-sm text-muted-foreground">
+        <div className="flex items-center">
+          <Calendar className="mr-2 h-4 w-4" />
+          <span>{event.date ? new Date(event.date).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Date TBD'}</span>
+        </div>
+        <div className="flex items-center">
+          <MapPin className="mr-2 h-4 w-4" />
+          <span>{event.location}</span>
+        </div>
+      </div>
+      <p className="flex-1 text-muted-foreground">{event.description}</p>
+    </CardContent>
+    <CardFooter>
+      <Button asChild variant="secondary" className="w-full">
+        <Link href={`/events/${event.id}`}>
+          View Details <ArrowRight className="ml-2 h-4 w-4" />
+        </Link>
+      </Button>
+    </CardFooter>
+  </Card>
+);
+
+export default async function EventsPage() {
+  const events = await getEvents();
 
   return (
     <div className="bg-background">
@@ -67,33 +96,15 @@ export default function EventsPage() {
 
       <section className="py-16">
         <div className="container">
-          <h2 className="mb-8 text-3xl font-bold font-headline">Upcoming Events</h2>
-          {upcomingEvents.length > 0 ? (
+          {events.length > 0 ? (
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {upcomingEvents.map((event) => (
+              {events.map((event) => (
                 <EventCard key={event.id} event={event} />
               ))}
             </div>
           ) : (
             <div className="flex h-40 items-center justify-center rounded-lg border-2 border-dashed bg-muted/50">
-              <p className="text-muted-foreground">No upcoming events scheduled. Please check back soon!</p>
-            </div>
-          )}
-        </div>
-      </section>
-
-      <section className="bg-muted/50 py-16">
-        <div className="container">
-          <h2 className="mb-8 text-3xl font-bold font-headline">Past Events</h2>
-           {pastEvents.length > 0 ? (
-            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {pastEvents.map((event) => (
-                <EventCard key={event.id} event={event} />
-              ))}
-            </div>
-          ) : (
-            <div className="flex h-40 items-center justify-center rounded-lg border-2 border-dashed bg-muted/50">
-                <p className="text-muted-foreground">No past events to show.</p>
+              <p className="text-muted-foreground">No events scheduled. Please check back soon!</p>
             </div>
           )}
         </div>

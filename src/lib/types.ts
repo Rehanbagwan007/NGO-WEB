@@ -39,7 +39,7 @@ export type Donation = {
 export type Event = {
   id: string;
   title: string;
-  date: string | Date;
+  date: Date;
   location: string;
   description: string;
   bannerImage: string;
@@ -47,7 +47,5 @@ export type Event = {
   imageHint: string;
   gallery: { url: string; path?: string; hint?: string }[];
   status: 'Draft' | 'Published';
-  type?: 'Upcoming' | 'Past';
+  createdAt: Date;
 };
-
-    
