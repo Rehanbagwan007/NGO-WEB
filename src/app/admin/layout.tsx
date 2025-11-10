@@ -1,6 +1,7 @@
+
 'use client';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -13,9 +14,11 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
-import { Menu, Search } from 'lucide-react';
+import { Menu, Search, LogOut } from 'lucide-react';
 import { adminNavLinks } from '@/lib/nav-links';
 import { Input } from '@/components/ui/input';
+import { useAuth } from '@/hooks/use-auth';
+import { useEffect } from 'react';
 
 const SanvedanaLogo = ({ inSheet = false }: { inSheet?: boolean }) => (
   <Link href="/" className="flex items-center gap-2 font-semibold">
@@ -87,6 +90,25 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const { user, loading, signOut } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/login');
+    }
+  }, [user, loading, router]);
+
+  if (loading || !user) {
+    return (
+        <div className="flex h-screen w-full items-center justify-center">
+            <div className="flex flex-col items-center gap-4">
+                <SanvedanaLogo />
+                <p className="text-muted-foreground">Loading Admin Dashboard...</p>
+            </div>
+        </div>
+    );
+  }
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[280px_1fr]">
@@ -144,8 +166,8 @@ export default function AdminLayout({
             <DropdownMenuTrigger asChild>
               <Button variant="secondary" size="icon" className="rounded-full">
                 <Avatar>
-                    <AvatarImage src="https://picsum.photos/seed/admin-avatar/100/100" alt="@admin" />
-                    <AvatarFallback>AD</AvatarFallback>
+                    <AvatarImage src={user.photoURL || "https://picsum.photos/seed/admin-avatar/100/100"} alt={user.email || 'Admin'} />
+                    <AvatarFallback>{user.email ? user.email.charAt(0).toUpperCase() : 'A'}</AvatarFallback>
                 </Avatar>
                 <span className="sr-only">Toggle user menu</span>
               </Button>
@@ -156,7 +178,10 @@ export default function AdminLayout({
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              <DropdownMenuItem onClick={signOut}>
+                <LogOut className="mr-2 h-4 w-4"/>
+                Logout
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </header>

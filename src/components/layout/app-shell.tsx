@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -16,6 +17,7 @@ import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
 import { useState, useEffect } from 'react';
 import { mainNavLinks } from '@/lib/nav-links';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/hooks/use-auth';
 
 
 const SanvedanaLogo = ({ scrolled = false }: { scrolled?: boolean }) => (
@@ -29,7 +31,7 @@ const SanvedanaLogo = ({ scrolled = false }: { scrolled?: boolean }) => (
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-            <path d="M63.38,62.34C59.22,62.34 55.6,62.84 52.53,63.83C49.45,64.81 46.88,66.23 44.8,68.08C42.72,69.93 41.28,72.2 40.48,74.9C39.68,77.59 39.28,80.64 39.28,84.05C39.28,87.68 39.8,90.86 40.85,93.58C41.9,96.3 43.48,98.54 45.58,100.31C47.68,102.08 50.2,103.4 53.15,104.28C56.1,105.16 59.38,105.6 63,105.6C66.62,105.6 69.9,105.16 72.85,104.28C75.8,103.4 78.32,102.08 80.42,100.31C82.52,98.54 84.1,96.3 85.15,93.58C86.2,90.86 86.72,87.68 86.72,84.05C86.72,80.96 86.37,78.21 85.67,75.8C84.97,73.4 83.79,71.29 82.14,69.48C80.49,67.67 78.41,66.27 75.9,65.28C73.39,64.29 70.51,63.83 67.25,63.93C65.91,63.96 64.62,64.01 63.38,64.09V62.34Z M63,67.8C68.4,67.8 72.78,69.41 76.13,72.63C79.48,75.85 81.15,80.02 81.15,85.12C81.15,90.32 79.48,94.54 76.13,97.78C72.78,101.02 68.4,102.65 63,102.65C57.6,102.65 53.22,101.02 49.87,97.78C46.52,94.54 44.85,90.32 44.85,85.12C44.85,80.02 46.52,75.85 49.87,72.63C53.22,69.41 57.6,67.8 63,67.8Z" fill="currentColor"/>
+            <path d="M63.38,62.34C59.22,62.34 55.6,62.84 52.53,63.83C49.45,64.81 46.88,66.23 44.8,68.08C42.72,69.93 41.28,72.2 40.48,74.9C39.68,77.59 39.28,80.64 39.28,84.05C39.28,87.68 39.8,90.86 40.85,93.58C41.9,96.3 43.48,98.54 45.58,100.31C47.68,102.08 50.2,103.4 53.15,104.28C56.1,105.16 59.38,105.6 63,105.6C66.62,105.6 69.9,105.16 72.85,104.28C75.8,103.4 78.32,102.08 80.42,100.31C82.52,98.54 84.1,96.3 85.15,93.58C86.2,90.86 86.72,87.68 86.72,84.05C86.72,80.96 86.37,78.21 85.67,75.8C84.97,73.4 83.79,71.29 82.14,69.48C80.49,67.67 78.41,66.27 75.9,65.28C73.39,64.29 70.51,63.83 67.25,63.93C65.91,63.96 64.62,64.01 63.38,64.09V62.34Z" fill="currentColor"/>
             <path d="M129.5,104.5l-13-41h5.5l10.5,35.5l10.5-35.5h5.5l-13,41h-5l-3-9.5h-13l-3,9.5h-5.5Z" fill="currentColor"/>
             <path d="M103,42.5a9,9 0 1,1-18,0a9,9 0 1,1 18,0" fill="#d9534f"/>
             <path d="M10,88.5h100v4H10zM100.5,49v40h-4V51c-4,1-8.5,2.5-12,5l-2.5-3.5c4-3,9-5,14.5-6Z" fill="currentColor" />
@@ -52,13 +54,11 @@ const SanvedanaLogo = ({ scrolled = false }: { scrolled?: boolean }) => (
 );
 
 
-// This will be replaced with actual user state
-const user = null; 
-
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -70,8 +70,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  // Do not render the shell on admin routes
-  if (pathname.startsWith('/admin')) {
+  const isAdminRoute = pathname.startsWith('/admin');
+  const isLoginRoute = pathname === '/login';
+
+  if (isAdminRoute || isLoginRoute) {
     return <>{children}</>;
   }
 
@@ -97,6 +99,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                       {link.label}
                     </Link>
                   ))}
+                   {user ? (
+                    <Link href="/admin" className="font-semibold transition-colors hover:text-primary text-foreground/70">Dashboard</Link>
+                   ) : (
+                    <Link href="/login" className="font-semibold transition-colors hover:text-primary text-foreground/70">Admin Login</Link>
+                   )}
                 </nav>
 
                 <div className={cn("hidden md:flex items-center gap-4 transition-opacity duration-300", isScrolled ? "opacity-0 pointer-events-none" : "opacity-100")}>
