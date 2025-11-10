@@ -1,3 +1,4 @@
+
 export type Student = {
   id: string;
   name: string;
@@ -28,12 +29,15 @@ export type Donation = {
 export type Event = {
   id: string;
   title: string;
-  date: string;
+  date: string | Date;
   location: string;
   description: string;
   bannerImage: string;
+  storagePath?: string;
   imageHint: string;
-  gallery: { url: string; hint: string }[];
+  gallery: { url: string; path?: string; hint?: string }[];
   status: 'Draft' | 'Published';
-  type: 'Upcoming' | 'Past';
+  type?: 'Upcoming' | 'Past';
 };
+
+    

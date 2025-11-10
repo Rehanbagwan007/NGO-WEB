@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -28,17 +29,10 @@ import { shareEventOnSocialMedia } from '@/ai/flows/share-event-flow';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
-
-const ShareEventInputSchema = z.object({
-  title: z.string().describe('The title of the event.'),
-  description: z.string().describe('The description of the event.'),
-  imageUrl: z
-    .string()
-    .url()
-    .describe('The URL of the event\'s banner image.'),
-  eventUrl: z.string().url().describe('The URL of the event page on the website.'),
-});
-export type ShareEventInput = z.infer<typeof ShareEventInputSchema>;
+import { db, storage } from '@/lib/firebase/config';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import type { ShareEventInput } from '@/ai/flows/share-event-flow';
 
 
 const socialPlatforms = [
@@ -60,6 +54,7 @@ const formSchema = z.object({
   galleryMedia: z.any().optional(),
   status: z.enum(['Draft', 'Published']),
   socialPlatforms: z.array(z.string()).optional(),
+  imageHint: z.string().optional(),
 });
 
 type CreateEventFormValues = z.infer<typeof formSchema>;
@@ -68,6 +63,13 @@ interface MediaPreview {
     file: File;
     preview: string;
     type: 'image' | 'document';
+}
+
+async function uploadFile(file: File, path: string): Promise<{ url: string, path: string }> {
+  const storageRef = ref(storage, path);
+  const snapshot = await uploadBytes(storageRef, file);
+  const url = await getDownloadURL(snapshot.ref);
+  return { url, path: snapshot.ref.fullPath };
 }
 
 function MediaDropzone({
@@ -191,6 +193,7 @@ export default function NewEventPage() {
       status: 'Draft',
       socialPlatforms: ['facebook', 'instagram'],
       galleryMedia: [],
+      imageHint: '',
     },
   });
 
@@ -209,48 +212,75 @@ export default function NewEventPage() {
 
   async function onSubmit(values: CreateEventFormValues) {
     setLoading(true);
-    
-    // Simulate file upload and getting URLs
-    const bannerImageUrl = URL.createObjectURL(values.bannerImage[0]);
-    const eventUrl = `/events/evt-` + Math.random().toString(36).substr(2, 9); // mock url
+    toast({ title: "Creating event...", description: "Please wait while we upload files and save the details." });
+    const eventId = `evt-${Date.now()}`;
 
-    // In a real app, you'd upload the file and then save the form
-    console.log('Form Submitted', values);
-    
-    if (values.socialPlatforms && values.socialPlatforms.length > 0) {
-      try {
+    try {
+      // 1. Upload Banner Image
+      const bannerFile = values.bannerImage[0];
+      const bannerPath = `events/${eventId}/banner-${bannerFile.name}`;
+      const { url: bannerImageUrl, path: bannerStoragePath } = await uploadFile(bannerFile, bannerPath);
+
+      // 2. Upload Gallery Media
+      const galleryUploadPromises = (values.galleryMedia || []).map((file: File) => {
+        const galleryPath = `events/${eventId}/gallery-${file.name}`;
+        return uploadFile(file, galleryPath);
+      });
+      const galleryItems = await Promise.all(galleryUploadPromises);
+
+      // 3. Prepare data for Firestore
+      const eventData = {
+        title: values.title,
+        description: values.description,
+        date: values.date,
+        location: `${values.address}, ${values.city}, ${values.state} ${values.zipCode}`,
+        address: values.address,
+        city: values.city,
+        state: values.state,
+        zipCode: values.zipCode,
+        status: values.status,
+        bannerImage: bannerImageUrl,
+        storagePath: bannerStoragePath,
+        imageHint: values.imageHint || '',
+        gallery: galleryItems.map(item => ({ url: item.url, path: item.path })),
+        createdAt: serverTimestamp(),
+      };
+      
+      // 4. Save to Firestore
+      const docRef = await addDoc(collection(db, "events"), eventData);
+
+      // 5. Share on Social Media (if selected)
+      if (values.socialPlatforms && values.socialPlatforms.length > 0) {
         const shareInput: ShareEventInput = {
             title: values.title,
             description: values.description,
             imageUrl: bannerImageUrl,
-            eventUrl: `https://your-website.com${eventUrl}` // replace with your actual domain
+            eventUrl: `https://your-website.com/events/${docRef.id}`
         }
         console.log("Sharing on social media...", shareInput)
         const socialResult = await shareEventOnSocialMedia(shareInput);
-        console.log("Social Media Result:", socialResult);
         toast({
             title: `Shared on ${values.socialPlatforms.join(' & ')}`,
             description: socialResult.message,
         });
-
-      } catch (e) {
-         console.error('Failed to share on social media', e);
-         toast({
-            variant: 'destructive',
-            title: 'Social Media Sharing Failed',
-            description: 'Could not share the event automatically. Please try again later.',
-        });
       }
+
+      setLoading(false);
+      toast({
+          title: 'Event Created!',
+          description: `${values.title} has been successfully created.`,
+      });
+      router.push('/admin/events');
+
+    } catch (error) {
+      console.error("Error creating event: ", error);
+      setLoading(false);
+      toast({
+        variant: 'destructive',
+        title: 'Error Creating Event',
+        description: 'Something went wrong. Please check the console and try again.',
+      });
     }
-    
-    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network request
-    
-    setLoading(false);
-    toast({
-        title: 'Event Created!',
-        description: `${values.title} has been successfully created.`,
-    });
-    router.push('/admin/events');
   }
 
   return (
@@ -403,6 +433,20 @@ export default function NewEventPage() {
                             </div>
                         )}
                     </div>
+                    <FormField
+                        control={form.control}
+                        name="imageHint"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Banner Image AI Hint</FormLabel>
+                            <FormControl>
+                                <Input placeholder="e.g. children playing" {...field} />
+                            </FormControl>
+                            <FormDescription>A hint for AI to find better stock photos in the future. (e.g., "children disability sports")</FormDescription>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                    />
                      <div>
                         <FormLabel>Gallery Images & Documents</FormLabel>
                         <FormField
@@ -518,7 +562,7 @@ export default function NewEventPage() {
                     <CardHeader>
                         <CardTitle>Sharing</CardTitle>
                         <CardDescription>Select where to share this event upon creation.</CardDescription>
-                    </CardHeader>
+                    </Header>
                     <CardContent>
                          <FormField
                             control={form.control}
@@ -568,7 +612,7 @@ export default function NewEventPage() {
                  <Button type="button" variant="ghost" onClick={() => router.back()} disabled={loading}>Cancel</Button>
                  <Button type="submit" disabled={loading}>
                    {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                   Create & Share
+                   {loading ? 'Creating...' : 'Create & Share'}
                  </Button>
                </div>
             </div>
@@ -578,3 +622,5 @@ export default function NewEventPage() {
     </>
   );
 }
+
+    
