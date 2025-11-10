@@ -25,14 +25,10 @@ import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { shareEventOnSocialMedia } from '@/ai/flows/share-event-flow';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
-import { db, storage } from '@/lib/firebase/config';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
-import type { ShareEventInput } from '@/ai/flows/share-event-flow';
+import { createEventAction } from './actions';
 
 
 const socialPlatforms = [
@@ -50,8 +46,8 @@ const formSchema = z.object({
   city: z.string().min(2, 'City is required.'),
   state: z.string().min(2, 'State is required.'),
   zipCode: z.string().min(5, 'Zip code is required.'),
-  bannerImage: z.any().refine(files => files?.length > 0, 'Banner image is required.'),
-  galleryMedia: z.any().optional(),
+  bannerImage: z.custom<FileList>().refine(files => files?.length > 0, 'Banner image is required.'),
+  galleryMedia: z.custom<FileList>().optional(),
   status: z.enum(['Draft', 'Published']),
   socialPlatforms: z.array(z.string()).optional(),
   imageHint: z.string().optional(),
@@ -65,26 +61,19 @@ interface MediaPreview {
     type: 'image' | 'document';
 }
 
-async function uploadFile(file: File, path: string): Promise<{ url: string, path: string }> {
-  const storageRef = ref(storage, path);
-  const snapshot = await uploadBytes(storageRef, file);
-  const url = await getDownloadURL(snapshot.ref);
-  return { url, path: snapshot.ref.fullPath };
-}
-
 function MediaDropzone({
   field,
   setPreviews,
   multiple,
 }: {
-  field: ControllerRenderProps<CreateEventFormValues, any>;
+  field: Omit<ControllerRenderProps<CreateEventFormValues, any>, 'value'> & { value: FileList | undefined };
   setPreviews: (previews: MediaPreview[] | ((prev: MediaPreview[]) => MediaPreview[])) => void;
   multiple: boolean;
 }) {
   const [isDragging, setIsDragging] = useState(false);
 
   const handleFileChange = (files: FileList | null) => {
-    if (files) {
+    if (files && files.length > 0) {
       const newFiles = Array.from(files);
       const newPreviews: MediaPreview[] = [];
       let filesRead = 0;
@@ -100,10 +89,8 @@ function MediaDropzone({
           filesRead++;
           if (filesRead === newFiles.length) {
              if (multiple) {
-                // Append to existing previews
                 setPreviews((prev) => [...(prev || []), ...newPreviews]);
               } else {
-                // Replace existing preview
                 setPreviews(newPreviews);
               }
           }
@@ -111,11 +98,12 @@ function MediaDropzone({
         reader.readAsDataURL(file);
       });
       
-      if (multiple) {
-        field.onChange([...(field.value || []), ...newFiles]);
-      } else {
-        field.onChange(newFiles);
+      const dataTransfer = new DataTransfer();
+      if (multiple && field.value) {
+        Array.from(field.value).forEach(file => dataTransfer.items.add(file));
       }
+      newFiles.forEach(file => dataTransfer.items.add(file));
+      field.onChange(dataTransfer.files);
     }
   };
 
@@ -128,7 +116,7 @@ function MediaDropzone({
     setIsDragging(false);
   };
   const onDragOver = (e: React.DragEvent) => {
-    e.preventDefault(); // This is necessary to allow dropping
+    e.preventDefault(); 
   };
   const onDrop = (e: React.DragEvent) => {
     e.preventDefault();
@@ -192,20 +180,19 @@ export default function NewEventPage() {
       zipCode: '',
       status: 'Draft',
       socialPlatforms: ['facebook', 'instagram'],
-      galleryMedia: [],
       imageHint: '',
     },
   });
 
-  const removePreview = (list: MediaPreview[], setList: (list: MediaPreview[]) => void, fileToRemove: File) => {
+  const removePreview = (list: MediaPreview[], setList: (list: MediaPreview[]) => void, fileToRemove: File, fieldName: 'bannerImage' | 'galleryMedia') => {
     const newList = list.filter(item => item.file !== fileToRemove);
     setList(newList);
-    // Also update the form value
-    const fieldName = list === bannerPreview ? 'bannerImage' : 'galleryMedia';
-    const currentFormValue = form.getValues(fieldName as 'bannerImage' | 'galleryMedia');
-    if (Array.isArray(currentFormValue)) {
-        const newFormValue = currentFormValue.filter(f => f !== fileToRemove);
-        form.setValue(fieldName as 'bannerImage' | 'galleryMedia', newFormValue, { shouldValidate: true });
+    
+    const currentFormValue = form.getValues(fieldName);
+    if (currentFormValue) {
+        const dataTransfer = new DataTransfer();
+        Array.from(currentFormValue).filter(f => f !== fileToRemove).forEach(file => dataTransfer.items.add(file));
+        form.setValue(fieldName, dataTransfer.files, { shouldValidate: true });
     }
   };
 
@@ -213,72 +200,39 @@ export default function NewEventPage() {
   async function onSubmit(values: CreateEventFormValues) {
     setLoading(true);
     toast({ title: "Creating event...", description: "Please wait while we upload files and save the details." });
-    const eventId = `evt-${Date.now()}`;
-
-    try {
-      // 1. Upload Banner Image
-      const bannerFile = values.bannerImage[0];
-      const bannerPath = `events/${eventId}/banner-${bannerFile.name}`;
-      const { url: bannerImageUrl, path: bannerStoragePath } = await uploadFile(bannerFile, bannerPath);
-
-      // 2. Upload Gallery Media
-      const galleryUploadPromises = (values.galleryMedia || []).map((file: File) => {
-        const galleryPath = `events/${eventId}/gallery-${file.name}`;
-        return uploadFile(file, galleryPath);
-      });
-      const galleryItems = await Promise.all(galleryUploadPromises);
-
-      // 3. Prepare data for Firestore
-      const eventData = {
-        title: values.title,
-        description: values.description,
-        date: values.date,
-        location: `${values.address}, ${values.city}, ${values.state} ${values.zipCode}`,
-        address: values.address,
-        city: values.city,
-        state: values.state,
-        zipCode: values.zipCode,
-        status: values.status,
-        bannerImage: bannerImageUrl,
-        storagePath: bannerStoragePath,
-        imageHint: values.imageHint || '',
-        gallery: galleryItems.map(item => ({ url: item.url, path: item.path })),
-        createdAt: serverTimestamp(),
-      };
-      
-      // 4. Save to Firestore
-      const docRef = await addDoc(collection(db, "events"), eventData);
-
-      // 5. Share on Social Media (if selected)
-      if (values.socialPlatforms && values.socialPlatforms.length > 0) {
-        const shareInput: ShareEventInput = {
-            title: values.title,
-            description: values.description,
-            imageUrl: bannerImageUrl,
-            eventUrl: `https://your-website.com/events/${docRef.id}`
+    
+    const formData = new FormData();
+    Object.entries(values).forEach(([key, value]) => {
+        if (value) {
+            if (key === 'date' && value instanceof Date) {
+              formData.append(key, value.toISOString());
+            } else if (key === 'bannerImage' && value instanceof FileList) {
+                if (value.length > 0) formData.append(key, value[0]);
+            } else if (key === 'galleryMedia' && value instanceof FileList) {
+                Array.from(value).forEach(file => formData.append(key, file));
+            } else if (key === 'socialPlatforms' && Array.isArray(value)) {
+                value.forEach(platform => formData.append(key, platform));
+            } else if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+                formData.append(key, value.toString());
+            }
         }
-        console.log("Sharing on social media...", shareInput)
-        const socialResult = await shareEventOnSocialMedia(shareInput);
-        toast({
-            title: `Shared on ${values.socialPlatforms.join(' & ')}`,
-            description: socialResult.message,
-        });
-      }
+    });
 
-      setLoading(false);
+    const result = await createEventAction(formData);
+
+    setLoading(false);
+
+    if (result.success) {
       toast({
-          title: 'Event Created!',
-          description: `${values.title} has been successfully created.`,
+        title: 'Event Created!',
+        description: `${result.title} has been successfully created.`,
       });
       router.push('/admin/events');
-
-    } catch (error) {
-      console.error("Error creating event: ", error);
-      setLoading(false);
+    } else {
       toast({
         variant: 'destructive',
         title: 'Error Creating Event',
-        description: 'Something went wrong. Please check the console and try again.',
+        description: result.error || 'Something went wrong. Please try again.',
       });
     }
   }
@@ -426,7 +380,7 @@ export default function NewEventPage() {
                                             variant="destructive"
                                             size="icon"
                                             className="absolute -top-2 -right-2 h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                                            onClick={() => removePreview(bannerPreview, setBannerPreview, p.file)}
+                                            onClick={() => removePreview(bannerPreview, setBannerPreview, p.file, 'bannerImage')}
                                         ><X className="h-4 w-4"/></Button>
                                     </div>
                                 ))}
@@ -478,7 +432,7 @@ export default function NewEventPage() {
                                             variant="destructive"
                                             size="icon"
                                             className="absolute -top-2 -right-2 h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                                            onClick={() => removePreview(galleryPreviews, setGalleryPreviews, p.file)}
+                                            onClick={() => removePreview(galleryPreviews, setGalleryPreviews, p.file, 'galleryMedia')}
                                         ><X className="h-4 w-4"/></Button>
                                     </div>
                                 ))}
