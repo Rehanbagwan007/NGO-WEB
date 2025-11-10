@@ -3,13 +3,13 @@
  * @fileOverview A flow to share event details on social media platforms.
  *
  * - shareEventOnSocialMedia - A function that takes event details and posts them.
- * - ShareEventInput - The input type for the shareEventOnSocialMedia function.
  */
 
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
+import type { ShareEventInput } from '@/app/admin/events/new/page';
 
-export const ShareEventInputSchema = z.object({
+const ShareEventInputSchema = z.object({
   title: z.string().describe('The title of the event.'),
   description: z.string().describe('The description of the event.'),
   imageUrl: z
@@ -18,7 +18,6 @@ export const ShareEventInputSchema = z.object({
     .describe('The URL of the event\'s banner image.'),
   eventUrl: z.string().url().describe('The URL of the event page on the website.'),
 });
-export type ShareEventInput = z.infer<typeof ShareEventInputSchema>;
 
 
 const shareEventFlow = ai.defineFlow(

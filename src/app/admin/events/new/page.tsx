@@ -24,10 +24,22 @@ import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { shareEventOnSocialMedia, type ShareEventInput } from '@/ai/flows/share-event-flow';
+import { shareEventOnSocialMedia } from '@/ai/flows/share-event-flow';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
+
+const ShareEventInputSchema = z.object({
+  title: z.string().describe('The title of the event.'),
+  description: z.string().describe('The description of the event.'),
+  imageUrl: z
+    .string()
+    .url()
+    .describe('The URL of the event\'s banner image.'),
+  eventUrl: z.string().url().describe('The URL of the event page on the website.'),
+});
+export type ShareEventInput = z.infer<typeof ShareEventInputSchema>;
+
 
 const socialPlatforms = [
     { id: 'facebook', label: 'Facebook' },
@@ -64,7 +76,7 @@ function MediaDropzone({
   multiple,
 }: {
   field: any;
-  setPreviews: (previews: MediaPreview[]) => void;
+  setPreviews: (previews: MediaPreview[] | ((prev: MediaPreview[]) => MediaPreview[])) => void;
   multiple: boolean;
 }) {
   const [isDragging, setIsDragging] = useState(false);
@@ -87,7 +99,7 @@ function MediaDropzone({
           if (filesRead === newFiles.length) {
              if (multiple) {
                 // Append to existing previews
-                setPreviews((prev) => [...prev, ...newPreviews]);
+                setPreviews((prev) => [...(prev || []), ...newPreviews]);
               } else {
                 // Replace existing preview
                 setPreviews(newPreviews);
@@ -178,6 +190,7 @@ export default function NewEventPage() {
       zipCode: '',
       status: 'Draft',
       socialPlatforms: ['facebook', 'instagram'],
+      galleryMedia: [],
     },
   });
 
@@ -185,10 +198,11 @@ export default function NewEventPage() {
     const newList = list.filter(item => item.file !== fileToRemove);
     setList(newList);
     // Also update the form value
-    const currentFormValue = form.getValues(list === bannerPreview ? 'bannerImage' : 'galleryMedia');
+    const fieldName = list === bannerPreview ? 'bannerImage' : 'galleryMedia';
+    const currentFormValue = form.getValues(fieldName);
     if (Array.isArray(currentFormValue)) {
         const newFormValue = currentFormValue.filter(f => f !== fileToRemove);
-        form.setValue(list === bannerPreview ? 'bannerImage' : 'galleryMedia', newFormValue, { shouldValidate: true });
+        form.setValue(fieldName, newFormValue, { shouldValidate: true });
     }
   };
 
