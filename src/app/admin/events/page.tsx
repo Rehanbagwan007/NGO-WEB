@@ -28,11 +28,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { CreateEventDialog } from './components/create-event-dialog';
-import { useState } from 'react';
+import Link from 'next/link';
 
 export default function EventsManagerPage() {
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
   const getStatusVariant = (status: Event['status']) => {
     switch (status) {
@@ -44,27 +42,17 @@ export default function EventsManagerPage() {
         return 'outline';
     }
   };
-  
-  const handleEventCreated = (newEvent: Omit<Event, 'id' | 'gallery' | 'imageHint'>) => {
-    console.log('New Event Created:', newEvent);
-    // Here you would typically update your state or refetch data
-    setIsCreateDialogOpen(false);
-  };
 
   return (
     <>
       <div className="flex items-center justify-between">
         <h1 className="text-lg font-semibold md:text-2xl">Events Manager</h1>
-        <CreateEventDialog
-          open={isCreateDialogOpen}
-          onOpenChange={setIsCreateDialogOpen}
-          onEventCreated={handleEventCreated}
-        >
-          <Button>
+        <Button asChild>
+          <Link href="/admin/events/new">
             <PlusCircle className="mr-2 h-4 w-4" />
             Create Event
-          </Button>
-        </CreateEventDialog>
+          </Link>
+        </Button>
       </div>
 
       <Card>
