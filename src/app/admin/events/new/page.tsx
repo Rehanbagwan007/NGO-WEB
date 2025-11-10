@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { useForm, ControllerRenderProps } from 'react-hook-form';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,7 +18,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Calendar as CalendarIcon, Loader2, UploadCloud, X, File as FileIcon, Image as ImageIcon } from 'lucide-react';
+import { Calendar as CalendarIcon, Loader2, UploadCloud, X, File as FileIcon } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
@@ -77,7 +77,7 @@ function MediaDropzone({
   setPreviews,
   multiple,
 }: {
-  field: any;
+  field: ControllerRenderProps<CreateEventFormValues, any>;
   setPreviews: (previews: MediaPreview[] | ((prev: MediaPreview[]) => MediaPreview[])) => void;
   multiple: boolean;
 }) {
@@ -202,10 +202,10 @@ export default function NewEventPage() {
     setList(newList);
     // Also update the form value
     const fieldName = list === bannerPreview ? 'bannerImage' : 'galleryMedia';
-    const currentFormValue = form.getValues(fieldName);
+    const currentFormValue = form.getValues(fieldName as 'bannerImage' | 'galleryMedia');
     if (Array.isArray(currentFormValue)) {
         const newFormValue = currentFormValue.filter(f => f !== fileToRemove);
-        form.setValue(fieldName, newFormValue, { shouldValidate: true });
+        form.setValue(fieldName as 'bannerImage' | 'galleryMedia', newFormValue, { shouldValidate: true });
     }
   };
 
@@ -562,7 +562,7 @@ export default function NewEventPage() {
                     <CardHeader>
                         <CardTitle>Sharing</CardTitle>
                         <CardDescription>Select where to share this event upon creation.</CardDescription>
-                    </Header>
+                    </CardHeader>
                     <CardContent>
                          <FormField
                             control={form.control}
