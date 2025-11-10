@@ -29,6 +29,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { createEventAction } from './actions';
+import { uploadFile } from '@/lib/firebase/client/storage';
 
 
 const socialPlatforms = [
@@ -200,40 +201,56 @@ export default function NewEventPage() {
   async function onSubmit(values: CreateEventFormValues) {
     setLoading(true);
     toast({ title: "Creating event...", description: "Please wait while we upload files and save the details." });
-    
-    const formData = new FormData();
-    Object.entries(values).forEach(([key, value]) => {
-        if (value) {
-            if (key === 'date' && value instanceof Date) {
-              formData.append(key, value.toISOString());
-            } else if (key === 'bannerImage' && value instanceof FileList) {
-                if (value.length > 0) formData.append(key, value[0]);
-            } else if (key === 'galleryMedia' && value instanceof FileList) {
-                Array.from(value).forEach(file => formData.append(key, file));
-            } else if (key === 'socialPlatforms' && Array.isArray(value)) {
-                value.forEach(platform => formData.append(key, platform));
-            } else if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
-                formData.append(key, value.toString());
-            }
+
+    try {
+        const eventId = `evt-${Date.now()}`;
+
+        // 1. Upload Banner Image
+        const bannerFile = values.bannerImage[0];
+        const bannerPath = `events/${eventId}/banner-${bannerFile.name}`;
+        const { url: bannerImageUrl, path: bannerStoragePath } = await uploadFile(bannerFile, bannerPath);
+
+        // 2. Upload Gallery Media
+        const galleryFiles = values.galleryMedia ? Array.from(values.galleryMedia) : [];
+        const galleryUploadPromises = galleryFiles.map((file) => {
+            const galleryPath = `events/${eventId}/gallery-${file.name}`;
+            return uploadFile(file, galleryPath);
+        });
+        const galleryItems = await Promise.all(galleryUploadPromises);
+
+        // 3. Prepare data for server action
+        const actionArgs = {
+            ...values,
+            date: values.date.toISOString(),
+            location: `${values.address}, ${values.city}, ${values.state} ${values.zipCode}`,
+            bannerImage: bannerImageUrl,
+            storagePath: bannerStoragePath,
+            gallery: galleryItems.map(item => ({ url: item.url, path: item.path })),
+            socialPlatforms: values.socialPlatforms || [],
+        };
+
+        // 4. Call server action
+        const result = await createEventAction(actionArgs);
+        
+        if (result.success) {
+            toast({
+                title: 'Event Created!',
+                description: `${result.title} has been successfully created.`,
+            });
+            router.push('/admin/events');
+        } else {
+            throw new Error(result.error || 'Failed to create event.');
         }
-    });
 
-    const result = await createEventAction(formData);
-
-    setLoading(false);
-
-    if (result.success) {
-      toast({
-        title: 'Event Created!',
-        description: `${result.title} has been successfully created.`,
-      });
-      router.push('/admin/events');
-    } else {
-      toast({
-        variant: 'destructive',
-        title: 'Error Creating Event',
-        description: result.error || 'Something went wrong. Please try again.',
-      });
+    } catch (error) {
+        console.error("Error in onSubmit: ", error);
+        toast({
+            variant: 'destructive',
+            title: 'Error Creating Event',
+            description: (error as Error).message || 'An unexpected error occurred. Please try again.',
+        });
+    } finally {
+        setLoading(false);
     }
   }
 
@@ -566,7 +583,7 @@ export default function NewEventPage() {
                  <Button type="button" variant="ghost" onClick={() => router.back()} disabled={loading}>Cancel</Button>
                  <Button type="submit" disabled={loading}>
                    {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                   {loading ? 'Creating...' : 'Create & Share'}
+                   {loading ? 'Creating...' : 'Create Event'}
                  </Button>
                </div>
             </div>

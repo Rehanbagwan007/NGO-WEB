@@ -1,6 +1,7 @@
 
 
 
+
 export type UserProfile = {
   uid: string;
   email: string;
@@ -14,7 +15,7 @@ export type Student = {
   id: string;
   name: string;
   avatar: string;
-  email: string;
+  email:string;
   status: 'Active' | 'Inactive' | 'On Hold';
   medicalNotes: string;
   dateOfBirth: string;
@@ -42,12 +43,15 @@ export type Event = {
   title: string;
   date: Date;
   location: string;
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string;
   description: string;
   bannerImage: string;
-  storagePath?: string;
+  storagePath: string;
   imageHint: string;
-  gallery: { url: string; path?: string; hint?: string }[];
+  gallery: { url: string; path: string; hint?: string }[];
   status: 'Draft' | 'Published';
   createdAt: Date;
 };
-
