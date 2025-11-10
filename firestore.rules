@@ -1,21 +1,23 @@
-
 rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // A user can read their own profile, which is needed to check the 'role' field.
+
+    // A user must be logged in to read their own user profile document.
+    // This is required for the app to check if the user has the 'admin' role.
     match /users/{userId} {
-      allow read, create: if request.auth != null && request.auth.uid == userId;
-      allow update, delete: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      allow read: if request.auth != null && request.auth.uid == userId;
+      
+      // Only admins can create, update, or delete user role documents.
+      allow write: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
 
-    // Rules for the events collection
+    // Rules for the 'events' collection
     match /events/{eventId} {
-      // Anyone can read events for the public site.
+      // Anyone can read events. This is for the public website.
       allow get, list: if true;
 
       // Only authenticated users with an 'admin' role can create, update, or delete events.
-      // This rule works because the rule on /users/{userId} allows the user to read their own document.
       allow write: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
   }
