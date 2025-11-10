@@ -14,6 +14,7 @@ type CreateEventArgs = Omit<Event, 'id' | 'createdAt'> & {
 
 export async function createEventAction(args: CreateEventArgs) {
   try {
+    // Destructure properties from the 'args' object passed to the function
     const { title, description, date, location, address, city, state, zipCode, status, bannerImage, storagePath, imageHint, gallery, socialPlatforms } = args;
 
     // 1. Prepare data for Firestore
@@ -55,6 +56,8 @@ export async function createEventAction(args: CreateEventArgs) {
 
   } catch (error) {
     console.error("Error creating event: ", error);
-    return { success: false, error: (error as Error).message };
+    // Ensure that a descriptive error is returned to the client
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
+    return { success: false, error: errorMessage };
   }
 }
