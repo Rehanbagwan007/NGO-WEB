@@ -1,5 +1,6 @@
 
 
+
 export type UserProfile = {
   uid: string;
   email: string;
@@ -49,3 +50,4 @@ export type Event = {
   status: 'Draft' | 'Published';
   createdAt: Date;
 };
+

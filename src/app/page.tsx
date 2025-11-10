@@ -1,49 +1,41 @@
-'use client';
 
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@/components/ui/carousel';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import Autoplay from 'embla-carousel-autoplay';
-import { events } from '@/lib/data';
 import { ArrowRight, Calendar, MapPin } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Event } from '@/lib/types';
+import { collection, getDocs, limit, orderBy, query, where, Timestamp } from 'firebase/firestore';
+import { db } from '@/lib/firebase/config';
+import { HeroCarousel } from '@/app/components/landing/hero-carousel';
 
+async function getUpcomingEvents(): Promise<Event[]> {
+  const eventsCollection = collection(db, 'events');
+  const q = query(
+    eventsCollection, 
+    where('status', '==', 'Published'),
+    where('date', '>=', new Date()),
+    orderBy('date', 'asc'), 
+    limit(3)
+  );
+  
+  try {
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        ...data,
+        date: (data.date as Timestamp)?.toDate(),
+        createdAt: (data.createdAt as Timestamp)?.toDate(),
+      } as Event;
+    });
+  } catch (error) {
+    console.error("Error fetching upcoming events: ", error);
+    return [];
+  }
+}
 
-const heroImages = [
-  {
-    src: 'https://picsum.photos/seed/hero1/1200/800',
-    alt: 'A beautiful landscape',
-    hint: 'landscape mountain',
-  },
-  {
-    src: 'https://picsum.photos/seed/hero2/1200/800',
-    alt: 'A city street at sunset',
-    hint: 'city sunset',
-  },
-  {
-    src: 'https://picsum.photos/seed/hero3/1200/800',
-    alt: 'A highland cow on a beach',
-    hint: 'highland cow',
-  },
-  {
-    src: 'https://picsum.photos/seed/hero4/1200/800',
-    alt: 'A child painting',
-    hint: 'child painting',
-  },
-  {
-    src: 'https://picsum.photos/seed/hero5/1200/800',
-    alt: 'A helping hand',
-    hint: 'helping hand',
-  },
-];
 
 const EventCard = ({ event }: { event: Event }) => (
     <Card className="flex flex-col overflow-hidden">
@@ -83,8 +75,9 @@ const EventCard = ({ event }: { event: Event }) => (
     </Card>
 );
 
-export default function LandingPage() {
-    const upcomingEvents = events.filter((e) => e.type === 'Upcoming' && e.status === 'Published').slice(0, 3);
+export default async function LandingPage() {
+    const upcomingEvents = await getUpcomingEvents();
+
   return (
     <div className="flex-1 bg-background">
       {/* Hero Section */}
@@ -108,38 +101,7 @@ export default function LandingPage() {
               pe.
             </h1>
           </div>
-          <Carousel
-            opts={{
-              align: 'start',
-              loop: true,
-            }}
-            plugins={[
-              Autoplay({
-                delay: 4000,
-              }),
-            ]}
-            className="w-full"
-          >
-            <CarouselContent>
-              {heroImages.map((image, index) => (
-                <CarouselItem key={index}>
-                  <div className="p-1">
-                    <div className="relative overflow-hidden rounded-2xl h-[80vh]">
-                      <Image
-                        src={image.src}
-                        alt={image.alt}
-                        fill
-                        className="object-cover w-full h-full rounded-2xl"
-                        data-ai-hint={image.hint}
-                      />
-                    </div>
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 z-10" />
-            <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 z-10" />
-          </Carousel>
+          <HeroCarousel />
         </div>
       </section>
 
