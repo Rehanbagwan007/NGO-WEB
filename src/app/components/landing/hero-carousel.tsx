@@ -62,6 +62,7 @@ export function HeroCarousel() {
                   src={image.src}
                   alt={image.alt}
                   fill
+                  priority={index === 0}
                   className="object-cover w-full h-full rounded-2xl"
                   data-ai-hint={image.hint}
                 />
