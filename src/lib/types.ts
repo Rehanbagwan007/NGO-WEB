@@ -1,7 +1,4 @@
 
-
-
-
 export type UserProfile = {
   uid: string;
   email: string;
@@ -41,17 +38,18 @@ export type Donation = {
 export type Event = {
   id: string;
   title: string;
-  date: Date;
+  date: string; // Changed from Date to string for mock data
   location: string;
-  address: string;
-  city: string;
-  state: string;
-  zipCode: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  zipCode?: string;
   description: string;
   bannerImage: string;
-  storagePath: string;
+  storagePath?: string;
   imageHint: string;
-  gallery: { url: string; path: string; hint?: string }[];
+  gallery: { url: string; path?: string; hint?: string }[];
   status: 'Draft' | 'Published';
-  createdAt: Date;
+  createdAt?: Date; // Made optional
+  type?: 'Upcoming' | 'Past';
 };

@@ -1,14 +1,13 @@
 
 'use server';
 
-import { db } from '@/lib/firebase/config';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import type { ShareEventInput } from '@/ai/flows/share-event-flow';
 import { shareEventOnSocialMedia } from '@/ai/flows/share-event-flow';
 import type { Event } from '@/lib/types';
 
 
-type CreateEventArgs = Omit<Event, 'id' | 'createdAt'> & {
+type CreateEventArgs = Omit<Event, 'id' | 'createdAt' | 'date'> & {
+    date: string;
     socialPlatforms: string[];
 }
 
@@ -16,39 +15,19 @@ export async function createEventAction(args: CreateEventArgs) {
     console.log("createEventAction received args:", JSON.stringify(args, null, 2));
 
   try {
-    // Destructure properties from the 'args' object passed to the function
-    const { title, description, date, location, address, city, state, zipCode, status, bannerImage, storagePath, imageHint, gallery, socialPlatforms } = args;
+    const { title, description, bannerImage, socialPlatforms } = args;
 
-    // 1. Prepare data for Firestore
-    // Note: The 'date' comes in as an ISO string, so we convert it back to a Date object for Firestore.
-    const eventData: Omit<Event, 'id'> = {
-      title,
-      description,
-      date: new Date(date),
-      location,
-      address,
-      city,
-      state,
-      zipCode,
-      status,
-      bannerImage,
-      storagePath,
-      imageHint,
-      gallery,
-      createdAt: serverTimestamp() as Date, // Firestore will convert this
-    };
-
-    // 2. Save to Firestore
-    const docRef = await addDoc(collection(db, "events"), eventData);
+    // Simulate saving the event
+    console.log("Simulating event creation with title:", title);
 
     // 3. Share on Social Media (if selected)
     if (socialPlatforms && socialPlatforms.length > 0) {
         const shareInput: ShareEventInput = {
             title,
             description,
-            imageUrl: bannerImage,
-            // Replace with your actual website URL
-            eventUrl: `https://your-website.com/events/${docRef.id}`
+            imageUrl: bannerImage, // This will be a placeholder URL
+            // In a real app, you'd generate a real URL
+            eventUrl: `https://your-website.com/events/evt-simulated-${Date.now()}`
         }
         // We don't await this as it can happen in the background
         shareEventOnSocialMedia(shareInput);
@@ -58,7 +37,6 @@ export async function createEventAction(args: CreateEventArgs) {
 
   } catch (error) {
     console.error("Error creating event: ", error);
-    // Ensure that a descriptive error is returned to the client
     const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
     return { success: false, error: errorMessage };
   }

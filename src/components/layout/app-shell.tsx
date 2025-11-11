@@ -17,7 +17,6 @@ import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
 import { useState, useEffect } from 'react';
 import { mainNavLinks } from '@/lib/nav-links';
 import { cn } from '@/lib/utils';
-import { useAuth } from '@/hooks/use-auth';
 
 
 const SanvedanaLogo = ({ scrolled = false }: { scrolled?: boolean }) => (
@@ -58,7 +57,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const { user } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -99,11 +97,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                       {link.label}
                     </Link>
                   ))}
-                   {user ? (
-                    <Link href="/admin" className="font-semibold transition-colors hover:text-primary text-foreground/70">Dashboard</Link>
-                   ) : (
-                    <Link href="/login" className="font-semibold transition-colors hover:text-primary text-foreground/70">Admin Login</Link>
-                   )}
+                  <Link href="/admin" className="font-semibold transition-colors hover:text-primary text-foreground/70">Dashboard</Link>
                 </nav>
 
                 <div className={cn("hidden md:flex items-center gap-4 transition-opacity duration-300", isScrolled ? "opacity-0 pointer-events-none" : "opacity-100")}>

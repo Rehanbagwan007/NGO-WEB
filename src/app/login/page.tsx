@@ -12,7 +12,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
-import { useAuth } from '@/hooks/use-auth';
 import Link from 'next/link';
 
 const formSchema = z.object({
@@ -26,7 +25,6 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
-  const { signIn } = useAuth();
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(formSchema),
@@ -38,22 +36,22 @@ export default function LoginPage() {
 
   const onSubmit = async (values: LoginFormValues) => {
     setLoading(true);
-    try {
-      await signIn(values.email, values.password);
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    if (values.email === 'admin@example.com' && values.password === 'password') {
       toast({
         title: 'Login Successful',
         description: 'Welcome back!',
       });
       router.push('/admin');
-    } catch (error: any) {
+    } else {
       toast({
         variant: 'destructive',
         title: 'Login Failed',
-        description: error.message || 'An unexpected error occurred. Please try again.',
+        description: 'Invalid email or password. Please try again.',
       });
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   return (

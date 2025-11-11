@@ -29,7 +29,6 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { createEventAction } from './actions';
-import { uploadFile } from '@/lib/firebase/client/storage';
 
 
 const socialPlatforms = [
@@ -200,41 +199,31 @@ export default function NewEventPage() {
 
   async function onSubmit(values: CreateEventFormValues) {
     setLoading(true);
-    toast({ title: "Creating event...", description: "Please wait while we upload files and save the details." });
+    toast({ title: "Creating event...", description: "Please wait. This is a simulation." });
 
     try {
-        const eventId = `evt-${Date.now()}`;
+        // Simulate file upload delay
+        await new Promise(resolve => setTimeout(resolve, 1500));
 
-        // 1. Upload Banner Image
-        const bannerFile = values.bannerImage[0];
-        const bannerPath = `events/${eventId}/banner-${bannerFile.name}`;
-        const { url: bannerImageUrl, path: bannerStoragePath } = await uploadFile(bannerFile, bannerPath);
+        // Since we removed Firebase, we'll use a placeholder URL for the banner
+        const bannerImageUrl = bannerPreview[0]?.preview || 'https://picsum.photos/seed/placeholder/1200/400';
 
-        // 2. Upload Gallery Media
-        const galleryFiles = values.galleryMedia ? Array.from(values.galleryMedia) : [];
-        const galleryUploadPromises = galleryFiles.map((file) => {
-            const galleryPath = `events/${eventId}/gallery-${file.name}`;
-            return uploadFile(file, galleryPath);
-        });
-        const galleryItems = await Promise.all(galleryUploadPromises);
-
-        // 3. Prepare data for server action
+        // Prepare data for server action
         const actionArgs = {
             ...values,
             date: values.date.toISOString(),
             location: `${values.address}, ${values.city}, ${values.state} ${values.zipCode}`,
             bannerImage: bannerImageUrl,
-            storagePath: bannerStoragePath,
-            gallery: galleryItems.map(item => ({ url: item.url, path: item.path })),
+            gallery: galleryPreviews.map(p => ({ url: p.preview })),
             socialPlatforms: values.socialPlatforms || [],
         };
 
-        // 4. Call server action
+        // Call server action
         const result = await createEventAction(actionArgs);
         
         if (result.success) {
             toast({
-                title: 'Event Created!',
+                title: 'Event Created! (Simulated)',
                 description: `${result.title} has been successfully created.`,
             });
             router.push('/admin/events');

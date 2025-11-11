@@ -29,39 +29,20 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
-import { collection, onSnapshot, query, orderBy, Timestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase/config';
 import type { Event } from '@/lib/types';
+import { events as mockEvents } from '@/lib/data';
 import { Skeleton } from '@/components/ui/skeleton';
-
-// Helper to convert Firestore Timestamp to Date
-const toEvent = (doc: any): Event => {
-  const data = doc.data();
-  return {
-    id: doc.id,
-    ...data,
-    date: (data.date as Timestamp)?.toDate(),
-    createdAt: (data.createdAt as Timestamp)?.toDate(),
-  } as Event;
-};
-
 
 export default function EventsManagerPage() {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const q = query(collection(db, 'events'), orderBy('createdAt', 'desc'));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const eventsData = querySnapshot.docs.map(toEvent);
-      setEvents(eventsData);
+    // Simulate fetching data
+    setTimeout(() => {
+      setEvents(mockEvents);
       setLoading(false);
-    }, (error) => {
-      console.error("Error fetching events: ", error);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
+    }, 1000);
   }, []);
 
 
@@ -131,7 +112,7 @@ export default function EventsManagerPage() {
                       </Badge>
                     </TableCell>
                     <TableCell className="hidden md:table-cell">
-                      {event.date ? format(event.date, 'PPP') : 'No date'}
+                      {event.date ? format(new Date(event.date), 'PPP') : 'No date'}
                     </TableCell>
                     <TableCell className="hidden md:table-cell">
                       {event.createdAt ? format(event.createdAt, 'PPP p') : 'N/A'}

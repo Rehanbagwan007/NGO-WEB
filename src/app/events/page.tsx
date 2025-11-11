@@ -10,31 +10,12 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import Link from 'next/link';
-import { collection, getDocs, query, where, orderBy, Timestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase/config';
 import type { Event } from '@/lib/types';
+import { events as allEvents } from '@/lib/data';
 
 
-async function getEvents(): Promise<Event[]> {
-  const eventsCollection = collection(db, 'events');
-  // Simple query to get all published events, ordered by date descending
-  const q = query(eventsCollection, where('status', '==', 'Published'), orderBy('date', 'desc'));
-  
-  try {
-    const querySnapshot = await getDocs(q);
-    return querySnapshot.docs.map(doc => {
-      const data = doc.data();
-      return {
-        id: doc.id,
-        ...data,
-        date: (data.date as Timestamp)?.toDate(),
-        createdAt: (data.createdAt as Timestamp)?.toDate(),
-      } as Event;
-    });
-  } catch (error) {
-    console.error("Error fetching published events: ", error);
-    return [];
-  }
+function getEvents(): Event[] {
+  return allEvents.filter(event => event.status === 'Published');
 }
 
 const EventCard = ({ event }: { event: Event }) => (
@@ -62,7 +43,7 @@ const EventCard = ({ event }: { event: Event }) => (
       <div className="mb-4 flex flex-col gap-2 text-sm text-muted-foreground">
         <div className="flex items-center">
           <Calendar className="mr-2 h-4 w-4" />
-          <span>{event.date ? new Date(event.date).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Date TBD'}</span>
+          <span>{new Date(event.date).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
         </div>
         <div className="flex items-center">
           <MapPin className="mr-2 h-4 w-4" />
@@ -81,8 +62,8 @@ const EventCard = ({ event }: { event: Event }) => (
   </Card>
 );
 
-export default async function EventsPage() {
-  const events = await getEvents();
+export default function EventsPage() {
+  const events = getEvents();
 
   return (
     <div className="bg-background">

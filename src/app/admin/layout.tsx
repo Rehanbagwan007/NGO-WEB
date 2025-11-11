@@ -14,11 +14,9 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
-import { Menu, Search, LogOut, ShieldAlert } from 'lucide-react';
+import { Menu, Search, LogOut } from 'lucide-react';
 import { adminNavLinks } from '@/lib/nav-links';
 import { Input } from '@/components/ui/input';
-import { useAuth } from '@/hooks/use-auth';
-import { useEffect } from 'react';
 
 const SanvedanaLogo = ({ inSheet = false }: { inSheet?: boolean }) => (
   <Link href="/" className="flex items-center gap-2 font-semibold">
@@ -85,51 +83,12 @@ const NavLink = ({
   );
 };
 
-const NotAdminScreen = () => (
-    <div className="flex h-screen w-full items-center justify-center bg-background">
-        <div className="flex flex-col items-center gap-4 text-center p-4">
-            <ShieldAlert className="w-16 h-16 text-destructive" />
-            <h1 className="text-2xl font-bold">Access Denied</h1>
-            <p className="text-muted-foreground max-w-md">You do not have the necessary permissions to access this page. Please contact the system administrator if you believe this is an error.</p>
-            <Button onClick={() => window.location.href = '/'}>Go to Homepage</Button>
-        </div>
-    </div>
-);
-
-
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { user, isAdmin, loading, signOut } = useAuth();
   const router = useRouter();
-
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push('/login');
-    }
-  }, [user, loading, router]);
-
-  if (loading) {
-    return (
-        <div className="flex h-screen w-full items-center justify-center">
-            <div className="flex flex-col items-center gap-4">
-                <SanvedanaLogo />
-                <p className="text-muted-foreground">Loading Admin Dashboard...</p>
-            </div>
-        </div>
-    );
-  }
-  
-  if (!user) {
-      return null; // Or a redirect component, though useEffect handles it
-  }
-
-  if (!isAdmin) {
-      return <NotAdminScreen />;
-  }
-
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[280px_1fr]">
@@ -187,8 +146,8 @@ export default function AdminLayout({
             <DropdownMenuTrigger asChild>
               <Button variant="secondary" size="icon" className="rounded-full">
                 <Avatar>
-                    <AvatarImage src={user.photoURL || "https://picsum.photos/seed/admin-avatar/100/100"} alt={user.email || 'Admin'} />
-                    <AvatarFallback>{user.email ? user.email.charAt(0).toUpperCase() : 'A'}</AvatarFallback>
+                    <AvatarImage src={"https://picsum.photos/seed/admin-avatar/100/100"} alt={'Admin'} />
+                    <AvatarFallback>{'A'}</AvatarFallback>
                 </Avatar>
                 <span className="sr-only">Toggle user menu</span>
               </Button>
@@ -199,7 +158,7 @@ export default function AdminLayout({
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={signOut}>
+              <DropdownMenuItem onClick={() => router.push('/login')}>
                 <LogOut className="mr-2 h-4 w-4"/>
                 Logout
               </DropdownMenuItem>

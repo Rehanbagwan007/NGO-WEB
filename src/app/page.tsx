@@ -5,44 +5,16 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, Calendar, MapPin } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Event } from '@/lib/types';
-import { collection, getDocs, limit, orderBy, query, where, Timestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase/config';
+import { events as allEvents } from '@/lib/data';
 import { HeroCarousel } from '@/app/components/landing/hero-carousel';
 
-async function getUpcomingEvents(): Promise<Event[]> {
-  const eventsCollection = collection(db, 'events');
-  // Simplified query to avoid requiring a composite index.
-  // This query now only filters by date and sorts by date.
-  const q = query(
-    eventsCollection,
-    where('date', '>=', new Date()),
-    orderBy('date', 'asc'),
-    limit(3)
-  );
-  
-  try {
-    const querySnapshot = await getDocs(q);
-    return querySnapshot.docs.map(doc => {
-      const data = doc.data();
-      // Ensure only published events are returned, filtering is now done in code.
-      if (data.status !== 'Published') {
-        return null;
-      }
-      return {
-        id: doc.id,
-        ...data,
-        date: (data.date as Timestamp)?.toDate(),
-        createdAt: (data.createdAt as Timestamp)?.toDate(),
-      } as Event;
-    }).filter(event => event !== null) as Event[];
-  } catch (error) {
-    console.error("Error fetching upcoming events: ", error);
-    // In case of an error, return an empty array
-    // The user will see the "No upcoming events" message instead of a broken page
-    return [];
-  }
+function getUpcomingEvents(): Event[] {
+  const now = new Date();
+  return allEvents
+    .filter(event => event.status === 'Published' && new Date(event.date) >= now)
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    .slice(0, 3);
 }
-
 
 const EventCard = ({ event }: { event: Event }) => (
     <Card className="flex flex-col overflow-hidden">
@@ -82,8 +54,8 @@ const EventCard = ({ event }: { event: Event }) => (
     </Card>
 );
 
-export default async function LandingPage() {
-    const upcomingEvents = await getUpcomingEvents();
+export default function LandingPage() {
+    const upcomingEvents = getUpcomingEvents();
 
   return (
     <div className="flex-1 bg-background">
