@@ -51,7 +51,7 @@ export default function EventsManagerPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const q = query(collection(db, 'events'), orderBy('date', 'desc'));
+    const q = query(collection(db, 'events'), orderBy('createdAt', 'desc'));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const eventsData = querySnapshot.docs.map(toEvent);
       setEvents(eventsData);
@@ -103,7 +103,7 @@ export default function EventsManagerPage() {
                 <TableHead>Status</TableHead>
                 <TableHead className="hidden md:table-cell">Date</TableHead>
                 <TableHead className="hidden md:table-cell">
-                  Location
+                  Created At
                 </TableHead>
                 <TableHead>
                   <span className="sr-only">Actions</span>
@@ -134,7 +134,7 @@ export default function EventsManagerPage() {
                       {event.date ? format(event.date, 'PPP') : 'No date'}
                     </TableCell>
                     <TableCell className="hidden md:table-cell">
-                      {event.location}
+                      {event.createdAt ? format(event.createdAt, 'PPP p') : 'N/A'}
                     </TableCell>
                     <TableCell>
                       <DropdownMenu>
