@@ -12,10 +12,10 @@ import { HeroCarousel } from '@/app/components/landing/hero-carousel';
 async function getUpcomingEvents(): Promise<Event[]> {
   const eventsCollection = collection(db, 'events');
   const q = query(
-    eventsCollection, 
+    eventsCollection,
     where('status', '==', 'Published'),
     where('date', '>=', new Date()),
-    orderBy('date', 'asc'), 
+    orderBy('date', 'asc'),
     limit(3)
   );
   
@@ -32,6 +32,8 @@ async function getUpcomingEvents(): Promise<Event[]> {
     });
   } catch (error) {
     console.error("Error fetching upcoming events: ", error);
+    // In case of an error (like a missing index), return an empty array
+    // The user will see the "No upcoming events" message instead of a broken page
     return [];
   }
 }

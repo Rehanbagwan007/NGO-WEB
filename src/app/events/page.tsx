@@ -17,6 +17,7 @@ import type { Event } from '@/lib/types';
 
 async function getEvents(): Promise<Event[]> {
   const eventsCollection = collection(db, 'events');
+  // Simple query to get all published events, ordered by date descending
   const q = query(eventsCollection, where('status', '==', 'Published'), orderBy('date', 'desc'));
   
   try {
