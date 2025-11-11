@@ -74,7 +74,7 @@ const NavLink = ({
       href={link.href}
       className={cn(
         'flex items-center gap-3 rounded-lg px-3 py-2 text-sidebar-foreground/70 transition-all hover:text-sidebar-foreground',
-        { 'bg-sidebar-accent text-sidebar-foreground': isActive }
+        { 'bg-sidebar-accent text-sidebar-accent-foreground': isActive }
       )}
     >
       {link.icon}
@@ -92,12 +92,12 @@ export default function AdminLayout({
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[280px_1fr]">
-      <div className="hidden border-r bg-sidebar text-sidebar-foreground md:block">
+      <div className="hidden border-r bg-sidebar text-sidebar-foreground md:block fixed h-full w-[280px]">
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
             <SanvedanaLogo />
           </div>
-          <div className="flex-1">
+          <div className="flex-1 overflow-y-auto">
             <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
               {adminNavLinks.map((link) => (
                 <NavLink key={link.href} link={link} />
@@ -106,8 +106,8 @@ export default function AdminLayout({
           </div>
         </div>
       </div>
-      <div className="flex flex-col">
-        <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
+      <div className="flex flex-col md:pl-[280px]">
+        <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6 sticky top-0 z-30">
           <Sheet>
             <SheetTrigger asChild>
               <Button

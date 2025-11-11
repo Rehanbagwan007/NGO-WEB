@@ -451,8 +451,7 @@ export default function NewEventPage() {
             </div>
 
             {/* Right Column */}
-            <div className="lg:col-span-1">
-              <div className="sticky top-6 space-y-8">
+            <div className="lg:col-span-1 space-y-8">
                 <Card>
                   <CardHeader>
                       <CardTitle>Date & Status</CardTitle>
@@ -576,7 +575,6 @@ export default function NewEventPage() {
                     {loading ? 'Creating...' : 'Create Event'}
                   </Button>
                 </div>
-              </div>
             </div>
           </div>
         </form>
