@@ -11,9 +11,10 @@ import { HeroCarousel } from '@/app/components/landing/hero-carousel';
 
 async function getUpcomingEvents(): Promise<Event[]> {
   const eventsCollection = collection(db, 'events');
+  // Simplified query to avoid requiring a composite index.
+  // This query now only filters by date and sorts by date.
   const q = query(
     eventsCollection,
-    where('status', '==', 'Published'),
     where('date', '>=', new Date()),
     orderBy('date', 'asc'),
     limit(3)
@@ -23,16 +24,20 @@ async function getUpcomingEvents(): Promise<Event[]> {
     const querySnapshot = await getDocs(q);
     return querySnapshot.docs.map(doc => {
       const data = doc.data();
+      // Ensure only published events are returned, filtering is now done in code.
+      if (data.status !== 'Published') {
+        return null;
+      }
       return {
         id: doc.id,
         ...data,
         date: (data.date as Timestamp)?.toDate(),
         createdAt: (data.createdAt as Timestamp)?.toDate(),
       } as Event;
-    });
+    }).filter(event => event !== null) as Event[];
   } catch (error) {
     console.error("Error fetching upcoming events: ", error);
-    // In case of an error (like a missing index), return an empty array
+    // In case of an error, return an empty array
     // The user will see the "No upcoming events" message instead of a broken page
     return [];
   }
