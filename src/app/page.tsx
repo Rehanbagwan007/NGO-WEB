@@ -16,9 +16,12 @@ async function getUpcomingEvents(): Promise<Event[]> {
   const { data, error } = await supabase
     .from('events')
     .select('*')
-    .eq('status', 'Published')
+    .eq('status', 'Draft')
     .order('date', { ascending: true })
     .limit(3);
+
+
+    console.log(data)
 
   if (error) {
     console.error('Error fetching upcoming events:', error);
