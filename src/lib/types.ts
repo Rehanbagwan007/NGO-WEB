@@ -1,9 +1,8 @@
 export type UserProfile = {
-  uid: string;
-  email: string;
-  role: 'admin' | 'user';
+  id: string;
+  email?: string;
   name?: string;
-  avatar?: string;
+  avatar_url?: string;
 };
 
 

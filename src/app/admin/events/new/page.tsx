@@ -29,6 +29,7 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { createEventAction } from './actions';
 import { createClient } from '@/lib/supabase/client';
+import type { User } from '@supabase/supabase-js';
 
 const socialPlatforms = [
     { id: 'facebook', label: 'Facebook' },
@@ -60,10 +61,20 @@ interface MediaPreview {
     type: 'image' | 'document';
 }
 
-
-async function uploadFile(file: File): Promise<string> {
+async function getSupabaseUser() {
     const supabase = createClient();
-    const filePath = `events/${Date.now()}-${file.name}`;
+    const { data, error } = await supabase.auth.getUser();
+    if (error || !data.user) {
+        throw new Error('User not found. Please log in again.');
+    }
+    return data.user;
+}
+
+
+async function uploadFile(file: File, user: User): Promise<string> {
+    const supabase = createClient();
+    // Path becomes user-id/events/file-name
+    const filePath = `${user.id}/events/${Date.now()}-${file.name}`;
     const { error } = await supabase.storage.from('images').upload(filePath, file);
 
     if (error) {
@@ -216,17 +227,19 @@ export default function NewEventPage() {
     toast({ title: "Creating event...", description: "Please wait while we upload files." });
 
     try {
+        const user = await getSupabaseUser();
+
         let bannerImageUrl = '';
         if (values.bannerImage && values.bannerImage.length > 0) {
             toast({ title: "Uploading banner image..." });
-            bannerImageUrl = await uploadFile(values.bannerImage[0]);
+            bannerImageUrl = await uploadFile(values.bannerImage[0], user);
         }
 
-        let galleryUrls = [];
+        let galleryUrls: string[] = [];
         if (values.galleryMedia && values.galleryMedia.length > 0) {
             toast({ title: "Uploading gallery images..." });
             galleryUrls = await Promise.all(
-                Array.from(values.galleryMedia).map(file => uploadFile(file))
+                Array.from(values.galleryMedia).map(file => uploadFile(file, user))
             );
         }
 
