@@ -50,9 +50,8 @@ export default function LoginPage() {
         title: 'Login Successful',
         description: 'Welcome back!',
       });
-      // router.push('/admin') will redirect to the page they were trying to access
-      // which is handled by the middleware.
-      router.refresh();
+      // Redirect to the admin dashboard on successful login
+      router.push('/admin');
     }
     setLoading(false);
   };
