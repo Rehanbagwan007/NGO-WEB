@@ -11,27 +11,38 @@ import {
 } from '@/components/ui/card';
 import Link from 'next/link';
 import type { Event } from '@/lib/types';
-import { events as allEvents } from '@/lib/data';
+import { createClient } from '@/lib/supabase/server';
 
 
-function getEvents(): Event[] {
-  return allEvents.filter(event => event.status === 'Published');
+async function getEvents(): Promise<Event[]> {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from('events')
+    .select('*')
+    .eq('status', 'Published');
+
+  if (error) {
+    console.error('Error fetching published events:', error);
+    return [];
+  }
+  return data;
 }
 
 const EventCard = ({ event }: { event: Event }) => (
   <Card className="flex flex-col overflow-hidden">
     <CardHeader className="p-0">
-      {event.bannerImage ? (
-        <Image
-          src={event.bannerImage}
-          alt={event.title}
-          width={600}
-          height={320}
-          className="object-cover"
-          data-ai-hint={event.imageHint}
-        />
+      {event.bannerimage ? (
+        <div className="relative aspect-video w-full">
+          <Image
+            src={event.bannerimage}
+            alt={event.title}
+            fill
+            className="object-cover"
+            data-ai-hint={event.imageHint}
+          />
+        </div>
       ) : (
-        <div className="w-[600px] h-[320px] bg-muted flex items-center justify-center">
+        <div className="aspect-video w-full bg-muted flex items-center justify-center">
           <p className="text-muted-foreground">No Image</p>
         </div>
       )}
@@ -50,7 +61,7 @@ const EventCard = ({ event }: { event: Event }) => (
           <span>{event.location}</span>
         </div>
       </div>
-      <p className="flex-1 text-muted-foreground">{event.description}</p>
+      <p className="flex-1 text-muted-foreground line-clamp-3">{event.description}</p>
     </CardContent>
     <CardFooter>
       <Button asChild variant="secondary" className="w-full">
@@ -62,8 +73,8 @@ const EventCard = ({ event }: { event: Event }) => (
   </Card>
 );
 
-export default function EventsPage() {
-  const events = getEvents();
+export default async function EventsPage() {
+  const events = await getEvents();
 
   return (
     <div className="bg-background">

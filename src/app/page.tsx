@@ -5,25 +5,36 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, Calendar, MapPin } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Event } from '@/lib/types';
-import { events as allEvents } from '@/lib/data';
+import { createClient } from '@/lib/supabase/server';
 import { HeroCarousel } from '@/app/components/landing/hero-carousel';
 
-function getUpcomingEvents(): Event[] {
+
+async function getUpcomingEvents(): Promise<Event[]> {
+  const supabase = createClient();
   const now = new Date();
-  return allEvents
-    .filter(event => event.status === 'Published' && new Date(event.date) >= now)
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-    .slice(0, 3);
+  
+  const { data, error } = await supabase
+    .from('events')
+    .select('*')
+    .eq('status', 'Published')
+    .gte('date', now.toISOString())
+    .order('date', { ascending: true })
+    .limit(3);
+
+  if (error) {
+    console.error('Error fetching upcoming events:', error);
+    return [];
+  }
+  return data;
 }
 
 const EventCard = ({ event }: { event: Event }) => (
     <Card className="flex flex-col overflow-hidden">
-      <CardHeader className="p-0">
+      <CardHeader className="p-0 relative aspect-video w-full">
         <Image
-          src={event.bannerImage}
+          src={event.bannerimage}
           alt={event.title}
-          width={600}
-          height={320}
+          fill
           className="object-cover"
           data-ai-hint={event.imageHint}
         />
@@ -54,8 +65,8 @@ const EventCard = ({ event }: { event: Event }) => (
     </Card>
 );
 
-export default function LandingPage() {
-    const upcomingEvents = getUpcomingEvents();
+export default async function LandingPage() {
+    const upcomingEvents = await getUpcomingEvents();
 
   return (
     <div className="flex-1 bg-background">

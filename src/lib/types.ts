@@ -43,7 +43,7 @@ export type Event = {
   state?: string;
   zipCode?: string;
   description: string;
-  bannerImage: string;
+  bannerimage: string;
   storagePath?: string;
   imageHint: string;
   gallery: { url: string; path?: string; hint?: string }[];

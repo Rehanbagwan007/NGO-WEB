@@ -17,17 +17,16 @@ export async function createEventAction(args: CreateEventArgs) {
     console.log("createEventAction received args:", JSON.stringify(args, null, 2));
 
   try {
-    const { title, description, bannerImage, socialPlatforms, location, date, status, imageHint } = args;
+    const { title, description, bannerimage, socialPlatforms, location, date, status, imageHint } = args;
 
     const eventData = {
         title,
         description,
-        bannerImage,
+        bannerimage,
         location,
         date,
         status,
         imageHint,
-        // gallery for now is not handled to avoid RLS issues
     };
 
     const { data: newEvent, error } = await supabase.from('events').insert(eventData).select().single();
@@ -40,7 +39,7 @@ export async function createEventAction(args: CreateEventArgs) {
         const shareInput: ShareEventInput = {
             title,
             description,
-            imageUrl: bannerImage,
+            imageUrl: newEvent.bannerimage,
             eventUrl: `https://your-website.com/events/${newEvent.id}`
         }
         shareEventOnSocialMedia(shareInput);

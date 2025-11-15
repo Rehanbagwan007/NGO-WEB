@@ -46,7 +46,7 @@ const formSchema = z.object({
   city: z.string().min(2, 'City is required.'),
   state: z.string().min(2, 'State is required.'),
   zipCode: z.string().min(5, 'Zip code is required.'),
-  bannerImage: z.custom<FileList>().refine(files => files?.length > 0, 'Banner image is required.'),
+  bannerimage: z.custom<FileList>().refine(files => files?.length > 0, 'Banner image is required.'),
   galleryMedia: z.custom<FileList>().optional(),
   status: z.enum(['Draft', 'Published']),
   socialPlatforms: z.array(z.string()).optional(),
@@ -209,7 +209,7 @@ export default function NewEventPage() {
     },
   });
 
-  const removePreview = (list: MediaPreview[], setList: (list: MediaPreview[]) => void, fileToRemove: File, fieldName: 'bannerImage' | 'galleryMedia') => {
+  const removePreview = (list: MediaPreview[], setList: (list: MediaPreview[]) => void, fileToRemove: File, fieldName: 'bannerimage' | 'galleryMedia') => {
     const newList = list.filter(item => item.file !== fileToRemove);
     setList(newList);
     
@@ -229,10 +229,10 @@ export default function NewEventPage() {
     try {
         const user = await getSupabaseUser();
 
-        let bannerImageUrl = '';
-        if (values.bannerImage && values.bannerImage.length > 0) {
+        let bannerimageUrl = '';
+        if (values.bannerimage && values.bannerimage.length > 0) {
             toast({ title: "Uploading banner image..." });
-            bannerImageUrl = await uploadFile(values.bannerImage[0], user);
+            bannerimageUrl = await uploadFile(values.bannerimage[0], user);
         }
 
         let galleryUrls: string[] = [];
@@ -247,7 +247,7 @@ export default function NewEventPage() {
             ...values,
             date: values.date.toISOString(),
             location: `${values.address}, ${values.city}, ${values.state} ${values.zipCode}`,
-            bannerImage: bannerImageUrl,
+            bannerimage: bannerimageUrl,
             gallery: galleryUrls.map(url => ({ url })),
             socialPlatforms: values.socialPlatforms || [],
         };
@@ -400,7 +400,7 @@ export default function NewEventPage() {
                         <FormLabel>Banner Image</FormLabel>
                         <FormField
                             control={form.control}
-                            name="bannerImage"
+                            name="bannerimage"
                             render={({ field }) => (
                                 <FormItem className="mt-2">
                                 <FormControl>
@@ -420,7 +420,7 @@ export default function NewEventPage() {
                                             variant="destructive"
                                             size="icon"
                                             className="absolute -top-2 -right-2 h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                                            onClick={() => removePreview(bannerPreview, setBannerPreview, p.file, 'bannerImage')}
+                                            onClick={() => removePreview(bannerPreview, setBannerPreview, p.file, 'bannerimage')}
                                         ><X className="h-4 w-4"/></Button>
                                     </div>
                                 ))}
