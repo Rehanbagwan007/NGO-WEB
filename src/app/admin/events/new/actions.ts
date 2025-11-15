@@ -45,7 +45,11 @@ export async function createEventAction(args: CreateEventArgs) {
         shareEventOnSocialMedia(shareInput);
     }
     
+    // Revalidate the paths to show the new event immediately
+    revalidatePath('/');
+    revalidatePath('/events');
     revalidatePath('/admin/events');
+
     return { success: true, title };
 
   } catch (error) {
