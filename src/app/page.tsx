@@ -1,4 +1,5 @@
 
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -21,6 +22,8 @@ async function getUpcomingEvents(): Promise<Event[]> {
     .gte('date', today.toISOString())
     .order('date', { ascending: true })
     .limit(3);
+
+    console.log(data)
 
   if (error) {
     console.error('Error fetching upcoming events:', error);
