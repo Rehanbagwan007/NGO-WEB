@@ -1,4 +1,3 @@
-
 'use client';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -17,6 +16,7 @@ import { cn } from '@/lib/utils';
 import { Menu, Search, LogOut } from 'lucide-react';
 import { adminNavLinks } from '@/lib/nav-links';
 import { Input } from '@/components/ui/input';
+import { createClient } from '@/lib/supabase/client';
 
 const SanvedanaLogo = ({ inSheet = false }: { inSheet?: boolean }) => (
   <Link href="/" className="flex items-center gap-2 font-semibold">
@@ -89,6 +89,12 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
+  const supabase = createClient();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push('/login');
+  };
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[280px_1fr]">
@@ -158,19 +164,17 @@ export default function AdminLayout({
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => router.push('/login')}>
+              <DropdownMenuItem onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4"/>
                 Logout
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </header>
-        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 bg-muted/40">
+        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 bg-muted/40 overflow-auto">
           {children}
         </main>
       </div>
     </div>
   );
 }
-
-    

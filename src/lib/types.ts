@@ -1,4 +1,3 @@
-
 export type UserProfile = {
   uid: string;
   email: string;
@@ -38,7 +37,7 @@ export type Donation = {
 export type Event = {
   id: string;
   title: string;
-  date: string; // Changed from Date to string for mock data
+  date: string; 
   location: string;
   address?: string;
   city?: string;
@@ -50,6 +49,6 @@ export type Event = {
   imageHint: string;
   gallery: { url: string; path?: string; hint?: string }[];
   status: 'Draft' | 'Published';
-  createdAt?: Date; // Made optional
+  createdAt?: string; 
   type?: 'Upcoming' | 'Past';
 };

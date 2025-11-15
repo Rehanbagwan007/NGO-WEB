@@ -1,7 +1,3 @@
-
-'use client';
-
-import { useEffect, useState } from 'react';
 import { MoreHorizontal } from 'lucide-react';
 import {
   Table,
@@ -29,21 +25,25 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import type { Donation } from '@/lib/types';
-import { donations as mockDonations } from '@/lib/data';
-import { Skeleton } from '@/components/ui/skeleton';
+import { createClient } from '@/lib/supabase/server';
 
-export default function DonationsManagerPage() {
-  const [donations, setDonations] = useState<Donation[]>([]);
-  const [loading, setLoading] = useState(true);
+async function getDonations() {
+    const supabase = createClient();
+    const { data, error } = await supabase
+        .from('donations')
+        .select('*')
+        .order('date', { ascending: false });
 
-  useEffect(() => {
-    // Simulate fetching data
-    setTimeout(() => {
-      setDonations(mockDonations);
-      setLoading(false);
-    }, 1000);
-  }, []);
+    if (error) {
+        console.error('Error fetching donations: ', error);
+        return [];
+    }
+    return data;
+}
 
+
+export default async function DonationsManagerPage() {
+  const donations: Donation[] = await getDonations();
 
   const getStatusVariant = (status: Donation['status']) => {
     switch (status) {
@@ -85,17 +85,7 @@ export default function DonationsManagerPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {loading ? (
-                Array.from({ length: 5 }).map((_, i) => (
-                  <TableRow key={i}>
-                    <TableCell><Skeleton className="h-5 w-32" /></TableCell>
-                    <TableCell><Skeleton className="h-5 w-24" /></TableCell>
-                    <TableCell><Skeleton className="h-6 w-20 rounded-full" /></TableCell>
-                    <TableCell className="hidden md:table-cell"><Skeleton className="h-5 w-24" /></TableCell>
-                    <TableCell><Skeleton className="h-8 w-8" /></TableCell>
-                  </TableRow>
-                ))
-              ) : donations.length > 0 ? (
+              {donations.length > 0 ? (
                 donations.map((donation) => (
                   <TableRow key={donation.id}>
                     <TableCell className="font-medium">{donation.donorName || 'Anonymous'}</TableCell>

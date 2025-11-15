@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -13,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { createClient } from '@/lib/supabase/client';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address.' }),
@@ -25,6 +25,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
+  const supabase = createClient();
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(formSchema),
@@ -36,20 +37,22 @@ export default function LoginPage() {
 
   const onSubmit = async (values: LoginFormValues) => {
     setLoading(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    if (values.email === 'admin@example.com' && values.password === 'password') {
+    const { error } = await supabase.auth.signInWithPassword(values);
+
+    if (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Login Failed',
+        description: error.message || 'Invalid email or password. Please try again.',
+      });
+    } else {
       toast({
         title: 'Login Successful',
         description: 'Welcome back!',
       });
-      router.push('/admin');
-    } else {
-      toast({
-        variant: 'destructive',
-        title: 'Login Failed',
-        description: 'Invalid email or password. Please try again.',
-      });
+      // router.push('/admin') will redirect to the page they were trying to access
+      // which is handled by the middleware.
+      router.refresh();
     }
     setLoading(false);
   };

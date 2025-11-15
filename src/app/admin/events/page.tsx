@@ -1,7 +1,3 @@
-
-'use client';
-
-import { useEffect, useState } from 'react';
 import { MoreHorizontal, PlusCircle } from 'lucide-react';
 import {
   Table,
@@ -30,21 +26,24 @@ import {
 } from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
 import type { Event } from '@/lib/types';
-import { events as mockEvents } from '@/lib/data';
-import { Skeleton } from '@/components/ui/skeleton';
+import { createClient } from '@/lib/supabase/server';
 
-export default function EventsManagerPage() {
-  const [events, setEvents] = useState<Event[]>([]);
-  const [loading, setLoading] = useState(true);
+async function getEvents() {
+  const supabase = createClient();
+  const { data: events, error } = await supabase
+    .from('events')
+    .select('*')
+    .order('created_at', { ascending: false });
 
-  useEffect(() => {
-    // Simulate fetching data
-    setTimeout(() => {
-      setEvents(mockEvents);
-      setLoading(false);
-    }, 1000);
-  }, []);
+  if (error) {
+    console.error('Error fetching events:', error);
+    return [];
+  }
+  return events;
+}
 
+export default async function EventsManagerPage() {
+  const events: Event[] = await getEvents();
 
   const getStatusVariant = (status: Event['status']) => {
     switch (status) {
@@ -92,17 +91,7 @@ export default function EventsManagerPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {loading ? (
-                Array.from({ length: 5 }).map((_, i) => (
-                  <TableRow key={i}>
-                    <TableCell><Skeleton className="h-5 w-32" /></TableCell>
-                    <TableCell><Skeleton className="h-6 w-20 rounded-full" /></TableCell>
-                    <TableCell className="hidden md:table-cell"><Skeleton className="h-5 w-24" /></TableCell>
-                    <TableCell className="hidden md:table-cell"><Skeleton className="h-5 w-40" /></TableCell>
-                    <TableCell><Skeleton className="h-8 w-8" /></TableCell>
-                  </TableRow>
-                ))
-              ) : events.length > 0 ? (
+              {events.length > 0 ? (
                 events.map((event) => (
                   <TableRow key={event.id}>
                     <TableCell className="font-medium">{event.title}</TableCell>
@@ -115,7 +104,7 @@ export default function EventsManagerPage() {
                       {event.date ? format(new Date(event.date), 'PPP') : 'No date'}
                     </TableCell>
                     <TableCell className="hidden md:table-cell">
-                      {event.createdAt ? format(event.createdAt, 'PPP p') : 'N/A'}
+                      {event.createdAt ? format(new Date(event.createdAt), 'PPP p') : 'N/A'}
                     </TableCell>
                     <TableCell>
                       <DropdownMenu>

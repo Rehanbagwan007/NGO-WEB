@@ -1,9 +1,10 @@
-
 'use server';
 
 import type { ShareEventInput } from '@/ai/flows/share-event-flow';
 import { shareEventOnSocialMedia } from '@/ai/flows/share-event-flow';
 import type { Event } from '@/lib/types';
+import { createClient } from '@/lib/supabase/server';
+import { revalidatePath } from 'next/cache';
 
 
 type CreateEventArgs = Omit<Event, 'id' | 'createdAt' | 'date'> & {
@@ -12,27 +13,40 @@ type CreateEventArgs = Omit<Event, 'id' | 'createdAt' | 'date'> & {
 }
 
 export async function createEventAction(args: CreateEventArgs) {
+    const supabase = createClient();
     console.log("createEventAction received args:", JSON.stringify(args, null, 2));
 
   try {
-    const { title, description, bannerImage, socialPlatforms } = args;
+    const { title, description, bannerImage, socialPlatforms, location, date, status, imageHint } = args;
 
-    // Simulate saving the event
-    console.log("Simulating event creation with title:", title);
+    const eventData = {
+        title,
+        description,
+        bannerImage,
+        location,
+        date,
+        status,
+        imageHint,
+        // gallery for now is not handled
+    };
 
-    // 3. Share on Social Media (if selected)
+    const { data: newEvent, error } = await supabase.from('events').insert(eventData).select().single();
+    
+    if (error) {
+        throw new Error(error.message);
+    }
+
     if (socialPlatforms && socialPlatforms.length > 0) {
         const shareInput: ShareEventInput = {
             title,
             description,
-            imageUrl: bannerImage, // This will be a placeholder URL
-            // In a real app, you'd generate a real URL
-            eventUrl: `https://your-website.com/events/evt-simulated-${Date.now()}`
+            imageUrl: bannerImage,
+            eventUrl: `https://your-website.com/events/${newEvent.id}`
         }
-        // We don't await this as it can happen in the background
         shareEventOnSocialMedia(shareInput);
     }
     
+    revalidatePath('/admin/events');
     return { success: true, title };
 
   } catch (error) {

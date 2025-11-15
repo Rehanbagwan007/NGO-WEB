@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -29,7 +28,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { createEventAction } from './actions';
-
+import { createClient } from '@/lib/supabase/client';
 
 const socialPlatforms = [
     { id: 'facebook', label: 'Facebook' },
@@ -60,6 +59,21 @@ interface MediaPreview {
     preview: string;
     type: 'image' | 'document';
 }
+
+
+async function uploadFile(file: File): Promise<string> {
+    const supabase = createClient();
+    const filePath = `events/${Date.now()}-${file.name}`;
+    const { error } = await supabase.storage.from('images').upload(filePath, file);
+
+    if (error) {
+        throw new Error(`Failed to upload ${file.name}: ${error.message}`);
+    }
+
+    const { data } = supabase.storage.from('images').getPublicUrl(filePath);
+    return data.publicUrl;
+}
+
 
 function MediaDropzone({
   field,
@@ -199,31 +213,38 @@ export default function NewEventPage() {
 
   async function onSubmit(values: CreateEventFormValues) {
     setLoading(true);
-    toast({ title: "Creating event...", description: "Please wait. This is a simulation." });
+    toast({ title: "Creating event...", description: "Please wait while we upload files." });
 
     try {
-        // Simulate file upload delay
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        let bannerImageUrl = '';
+        if (values.bannerImage && values.bannerImage.length > 0) {
+            toast({ title: "Uploading banner image..." });
+            bannerImageUrl = await uploadFile(values.bannerImage[0]);
+        }
 
-        // Since we removed Firebase, we'll use a placeholder URL for the banner
-        const bannerImageUrl = bannerPreview[0]?.preview || 'https://picsum.photos/seed/placeholder/1200/400';
+        let galleryUrls = [];
+        if (values.galleryMedia && values.galleryMedia.length > 0) {
+            toast({ title: "Uploading gallery images..." });
+            galleryUrls = await Promise.all(
+                Array.from(values.galleryMedia).map(file => uploadFile(file))
+            );
+        }
 
-        // Prepare data for server action
         const actionArgs = {
             ...values,
             date: values.date.toISOString(),
             location: `${values.address}, ${values.city}, ${values.state} ${values.zipCode}`,
             bannerImage: bannerImageUrl,
-            gallery: galleryPreviews.map(p => ({ url: p.preview })),
+            gallery: galleryUrls.map(url => ({ url })),
             socialPlatforms: values.socialPlatforms || [],
         };
 
-        // Call server action
+        toast({ title: "Saving event details..." });
         const result = await createEventAction(actionArgs);
         
         if (result.success) {
             toast({
-                title: 'Event Created! (Simulated)',
+                title: 'Event Created!',
                 description: `${result.title} has been successfully created.`,
             });
             router.push('/admin/events');
@@ -452,128 +473,130 @@ export default function NewEventPage() {
 
             {/* Right Column */}
             <div className="lg:col-span-1 space-y-8">
-                <Card>
-                  <CardHeader>
-                      <CardTitle>Date & Status</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                      <FormField
-                          control={form.control}
-                          name="date"
-                          render={({ field }) => (
-                              <FormItem className="flex flex-col">
-                              <FormLabel>Event Date</FormLabel>
-                              <Popover>
-                                  <PopoverTrigger asChild>
-                                  <FormControl>
-                                      <Button
-                                      variant={'outline'}
-                                      className={cn(
-                                          'pl-3 text-left font-normal',
-                                          !field.value && 'text-muted-foreground'
-                                      )}
-                                      >
-                                      {field.value ? (
-                                          format(field.value, 'PPP')
-                                      ) : (
-                                          <span>Pick a date</span>
-                                      )}
-                                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                      </Button>
-                                  </FormControl>
-                                  </PopoverTrigger>
-                                  <PopoverContent className="w-auto p-0" align="start">
-                                  <Calendar
-                                      mode="single"
-                                      selected={field.value}
-                                      onSelect={field.onChange}
-                                      initialFocus
-                                  />
-                                  </PopoverContent>
-                              </Popover>
-                              <FormMessage />
-                              </FormItem>
-                          )}
-                          />
-                      <FormField
-                          control={form.control}
-                          name="status"
-                          render={({ field }) => (
-                              <FormItem>
-                              <FormLabel>Status</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                  <FormControl>
-                                  <SelectTrigger>
-                                      <SelectValue placeholder="Select a status" />
-                                  </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                  <SelectItem value="Draft">Draft</SelectItem>
-                                  <SelectItem value="Published">Published</SelectItem>
-                                  </SelectContent>
-                              </Select>
-                              <FormMessage />
-                              </FormItem>
-                          )}
-                          />
-                  </CardContent>
-                </Card>
-                  <Card>
+                <div className="sticky top-6 space-y-8">
+                    <Card>
                       <CardHeader>
-                          <CardTitle>Sharing</CardTitle>
-                          <CardDescription>Select where to share this event upon creation.</CardDescription>
+                          <CardTitle>Date & Status</CardTitle>
                       </CardHeader>
-                      <CardContent>
+                      <CardContent className="space-y-6">
                           <FormField
                               control={form.control}
-                              name="socialPlatforms"
-                              render={() => (
-                                  <FormItem>
-                                  {socialPlatforms.map((item) => (
-                                      <FormField
-                                      key={item.id}
-                                      control={form.control}
-                                      name="socialPlatforms"
-                                      render={({ field }) => {
-                                          return (
-                                          <FormItem
-                                              key={item.id}
-                                              className="flex flex-row items-start space-x-3 space-y-0"
+                              name="date"
+                              render={({ field }) => (
+                                  <FormItem className="flex flex-col">
+                                  <FormLabel>Event Date</FormLabel>
+                                  <Popover>
+                                      <PopoverTrigger asChild>
+                                      <FormControl>
+                                          <Button
+                                          variant={'outline'}
+                                          className={cn(
+                                              'pl-3 text-left font-normal',
+                                              !field.value && 'text-muted-foreground'
+                                          )}
                                           >
-                                              <FormControl>
-                                              <Checkbox
-                                                  checked={field.value?.includes(item.id)}
-                                                  onCheckedChange={(checked) => {
-                                                  return checked
-                                                      ? field.onChange([...(field.value || []), item.id])
-                                                      : field.onChange(
-                                                          field.value?.filter(
-                                                          (value) => value !== item.id
-                                                          )
-                                                      )
-                                                  }}
-                                              />
-                                              </FormControl>
-                                              <FormLabel className="font-normal">
-                                              {item.label}
-                                              </FormLabel>
-                                          </FormItem>
-                                          )
-                                      }}
+                                          {field.value ? (
+                                              format(field.value, 'PPP')
+                                          ) : (
+                                              <span>Pick a date</span>
+                                          )}
+                                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                          </Button>
+                                      </FormControl>
+                                      </PopoverTrigger>
+                                      <PopoverContent className="w-auto p-0" align="start">
+                                      <Calendar
+                                          mode="single"
+                                          selected={field.value}
+                                          onSelect={field.onChange}
+                                          initialFocus
                                       />
-                                  ))}
+                                      </PopoverContent>
+                                  </Popover>
+                                  <FormMessage />
+                                  </FormItem>
+                              )}
+                              />
+                          <FormField
+                              control={form.control}
+                              name="status"
+                              render={({ field }) => (
+                                  <FormItem>
+                                  <FormLabel>Status</FormLabel>
+                                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                      <FormControl>
+                                      <SelectTrigger>
+                                          <SelectValue placeholder="Select a status" />
+                                      </SelectTrigger>
+                                      </FormControl>
+                                      <SelectContent>
+                                      <SelectItem value="Draft">Draft</SelectItem>
+                                      <SelectItem value="Published">Published</SelectItem>
+                                      </SelectContent>
+                                  </Select>
                                   <FormMessage />
                                   </FormItem>
                               )}
                               />
                       </CardContent>
-                  </Card>
-                <div className="flex justify-end gap-2">
-                  <Button type="button" variant="ghost" onClick={() => router.back()} disabled={loading}>Cancel</Button>
-                  <Button type="submit" disabled={loading}>
-                    {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    {loading ? 'Creating...' : 'Create Event'}
-                  </Button>
+                    </Card>
+                      <Card>
+                          <CardHeader>
+                              <CardTitle>Sharing</CardTitle>
+                              <CardDescription>Select where to share this event upon creation.</CardDescription>
+                          </CardHeader>
+                          <CardContent>
+                              <FormField
+                                  control={form.control}
+                                  name="socialPlatforms"
+                                  render={() => (
+                                      <FormItem>
+                                      {socialPlatforms.map((item) => (
+                                          <FormField
+                                          key={item.id}
+                                          control={form.control}
+                                          name="socialPlatforms"
+                                          render={({ field }) => {
+                                              return (
+                                              <FormItem
+                                                  key={item.id}
+                                                  className="flex flex-row items-start space-x-3 space-y-0"
+                                              >
+                                                  <FormControl>
+                                                  <Checkbox
+                                                      checked={field.value?.includes(item.id)}
+                                                      onCheckedChange={(checked) => {
+                                                      return checked
+                                                          ? field.onChange([...(field.value || []), item.id])
+                                                          : field.onChange(
+                                                              field.value?.filter(
+                                                              (value) => value !== item.id
+                                                              )
+                                                          )
+                                                      }}
+                                                  />
+                                                  </FormControl>
+                                                  <FormLabel className="font-normal">
+                                                  {item.label}
+                                                  </FormLabel>
+                                              </FormItem>
+                                              )
+                                          }}
+                                          />
+                                      ))}
+                                      <FormMessage />
+                                      </FormItem>
+                                  )}
+                                  />
+                          </CardContent>
+                      </Card>
+                    <div className="flex justify-end gap-2">
+                      <Button type="button" variant="ghost" onClick={() => router.back()} disabled={loading}>Cancel</Button>
+                      <Button type="submit" disabled={loading}>
+                        {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        {loading ? 'Creating...' : 'Create Event'}
+                      </Button>
+                    </div>
                 </div>
             </div>
           </div>
@@ -582,5 +605,3 @@ export default function NewEventPage() {
     </>
   );
 }
-
-    
