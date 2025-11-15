@@ -12,14 +12,11 @@ import { HeroCarousel } from '@/app/components/landing/hero-carousel';
 
 async function getUpcomingEvents(): Promise<Event[]> {
   const supabase = createClient();
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
+  
   const { data, error } = await supabase
     .from('events')
     .select('*')
     .eq('status', 'Published')
-    .gte('date', today.toISOString())
     .order('date', { ascending: true })
     .limit(3);
 
