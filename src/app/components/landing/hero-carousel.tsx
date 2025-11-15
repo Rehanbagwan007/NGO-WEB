@@ -46,11 +46,6 @@ export function HeroCarousel() {
         align: 'start',
         loop: true,
       }}
-      plugins={[
-        Autoplay({
-          delay: 4000,
-        }),
-      ]}
       className="w-full"
     >
       <CarouselContent>

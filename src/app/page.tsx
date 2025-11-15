@@ -86,7 +86,7 @@ export default async function LandingPage() {
                 strokeWidth="1"
                 className="inline-block h-16 w-16 lg:h-24 lg:w-24 -mb-4 text-primary"
               >
-                <path d="M12.83,4.64a5,5,0,0,0-7.07,0,5,5,0,0,0,0,7.07l7.07,7.07,7.07-7.07a5,5,0,0,0,0-7.07,5,5,0,0,0-7.07,0Z" />
+                <path d="M12.83,4.64a5,5,0,0,0-7.07,0,5,5,0,0,0,0,7.07l7.07,7.07,7.07-7.07a5,5-0,0,0,0-7.07,5,5,0,0,0-7.07,0Z" />
               </svg>
               pe.
             </h1>
@@ -188,7 +188,7 @@ function HeartIcon(props: React.SVGProps<SVGSVGElement>) {
       stroke="currentColor"
       strokeWidth="1"
     >
-      <path d="M12.83,4.64a5,5,0,0,0-7.07,0,5,5,0,0,0,0,7.07l7.07,7.07,7.07-7.07a5,5,0,0,0,0-7.07,5,5,0,0,0-7.07,0Z" />
+      <path d="M12.83,4.64a5,5,0,0,0-7.07,0,5,5,0,0,0,0,7.07l7.07,7.07,7.07-7.07a5,5-0,0,0,0-7.07,5,5,0,0,0-7.07,0Z" />
     </svg>
   );
 }

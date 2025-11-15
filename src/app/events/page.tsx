@@ -1,4 +1,5 @@
 
+
 import Image from 'next/image';
 import { ArrowRight, Calendar, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -19,7 +20,8 @@ async function getEvents(): Promise<Event[]> {
   const { data, error } = await supabase
     .from('events')
     .select('*')
-    .eq('status', 'Published');
+    .eq('status', 'Published')
+    .order('date', { ascending: true });
 
   if (error) {
     console.error('Error fetching published events:', error);
