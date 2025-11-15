@@ -27,7 +27,7 @@ export async function createEventAction(args: CreateEventArgs) {
         date,
         status,
         imageHint,
-        // gallery for now is not handled
+        // gallery for now is not handled to avoid RLS issues
     };
 
     const { data: newEvent, error } = await supabase.from('events').insert(eventData).select().single();
