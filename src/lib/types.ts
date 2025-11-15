@@ -45,7 +45,7 @@ export type Event = {
   description: string;
   bannerimage: string;
   storagePath?: string;
-  imageHint: string;
+  imagehint: string;
   gallery: { url: string; path?: string; hint?: string }[];
   status: 'Draft' | 'Published';
   createdAt?: string; 

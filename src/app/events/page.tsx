@@ -38,7 +38,7 @@ const EventCard = ({ event }: { event: Event }) => (
             alt={event.title}
             fill
             className="object-cover"
-            data-ai-hint={event.imageHint}
+            data-ai-hint={event.imagehint}
           />
         </div>
       ) : (

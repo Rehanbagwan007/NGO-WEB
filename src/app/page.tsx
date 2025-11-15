@@ -36,7 +36,7 @@ const EventCard = ({ event }: { event: Event }) => (
           alt={event.title}
           fill
           className="object-cover"
-          data-ai-hint={event.imageHint}
+          data-ai-hint={event.imagehint}
         />
       </CardHeader>
       <CardContent className="flex flex-1 flex-col p-6">

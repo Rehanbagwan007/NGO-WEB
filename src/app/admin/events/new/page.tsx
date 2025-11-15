@@ -50,7 +50,7 @@ const formSchema = z.object({
   galleryMedia: z.custom<FileList>().optional(),
   status: z.enum(['Draft', 'Published']),
   socialPlatforms: z.array(z.string()).optional(),
-  imageHint: z.string().optional(),
+  imagehint: z.string().optional(),
 });
 
 type CreateEventFormValues = z.infer<typeof formSchema>;
@@ -61,7 +61,7 @@ interface MediaPreview {
     type: 'image' | 'document';
 }
 
-async function getSupabaseUser() {
+async function getSupabaseUser(): Promise<User> {
     const supabase = createClient();
     const { data, error } = await supabase.auth.getUser();
     if (error || !data.user) {
@@ -73,7 +73,6 @@ async function getSupabaseUser() {
 
 async function uploadFile(file: File, user: User): Promise<string> {
     const supabase = createClient();
-    // Path becomes user-id/events/file-name
     const filePath = `${user.id}/events/${Date.now()}-${file.name}`;
     const { error } = await supabase.storage.from('images').upload(filePath, file);
 
@@ -205,7 +204,7 @@ export default function NewEventPage() {
       zipCode: '',
       status: 'Draft',
       socialPlatforms: ['facebook', 'instagram'],
-      imageHint: '',
+      imagehint: '',
     },
   });
 
@@ -429,7 +428,7 @@ export default function NewEventPage() {
                     </div>
                     <FormField
                         control={form.control}
-                        name="imageHint"
+                        name="imagehint"
                         render={({ field }) => (
                             <FormItem>
                             <FormLabel>Banner Image AI Hint</FormLabel>
