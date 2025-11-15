@@ -12,17 +12,16 @@ import { HeroCarousel } from '@/app/components/landing/hero-carousel';
 
 async function getUpcomingEvents(): Promise<Event[]> {
   const supabase = createClient();
-  
-  // DEBUGGING: Fetching all events to see if the connection works.
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
   const { data, error } = await supabase
     .from('events')
     .select('*')
+    .eq('status', 'Published')
+    .gte('date', today.toISOString())
     .order('date', { ascending: true })
     .limit(3);
-
-    console.log("Fetched Events Data:", data);
-    console.log("Fetch Error:", error);
-
 
   if (error) {
     console.error('Error fetching upcoming events:', error);
