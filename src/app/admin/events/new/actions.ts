@@ -17,7 +17,7 @@ export async function createEventAction(args: CreateEventArgs) {
     console.log("createEventAction received args:", JSON.stringify(args, null, 2));
 
   try {
-    const { title, description, bannerimage, socialPlatforms, location, date, status, imagehint } = args;
+    const { title, description, bannerimage, socialPlatforms, location, date, status, imagehint, gallery } = args;
 
     const eventData = {
         title,
@@ -27,6 +27,7 @@ export async function createEventAction(args: CreateEventArgs) {
         date,
         status,
         imagehint,
+        gallery,
     };
 
     const { data: newEvent, error } = await supabase.from('events').insert(eventData).select().single();
