@@ -16,12 +16,9 @@ async function getUpcomingEvents(): Promise<Event[]> {
   const { data, error } = await supabase
     .from('events')
     .select('*')
-    .eq('status', 'Draft')
+    .eq('status', 'Published')
     .order('date', { ascending: true })
     .limit(3);
-
-
-    console.log(data)
 
   if (error) {
     console.error('Error fetching upcoming events:', error);
@@ -141,11 +138,11 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      {/* Upcoming Events Section */}
+      {/* Events Section */}
        <section className="py-16 lg:py-24">
         <div className="container">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold font-headline">Upcoming Events</h2>
+            <h2 className="text-3xl font-bold font-headline">Events</h2>
              <Button asChild variant="outline">
               <Link href="/events">
                 View All Events <ArrowRight className="ml-2 h-4 w-4" />
@@ -160,7 +157,7 @@ export default async function LandingPage() {
             </div>
           ) : (
             <div className="flex h-40 items-center justify-center rounded-lg border-2 border-dashed bg-muted/50">
-              <p className="text-muted-foreground">No upcoming events scheduled. Please check back soon!</p>
+              <p className="text-muted-foreground">No events scheduled. Please check back soon!</p>
             </div>
           )}
         </div>
