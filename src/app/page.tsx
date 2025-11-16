@@ -16,7 +16,7 @@ async function getUpcomingEvents(): Promise<Event[]> {
   const { data, error } = await supabase
     .from('events')
     .select('*')
-    .eq('status', 'Draft')
+    .eq('status', 'Published')
     .order('date', { ascending: true })
     .limit(3);
 
@@ -33,13 +33,19 @@ async function getUpcomingEvents(): Promise<Event[]> {
 const EventCard = ({ event }: { event: Event }) => (
     <Card className="flex flex-col overflow-hidden">
       <CardHeader className="p-0 relative aspect-video w-full">
-        <Image
-          src={event.bannerimage}
-          alt={event.title}
-          fill
-          className="object-cover"
-          data-ai-hint={event.imagehint}
-        />
+        {event.bannerimage ? (
+            <Image
+              src={event.bannerimage}
+              alt={event.title}
+              fill
+              className="object-cover"
+              data-ai-hint={event.imagehint}
+            />
+        ) : (
+            <div className="aspect-video w-full bg-muted flex items-center justify-center">
+              <p className="text-muted-foreground">No Image</p>
+            </div>
+        )}
       </CardHeader>
       <CardContent className="flex flex-1 flex-col p-6">
         <CardTitle className="mb-2 font-headline text-xl">
