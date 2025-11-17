@@ -26,9 +26,11 @@ import {
 } from '@/components/ui/dropdown-menu';
 import type { Donation } from '@/lib/types';
 import { createClient } from '@/lib/supabase/server';
+import { cookies } from 'next/headers';
 
 async function getDonations() {
-    const supabase = createClient();
+    const cookieStore = cookies();
+    const supabase = createClient(cookieStore);
     const { data, error } = await supabase
         .from('donations')
         .select('*')

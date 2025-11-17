@@ -58,12 +58,7 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // if user is signed in and the current path is not the admin path, redirect to admin
-  if (user && !request.nextUrl.pathname.startsWith('/admin')) {
-    // return NextResponse.redirect(new URL('/admin', request.url))
-  }
-
-  // if user is not signed in and the current path is not the login path, redirect to login
+  // if user is not signed in and the current path is an admin path, redirect to login
   if (!user && request.nextUrl.pathname.startsWith('/admin')) {
     return NextResponse.redirect(new URL('/login', request.url))
   }

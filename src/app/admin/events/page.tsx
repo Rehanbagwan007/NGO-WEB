@@ -27,9 +27,11 @@ import {
 import Link from 'next/link';
 import type { Event } from '@/lib/types';
 import { createClient } from '@/lib/supabase/server';
+import { cookies } from 'next/headers';
 
 async function getEvents() {
-  const supabase = createClient();
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
   const { data: events, error } = await supabase
     .from('events')
     .select('*')

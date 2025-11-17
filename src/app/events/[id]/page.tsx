@@ -5,9 +5,11 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Calendar, MapPin } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+import { cookies } from 'next/headers';
 
 async function getEventById(id: string): Promise<Event | null> {
-  const supabase = createClient();
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
   const { data, error } = await supabase
     .from('events')
     .select('*')

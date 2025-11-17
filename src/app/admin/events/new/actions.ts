@@ -6,6 +6,7 @@ import { shareEventOnSocialMedia } from '@/ai/flows/share-event-flow';
 import type { Event } from '@/lib/types';
 import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
+import { cookies } from 'next/headers';
 
 
 type CreateEventArgs = Omit<Event, 'id' | 'createdAt' | 'date'> & {
@@ -14,7 +15,8 @@ type CreateEventArgs = Omit<Event, 'id' | 'createdAt' | 'date'> & {
 }
 
 export async function createEventAction(args: CreateEventArgs) {
-    const supabase = createClient();
+    const cookieStore = cookies();
+    const supabase = createClient(cookieStore);
     console.log("createEventAction received args:", JSON.stringify(args, null, 2));
 
   try {

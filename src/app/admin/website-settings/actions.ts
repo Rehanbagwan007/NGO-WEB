@@ -4,9 +4,11 @@
 import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import type { User } from '@supabase/supabase-js';
+import { cookies } from 'next/headers';
 
 async function getSupabaseUser(): Promise<User> {
-    const supabase = createClient();
+    const cookieStore = cookies();
+    const supabase = createClient(cookieStore);
     const { data, error } = await supabase.auth.getUser();
     if (error || !data.user) {
         throw new Error('User not found. Please log in again.');
@@ -15,12 +17,15 @@ async function getSupabaseUser(): Promise<User> {
 }
 
 async function uploadFile(file: File, user: User): Promise<string> {
-    const supabase = createClient();
+    const cookieStore = cookies();
+    const supabase = createClient(cookieStore);
     const filePath = `${user.id}/hero-banners/${Date.now()}-${file.name}`;
-    const { error } = await supabase.storage.from('images').upload(filePath, file);
+    // Note: The client-side uploadFile in NewEvent page uses a different client.
+    // This is a server-side action.
+    const { error: uploadError } = await supabase.storage.from('images').upload(filePath, file);
 
-    if (error) {
-        throw new Error(`Failed to upload ${file.name}: ${error.message}`);
+    if (uploadError) {
+        throw new Error(`Failed to upload ${file.name}: ${uploadError.message}`);
     }
 
     const { data } = supabase.storage.from('images').getPublicUrl(filePath);
@@ -28,7 +33,8 @@ async function uploadFile(file: File, user: User): Promise<string> {
 }
 
 export async function addHeroBannerAction(formData: FormData) {
-    const supabase = createClient();
+    const cookieStore = cookies();
+    const supabase = createClient(cookieStore);
     const imageFile = formData.get('image') as File;
     const altText = formData.get('altText') as string;
 
@@ -60,7 +66,8 @@ export async function addHeroBannerAction(formData: FormData) {
 }
 
 export async function deleteHeroBannerAction(id: string) {
-    const supabase = createClient();
+    const cookieStore = cookies();
+    const supabase = createClient(cookieStore);
 
     try {
         const { error } = await supabase.from('hero_banners').delete().eq('id', id);

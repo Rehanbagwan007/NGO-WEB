@@ -9,10 +9,12 @@ import type { Event } from '@/lib/types';
 import { createClient } from '@/lib/supabase/server';
 import { HeroCarousel } from '@/app/components/landing/hero-carousel';
 import { MissionSection } from '@/app/components/landing/mission-section';
+import { cookies } from 'next/headers';
 
 
 async function getUpcomingEvents(): Promise<Event[]> {
-  const supabase = createClient();
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
   
   const { data, error } = await supabase
     .from('events')
