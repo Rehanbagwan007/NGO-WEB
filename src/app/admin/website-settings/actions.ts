@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import type { User } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
+import type { WebsiteContent } from '@/lib/types';
 
 async function getSupabaseUser(): Promise<User> {
     const cookieStore = cookies();
@@ -84,5 +85,29 @@ export async function deleteHeroBannerAction(id: string) {
     } catch (error) {
         console.error("Error deleting hero banner:", error);
         return { success: false, error: error instanceof Error ? error.message : 'An unknown error occurred.' };
+    }
+}
+
+export async function updateWebsiteContentAction(data: Partial<WebsiteContent>) {
+    const cookieStore = cookies();
+    const supabase = createClient(cookieStore);
+
+    const updates = Object.entries(data).map(([id, content]) => ({
+        id,
+        content: content || '',
+    }));
+
+    try {
+        const { error } = await supabase.from('website_content').upsert(updates);
+        if (error) throw error;
+        
+        // Revalidate all paths that might use this content
+        revalidatePath('/');
+        revalidatePath('/admin/website-settings');
+
+        return { success: true };
+    } catch(error) {
+        console.error('Error updating website content:', error);
+        return { success: false, error: error instanceof Error ? error.message : 'An unknown error has occurred.'};
     }
 }

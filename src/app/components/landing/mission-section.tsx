@@ -5,8 +5,9 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import type { WebsiteContent } from '@/lib/types';
 
-export function MissionSection() {
+export function MissionSection({ content }: { content: WebsiteContent }) {
   const containerVariants = {
     hidden: {},
     visible: {
@@ -69,25 +70,19 @@ export function MissionSection() {
               className="text-5xl font-headline font-black leading-tight tracking-tighter"
               variants={itemVariants}
             >
-              Our Mission
+              {content.mission_title || 'Our Mission'}
             </motion.h2>
             <motion.p 
               className="text-muted-foreground text-lg"
               variants={itemVariants}
             >
-              At Sanvedana, we believe that every child deserves the chance
-              to thrive in a healthy, safe, and supportive world. Our mission
-              transcends borders and disabilities, bringing together
-              individuals from all walks of life.
+              {content.mission_p1}
             </motion.p>
             <motion.p 
               className="text-muted-foreground"
               variants={itemVariants}
             >
-              Through collaborative efforts in education, therapy, and
-              community building, we aim to create a world where equality,
-              compassion, and opportunity are accessible to all. Together,
-              we're building a brighter future, one child at a time.
+              {content.mission_p2}
             </motion.p>
             <motion.div variants={itemVariants}>
               <Button asChild size="lg">

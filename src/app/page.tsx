@@ -1,33 +1,46 @@
 
-
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Calendar, MapPin } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import type { Event } from '@/lib/types';
+import type { Event, WebsiteContent } from '@/lib/types';
 import { createClient } from '@/lib/supabase/server';
 import { HeroCarousel } from '@/app/components/landing/hero-carousel';
 import { MissionSection } from '@/app/components/landing/mission-section';
 import { cookies } from 'next/headers';
 
+async function getPageData() {
+    const cookieStore = cookies();
+    const supabase = createClient(cookieStore);
 
-async function getUpcomingEvents(): Promise<Event[]> {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
-  
-  const { data, error } = await supabase
-    .from('events')
-    .select('*')
-    .order('date', { ascending: true })
-    .limit(3);
+    const eventsPromise = supabase
+        .from('events')
+        .select('*')
+        .order('date', { ascending: true })
+        .limit(3);
 
-  if (error) {
-    console.error('Error fetching upcoming events:', error);
-    return [];
-  }
-  return data || [];
+    const contentPromise = supabase.from('website_content').select('*');
+
+    const [{ data: events, error: eventsError }, { data: content, error: contentError }] = await Promise.all([
+        eventsPromise,
+        contentPromise,
+    ]);
+
+    if (eventsError) console.error('Error fetching upcoming events:', eventsError);
+    if (contentError) console.error('Error fetching website content:', contentError);
+
+    const contentAsObject = content?.reduce((acc, item) => {
+        acc[item.id as keyof WebsiteContent] = item.content || '';
+        return acc;
+    }, {} as WebsiteContent) || ({} as WebsiteContent);
+
+    return {
+        upcomingEvents: events || [],
+        content: contentAsObject,
+    };
 }
+
 
 const EventCard = ({ event }: { event: Event }) => (
     <Card className="flex flex-col overflow-hidden">
@@ -73,7 +86,7 @@ const EventCard = ({ event }: { event: Event }) => (
 );
 
 export default async function LandingPage() {
-    const upcomingEvents = await getUpcomingEvents();
+    const { upcomingEvents, content } = await getPageData();
 
   return (
     <div className="flex-1 bg-background">
@@ -103,7 +116,7 @@ export default async function LandingPage() {
       </section>
 
       {/* About Us Section */}
-      <MissionSection />
+      <MissionSection content={content} />
 
       {/* Events Section */}
        <section className="py-16 lg:py-24">
@@ -147,20 +160,5 @@ export default async function LandingPage() {
         </div>
       </section>
     </div>
-  );
-}
-
-function HeartIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1"
-    >
-      <path d="M12.83,4.64a5,5,0,0,0-7.07,0,5,5,0,0,0,0,7.07l7.07,7.07,7.07-7.07a5,5,0,0,0,0-7.07,5,5,0,0,0-7.07,0Z" />
-    </svg>
   );
 }

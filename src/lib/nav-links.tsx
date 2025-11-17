@@ -16,6 +16,9 @@ import {
   Sparkles,
   BookOpenCheck,
   Globe,
+  Facebook,
+  Twitter,
+  Instagram,
 } from 'lucide-react';
 import type { ReactNode } from 'react';
 

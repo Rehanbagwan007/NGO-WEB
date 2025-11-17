@@ -12,11 +12,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from '../ui/dropdown-menu';
-import { Menu, Heart } from 'lucide-react';
+import { Menu, Heart, Facebook, Instagram, Twitter } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
 import { useState, useEffect } from 'react';
 import { mainNavLinks } from '@/lib/nav-links';
 import { cn } from '@/lib/utils';
+import type { WebsiteContent } from '@/lib/types';
+import { createClient } from '@/lib/supabase/client';
 
 
 const SanvedanaLogo = ({ scrolled = false }: { scrolled?: boolean }) => (
@@ -64,12 +66,29 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [content, setContent] = useState<WebsiteContent | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
     window.addEventListener('scroll', handleScroll);
+    handleScroll();
+
+    const fetchContent = async () => {
+        const supabase = createClient();
+        const { data, error } = await supabase.from('website_content').select('*');
+        if (error) console.error('Error fetching footer content:', error);
+        else {
+            const contentAsObject = data?.reduce((acc, item) => {
+                acc[item.id as keyof WebsiteContent] = item.content || '';
+                return acc;
+            }, {} as WebsiteContent) || {};
+            setContent(contentAsObject);
+        }
+    };
+    fetchContent();
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
@@ -82,10 +101,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return <>{children}</>;
   }
 
+  const copyrightText = content?.footer_copyright?.replace('{year}', new Date().getFullYear().toString()) || `© ${new Date().getFullYear()} Sanvedana. All rights reserved.`;
+
   return (
     <div className="flex min-h-screen w-full flex-col bg-background">
       
-      <header className={cn("sticky top-0 z-50 flex h-24 w-full items-center px-4 md:px-6 transition-all duration-300")}>
+      <header className={cn("sticky top-0 z-50 flex h-24 w-full items-center px-4 md:px-6 transition-all duration-300", isScrolled && 'bg-background/80 backdrop-blur-sm border-b')}>
         <div className="container mx-auto flex items-center justify-between w-full">
             <div className="flex items-center gap-2">
                 <SanvedanaLogo scrolled={isScrolled} />
@@ -159,19 +180,32 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </header> 
       <main className="flex-1 -mt-24">{children}</main>
        <footer className="border-t bg-background">
-          <div className="container mx-auto flex flex-col items-center justify-between gap-4 px-4 py-8 sm:flex-row md:px-6">
-            <div className="text-center sm:text-left">
+          <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 items-center gap-8 px-4 py-8 md:px-6">
+            <div className="text-center md:text-left">
               <SanvedanaLogo />
               <p className="mt-2 text-sm text-muted-foreground">
-                Empowering specially-abled children since 2005.
+                {content?.footer_about || 'Empowering specially-abled children since 2005.'}
               </p>
             </div>
-             <div className="flex gap-4">
-                <Link href="#" className="text-sm text-muted-foreground hover:text-primary">Cookies</Link>
-                <Link href="#" className="text-sm text-muted-foreground hover:text-primary">Privacy & Policy</Link>
+             <div className="flex justify-center items-center gap-4">
+                {content?.social_facebook && (
+                    <Button asChild variant="ghost" size="icon">
+                        <Link href={content.social_facebook} target="_blank" rel="noopener noreferrer"><Facebook className="h-5 w-5" /></Link>
+                    </Button>
+                )}
+                 {content?.social_instagram && (
+                    <Button asChild variant="ghost" size="icon">
+                        <Link href={content.social_instagram} target="_blank" rel="noopener noreferrer"><Instagram className="h-5 w-5" /></Link>
+                    </Button>
+                )}
+                 {content?.social_twitter && (
+                    <Button asChild variant="ghost" size="icon">
+                        <Link href={content.social_twitter} target="_blank" rel="noopener noreferrer"><Twitter className="h-5 w-5" /></Link>
+                    </Button>
+                )}
             </div>
-            <p className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} Sanvedana. All rights reserved.
+            <p className="text-sm text-muted-foreground text-center md:text-right">
+              {copyrightText}
             </p>
           </div>
         </footer>

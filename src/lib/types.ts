@@ -51,3 +51,14 @@ export type Event = {
   createdAt?: string; 
   type?: 'Upcoming' | 'Past';
 };
+
+export type WebsiteContent = {
+    mission_title: string;
+    mission_p1: string;
+    mission_p2: string;
+    footer_about: string;
+    footer_copyright: string;
+    social_facebook: string;
+    social_instagram: string;
+    social_twitter: string;
+};
