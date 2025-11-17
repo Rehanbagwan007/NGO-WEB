@@ -20,7 +20,6 @@ async function getEvents(): Promise<Event[]> {
   const { data, error } = await supabase
     .from('events')
     .select('*')
-    .eq('status', 'Published')
     .order('date', { ascending: true });
 
   if (error) {

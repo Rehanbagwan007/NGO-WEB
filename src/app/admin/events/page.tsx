@@ -1,3 +1,4 @@
+
 import { MoreHorizontal, PlusCircle } from 'lucide-react';
 import {
   Table,
@@ -15,7 +16,6 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import {
   DropdownMenu,
@@ -45,17 +45,6 @@ async function getEvents() {
 export default async function EventsManagerPage() {
   const events: Event[] = await getEvents();
 
-  const getStatusVariant = (status: Event['status']) => {
-    switch (status) {
-      case 'Published':
-        return 'default';
-      case 'Draft':
-        return 'secondary';
-      default:
-        return 'outline';
-    }
-  };
-
   return (
     <>
       <div className="flex items-center justify-between">
@@ -80,7 +69,6 @@ export default async function EventsManagerPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Event Title</TableHead>
-                <TableHead>Status</TableHead>
                 <TableHead className="hidden md:table-cell">Date</TableHead>
                 <TableHead className="hidden md:table-cell">
                   Created At
@@ -95,11 +83,6 @@ export default async function EventsManagerPage() {
                 events.map((event) => (
                   <TableRow key={event.id}>
                     <TableCell className="font-medium">{event.title}</TableCell>
-                    <TableCell>
-                      <Badge variant={getStatusVariant(event.status)}>
-                        {event.status}
-                      </Badge>
-                    </TableCell>
                     <TableCell className="hidden md:table-cell">
                       {event.date ? format(new Date(event.date), 'PPP') : 'No date'}
                     </TableCell>
@@ -132,7 +115,7 @@ export default async function EventsManagerPage() {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={5} className="h-24 text-center">
+                  <TableCell colSpan={4} className="h-24 text-center">
                     No events found.
                   </TableCell>
                 </TableRow>

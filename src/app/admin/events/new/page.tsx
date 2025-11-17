@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -22,7 +23,6 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -48,7 +48,6 @@ const formSchema = z.object({
   zipCode: z.string().min(5, 'Zip code is required.'),
   bannerimage: z.custom<FileList>().refine(files => files?.length > 0, 'Banner image is required.'),
   galleryMedia: z.custom<FileList>().optional(),
-  status: z.enum(['Draft', 'Published']),
   socialPlatforms: z.array(z.string()).optional(),
   imagehint: z.string().optional(),
 });
@@ -202,7 +201,6 @@ export default function NewEventPage() {
       city: '',
       state: '',
       zipCode: '',
-      status: 'Draft',
       socialPlatforms: ['facebook', 'instagram'],
       imagehint: '',
     },
@@ -488,9 +486,9 @@ export default function NewEventPage() {
                 <div className="sticky top-6 space-y-8">
                     <Card>
                       <CardHeader>
-                          <CardTitle>Date & Status</CardTitle>
+                          <CardTitle>Date</CardTitle>
                       </CardHeader>
-                      <CardContent className="space-y-6">
+                      <CardContent>
                           <FormField
                               control={form.control}
                               name="date"
@@ -525,27 +523,6 @@ export default function NewEventPage() {
                                       />
                                       </PopoverContent>
                                   </Popover>
-                                  <FormMessage />
-                                  </FormItem>
-                              )}
-                              />
-                          <FormField
-                              control={form.control}
-                              name="status"
-                              render={({ field }) => (
-                                  <FormItem>
-                                  <FormLabel>Status</FormLabel>
-                                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                      <FormControl>
-                                      <SelectTrigger>
-                                          <SelectValue placeholder="Select a status" />
-                                      </SelectTrigger>
-                                      </FormControl>
-                                      <SelectContent>
-                                      <SelectItem value="Draft">Draft</SelectItem>
-                                      <SelectItem value="Published">Published</SelectItem>
-                                      </SelectContent>
-                                  </Select>
                                   <FormMessage />
                                   </FormItem>
                               )}

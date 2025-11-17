@@ -1,3 +1,4 @@
+
 export type UserProfile = {
   id: string;
   email?: string;
@@ -47,7 +48,6 @@ export type Event = {
   storagePath?: string;
   imagehint: string;
   gallery: { url: string; path?: string; hint?: string }[];
-  status: 'Draft' | 'Published';
   createdAt?: string; 
   type?: 'Upcoming' | 'Past';
 };

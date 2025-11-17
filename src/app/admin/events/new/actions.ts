@@ -1,3 +1,4 @@
+
 'use server';
 
 import type { ShareEventInput } from '@/ai/flows/share-event-flow';
@@ -17,7 +18,7 @@ export async function createEventAction(args: CreateEventArgs) {
     console.log("createEventAction received args:", JSON.stringify(args, null, 2));
 
   try {
-    const { title, description, bannerimage, socialPlatforms, location, date, status, imagehint, gallery } = args;
+    const { title, description, bannerimage, socialPlatforms, location, date, imagehint, gallery } = args;
 
     const eventData = {
         title,
@@ -25,7 +26,6 @@ export async function createEventAction(args: CreateEventArgs) {
         bannerimage,
         location,
         date,
-        status,
         imagehint,
         gallery,
     };

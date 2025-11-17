@@ -4,7 +4,6 @@ import type { Event } from '@/lib/types';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Calendar, MapPin } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 
 async function getEventById(id: string): Promise<Event | null> {
@@ -112,11 +111,6 @@ export default async function EventDetailPage({ params }: { params: { id: string
                             <p className="text-muted-foreground">{event.location}</p>
                         </div>
                     </div>
-                     <div className="flex items-start space-x-3">
-                        <Badge variant={event.status === 'Published' ? 'default' : 'secondary'} className="mt-1">
-                            {event.status}
-                        </Badge>
-                     </div>
                 </CardContent>
               </Card>
             </div>
