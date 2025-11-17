@@ -85,14 +85,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen w-full flex-col bg-background">
       
-      <header className={cn("sticky top-0 z-50 flex h-24 w-full items-center px-4 md:px-6 transition-all duration-300 bg-background border-b")}>
+      <header className={cn("sticky top-0 z-50 flex h-24 w-full items-center px-4 md:px-6 transition-all duration-300")}>
         <div className="container mx-auto flex items-center justify-between w-full">
             <div className="flex items-center gap-2">
                 <SanvedanaLogo scrolled={isScrolled} />
             </div>
 
             <div className="flex items-center gap-4">
-                <nav className={cn("hidden md:flex items-center gap-6", isScrolled && 'hidden')}>
+                <nav className={cn(
+                    "items-center gap-6",
+                    isScrolled ? 'hidden' : 'hidden md:flex'
+                  )}>
                   {mainNavLinks.map((link) => (
                     <Link
                       key={link.href}
