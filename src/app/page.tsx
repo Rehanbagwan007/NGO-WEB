@@ -8,6 +8,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import type { Event } from '@/lib/types';
 import { createClient } from '@/lib/supabase/server';
 import { HeroCarousel } from '@/app/components/landing/hero-carousel';
+import { MissionSection } from '@/app/components/landing/mission-section';
 
 
 async function getUpcomingEvents(): Promise<Event[]> {
@@ -16,7 +17,7 @@ async function getUpcomingEvents(): Promise<Event[]> {
   const { data, error } = await supabase
     .from('events')
     .select('*')
-    .eq('status', 'Draft')
+    .eq('status', 'Published')
     .order('date', { ascending: true })
     .limit(3);
 
@@ -101,42 +102,7 @@ export default async function LandingPage() {
       </section>
 
       {/* About Us Section */}
-      <section id="about" className="py-16 lg:py-24 bg-muted/20">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="relative h-[500px]">
-              <Image
-                src="https://picsum.photos/seed/about-main/600/700"
-                alt="Diverse group of children with special needs in a classroom setting"
-                width={600}
-                height={700}
-                className="rounded-3xl shadow-lg object-cover w-full h-full"
-                data-ai-hint="disabled children classroom"
-              />
-            </div>
-            <div className="space-y-6">
-              <h2 className="text-5xl font-headline font-black leading-tight tracking-tighter">
-                Our Mission
-              </h2>
-              <p className="text-muted-foreground text-lg">
-                At Sanvedana, we believe that every child deserves the chance
-                to thrive in a healthy, safe, and supportive world. Our mission
-                transcends borders and disabilities, bringing together
-                individuals from all walks of life.
-              </p>
-              <p className="text-muted-foreground">
-                Through collaborative efforts in education, therapy, and
-                community building, we aim to create a world where equality,
-                compassion, and opportunity are accessible to all. Together,
-                we're building a brighter future, one child at a time.
-              </p>
-              <Button asChild size="lg">
-                <Link href="/about">Learn More</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
+      <MissionSection />
 
       {/* Events Section */}
        <section className="py-16 lg:py-24">
