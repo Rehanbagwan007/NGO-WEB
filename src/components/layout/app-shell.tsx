@@ -20,44 +20,44 @@ import { cn } from '@/lib/utils';
 
 
 const SanvedanaLogo = ({ scrolled = false }: { scrolled?: boolean }) => (
-  <Link href="/" className="flex items-center gap-2 font-semibold transition-all duration-300">
-    <svg
-      width="40"
-      height="40"
-      viewBox="0 0 100 100"
-      xmlns="http://www.w3.org/2000/svg"
-      className={cn("transition-all duration-300", scrolled ? 'h-8 w-8' : 'h-10 w-10')}
-    >
-      <defs>
-        <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" style={{ stopColor: 'hsl(var(--primary))', stopOpacity: 1 }} />
-          <stop offset="100%" style={{ stopColor: 'hsl(var(--primary) / 0.8)', stopOpacity: 1 }} />
-        </linearGradient>
-      </defs>
-      <path
-        d="M50 10 C 20 10, 10 30, 10 50 C 10 70, 20 90, 50 90"
-        fill="none"
-        stroke="url(#logo-gradient)"
-        strokeWidth="10"
-        strokeLinecap="round"
-      />
-      <path
-        d="M50 10 C 80 10, 90 30, 90 50 C 90 70, 80 90, 50 90"
-        fill="none"
-        stroke="url(#logo-gradient)"
-        strokeWidth="10"
-        strokeLinecap="round"
-      />
-      <path
-        d="M30 50 C 30 35, 40 25, 50 25 C 60 25, 70 35, 70 50 C 70 65, 60 75, 50 75 C 40 75, 30 65, 30 50 Z"
-        fill="url(#logo-gradient)"
-      />
-    </svg>
-    <span className={cn("font-headline text-2xl tracking-tighter", scrolled ? 'hidden' : 'inline')}>
-      Sanvedana
-    </span>
-  </Link>
-);
+    <Link href="/" className="flex items-center gap-2 font-semibold transition-all duration-300">
+      <svg
+        width="40"
+        height="40"
+        viewBox="0 0 100 100"
+        xmlns="http://www.w3.org/2000/svg"
+        className={cn("transition-all duration-300", scrolled ? 'h-8 w-8' : 'h-10 w-10')}
+      >
+        <defs>
+          <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style={{ stopColor: 'hsl(var(--primary))', stopOpacity: 1 }} />
+            <stop offset="100%" style={{ stopColor: 'hsl(var(--primary) / 0.8)', stopOpacity: 1 }} />
+          </linearGradient>
+        </defs>
+        <path
+          d="M50 10 C 20 10, 10 30, 10 50 C 10 70, 20 90, 50 90"
+          fill="none"
+          stroke="url(#logo-gradient)"
+          strokeWidth="10"
+          strokeLinecap="round"
+        />
+        <path
+          d="M50 10 C 80 10, 90 30, 90 50 C 90 70, 80 90, 50 90"
+          fill="none"
+          stroke="url(#logo-gradient)"
+          strokeWidth="10"
+          strokeLinecap="round"
+        />
+        <path
+          d="M30 50 C 30 35, 40 25, 50 25 C 60 25, 70 35, 70 50 C 70 65, 60 75, 50 75 C 40 75, 30 65, 30 50 Z"
+          fill="url(#logo-gradient)"
+        />
+      </svg>
+      <span className={cn("font-headline text-2xl tracking-tighter", scrolled ? 'hidden' : 'inline')}>
+        Sanvedana
+      </span>
+    </Link>
+  );
 
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -85,7 +85,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen w-full flex-col bg-background">
       
-      <header className={cn("sticky top-0 z-50 flex h-24 w-full items-center px-4 md:px-6 transition-all duration-300", isScrolled ? 'bg-background/80 backdrop-blur-sm border-b' : 'bg-transparent')}>
+      <header className={cn("sticky top-0 z-50 flex h-24 w-full items-center px-4 md:px-6 transition-all duration-300", isScrolled ? 'bg-background/80 backdrop-blur-sm border-b' : 'bg-background border-b')}>
         <div className="container mx-auto flex items-center justify-between w-full">
             <div className="flex items-center gap-2">
                 <SanvedanaLogo scrolled={isScrolled} />
