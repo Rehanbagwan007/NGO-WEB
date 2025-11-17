@@ -10,56 +10,80 @@ import {
 } from '@/components/ui/carousel';
 import Image from 'next/image';
 import Autoplay from 'embla-carousel-autoplay';
+import { createClient } from '@/lib/supabase/client';
+import { useEffect, useState } from 'react';
 
-const heroImages = [
-  {
-    src: 'https://picsum.photos/seed/hero1/1200/800',
-    alt: 'A beautiful landscape',
-    hint: 'landscape mountain',
-  },
-  {
-    src: 'https://picsum.photos/seed/hero2/1200/800',
-    alt: 'A city street at sunset',
-    hint: 'city sunset',
-  },
-  {
-    src: 'https://picsum.photos/seed/hero3/1200/800',
-    alt: 'A highland cow on a beach',
-    hint: 'highland cow',
-  },
-  {
-    src: 'https://picsum.photos/seed/hero4/1200/800',
-    alt: 'A child painting',
-    hint: 'child painting',
-  },
-  {
-    src: 'https://picsum.photos/seed/hero5/1200/800',
-    alt: 'A helping hand',
-    hint: 'helping hand',
-  },
-];
+type HeroBanner = {
+  id: string;
+  image_url: string;
+  alt_text: string | null;
+};
+
+async function getHeroBanners(): Promise<HeroBanner[]> {
+    const supabase = createClient();
+    const { data, error } = await supabase.from('hero_banners').select('*').order('created_at', { ascending: false });
+    if (error) {
+        console.error("Error fetching hero banners:", error);
+        return [];
+    }
+    return data;
+}
 
 export function HeroCarousel() {
+  const [banners, setBanners] = useState<HeroBanner[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchBanners = async () => {
+      const data = await getHeroBanners();
+      setBanners(data);
+      setLoading(false);
+    };
+    fetchBanners();
+  }, []);
+
+  if (loading) {
+    return (
+        <div className="p-1">
+            <div className="relative overflow-hidden rounded-2xl h-[80vh] bg-muted animate-pulse"></div>
+        </div>
+    )
+  }
+
+  if (banners.length === 0) {
+      return (
+          <div className="p-1">
+             <div className="relative flex items-center justify-center overflow-hidden rounded-2xl h-[80vh] bg-muted">
+                <p className="text-muted-foreground">No hero images configured.</p>
+             </div>
+          </div>
+      )
+  }
+
   return (
     <Carousel
       opts={{
         align: 'start',
         loop: true,
       }}
+      plugins={[
+        Autoplay({
+          delay: 5000,
+        }),
+      ]}
       className="w-full"
     >
       <CarouselContent>
-        {heroImages.map((image, index) => (
-          <CarouselItem key={index}>
+        {banners.map((image, index) => (
+          <CarouselItem key={image.id}>
             <div className="p-1">
               <div className="relative overflow-hidden rounded-2xl h-[80vh]">
                 <Image
-                  src={image.src}
-                  alt={image.alt}
+                  src={image.image_url}
+                  alt={image.alt_text || 'Sanvedana hero image'}
                   fill
                   priority={index === 0}
                   className="object-cover w-full h-full rounded-2xl"
-                  data-ai-hint={image.hint}
                 />
               </div>
             </div>
