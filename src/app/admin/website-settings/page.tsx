@@ -16,6 +16,7 @@ import { addHeroBannerAction, deleteHeroBannerAction, updateWebsiteContentAction
 import { createClient } from '@/lib/supabase/client';
 import type { WebsiteContent } from '@/lib/types';
 import { Textarea } from '@/components/ui/textarea';
+import { Skeleton } from '@/components/ui/skeleton';
 
 type HeroBanner = {
     id: string;
@@ -88,7 +89,8 @@ export default function WebsiteSettingsPage() {
 
     useEffect(() => {
         fetchAndSetData();
-    }, [contentForm]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
 
     const onHeroSubmit: SubmitHandler<HeroFormValues> = async (values) => {
@@ -198,7 +200,7 @@ export default function WebsiteSettingsPage() {
                                     <FormItem>
                                         <FormLabel>Copyright Text</FormLabel>
                                         <FormControl><Input {...field} /></FormControl>
-                                        <FormDescription>Use `&#123;year&#125;` to automatically insert the current year.</FormDescription>
+                                        <FormDescription>Use `{'{year}'}` to automatically insert the current year.</FormDescription>
                                         <FormMessage />
                                     </FormItem>
                                 )}/>
@@ -320,3 +322,5 @@ export default function WebsiteSettingsPage() {
         </div>
     );
 }
+
+    
