@@ -1,5 +1,5 @@
 
-import { MoreHorizontal, PlusCircle } from 'lucide-react';
+import { PlusCircle } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -17,17 +17,11 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
 import type { Event } from '@/lib/types';
 import { createClient } from '@/lib/supabase/server';
 import { cookies } from 'next/headers';
+import { EventActions } from './components/event-actions';
 
 async function getEvents() {
   const cookieStore = cookies();
@@ -92,26 +86,7 @@ export default async function EventsManagerPage() {
                       {event.createdAt ? format(new Date(event.createdAt), 'PPP p') : 'N/A'}
                     </TableCell>
                     <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            aria-haspopup="true"
-                            size="icon"
-                            variant="ghost"
-                          >
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Toggle menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem>Edit</DropdownMenuItem>
-                          <DropdownMenuItem>Publish</DropdownMenuItem>
-                          <DropdownMenuItem className="text-destructive">
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      <EventActions eventId={event.id} />
                     </TableCell>
                   </TableRow>
                 ))

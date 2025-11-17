@@ -39,17 +39,11 @@ export type Event = {
   title: string;
   date: string; 
   location: string;
-  address?: string;
-  city?: string;
-  state?: string;
-  zipCode?: string;
   description: string;
   bannerimage: string;
-  storagePath?: string;
-  imagehint: string;
-  gallery: { url: string; path?: string; hint?: string }[];
+  imagehint?: string;
+  gallery?: { url: string; path?: string; hint?: string }[];
   createdAt?: string; 
-  type?: 'Upcoming' | 'Past';
 };
 
 export type WebsiteContent = {
