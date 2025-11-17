@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import type { Event } from '@/lib/types';
 import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
-import { EventForm } from '../../../components/event-form';
+import { EventForm } from '../../components/event-form';
 
 async function getEvent(id: string): Promise<Event | null> {
     const cookieStore = cookies();
