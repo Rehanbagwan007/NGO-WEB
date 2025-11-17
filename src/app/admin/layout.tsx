@@ -23,38 +23,36 @@ const SanvedanaLogo = ({ inSheet = false }: { inSheet?: boolean }) => (
      <svg
       width="40"
       height="40"
-      viewBox="0 0 220 220"
+      viewBox="0 0 100 100"
       xmlns="http://www.w3.org/2000/svg"
+      className="h-8 w-8"
     >
-      <circle cx="110" cy="110" r="108" fill="#FFF9E9" stroke="#E0E0E0" strokeWidth="1" />
-      <g transform="translate(110, 100)">
-        {Array.from({ length: 25 }).map((_, i) => {
-          const angle = -90 + (i * 180) / 24;
-          const isRed = i % 4 === 0;
-          const length = isRed ? 20 : (i % 2 === 0 ? 15 : 10);
-          return (
-            <line
-              key={i}
-              x1="0"
-              y1="-60"
-              x2="0"
-              y2={`-${60 + length}`}
-              stroke={isRed ? "#d9534f" : "#333"}
-              strokeWidth="2.5"
-              transform={`rotate(${angle})`}
-            />
-          );
-        })}
-        <line x1="-80" y1="0" x2="80" y2="0" stroke="#333" strokeWidth="2.5" />
-      </g>
-      <path d="M 80 100 L 110 130 L 140 100" stroke="#4285F4" strokeWidth="3" fill="none" />
-      <path d="M 85 105 L 85 125 L 110 145 L 135 125 L 135 105" stroke="#4285F4" strokeWidth="3" fill="none" strokeLinejoin="round" strokeLinecap="round" />
-      
-      <text x="110" y="95" fontFamily="Arial, sans-serif" fontSize="36" fontWeight="bold" textAnchor="middle" fill="#333333">
-        संवेदना
-      </text>
+      <defs>
+        <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style={{ stopColor: 'hsl(var(--primary))', stopOpacity: 1 }} />
+          <stop offset="100%" style={{ stopColor: 'hsl(var(--primary) / 0.8)', stopOpacity: 1 }} />
+        </linearGradient>
+      </defs>
+      <path
+        d="M50 10 C 20 10, 10 30, 10 50 C 10 70, 20 90, 50 90"
+        fill="none"
+        stroke="url(#logo-gradient)"
+        strokeWidth="10"
+        strokeLinecap="round"
+      />
+      <path
+        d="M50 10 C 80 10, 90 30, 90 50 C 90 70, 80 90, 50 90"
+        fill="none"
+        stroke="url(#logo-gradient)"
+        strokeWidth="10"
+        strokeLinecap="round"
+      />
+      <path
+        d="M30 50 C 30 35, 40 25, 50 25 C 60 25, 70 35, 70 50 C 70 65, 60 75, 50 75 C 40 75, 30 65, 30 50 Z"
+        fill="url(#logo-gradient)"
+      />
     </svg>
-    <span className={cn(inSheet ? '' : 'xl:block text-foreground')}>Sanvedana</span>
+    <span className={cn('font-headline text-xl tracking-tighter', inSheet ? '' : 'xl:block text-foreground')}>Sanvedana</span>
   </Link>
 );
 
