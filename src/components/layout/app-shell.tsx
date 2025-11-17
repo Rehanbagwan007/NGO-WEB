@@ -107,7 +107,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   <Link href="/admin" className="font-semibold transition-colors hover:text-primary text-foreground/70">Dashboard</Link>
                 </nav>
 
-                <div className={cn("hidden md:flex items-center gap-4")}>
+                <div className={cn("flex items-center gap-4")}>
                     <Button asChild size={isScrolled ? 'icon' : 'default'} className="transition-all duration-300">
                         <Link href="/donations">
                             <Heart className="h-4 w-4" />
