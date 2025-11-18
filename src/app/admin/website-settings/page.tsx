@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useTransition } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Loader2, Trash2, UploadCloud, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { addHeroBannerAction, deleteHeroBannerAction, updateWebsiteContentAction } from './actions';
+import { addHeroBannerAction, deleteHeroBannerAction, updateWebsiteContentAction, updateMissionImageAction } from './actions';
 import { createClient } from '@/lib/supabase/client';
 import type { WebsiteContent } from '@/lib/types';
 import { Textarea } from '@/components/ui/textarea';
@@ -29,12 +29,18 @@ const heroFormSchema = z.object({
     altText: z.string().min(1, 'Alt text is required.'),
 });
 
+const missionImageSchema = z.object({
+    image: z.custom<FileList>().refine(files => files?.length === 1, 'An image is required.'),
+});
+
 type HeroFormValues = z.infer<typeof heroFormSchema>;
+type MissionImageFormValues = z.infer<typeof missionImageSchema>;
 
 const contentFormSchema = z.object({
   mission_title: z.string().min(3, 'Title is required.'),
   mission_p1: z.string().min(10, 'Paragraph 1 is required.'),
   mission_p2: z.string().min(10, 'Paragraph 2 is required.'),
+  mission_image_url: z.string().optional(),
   footer_about: z.string().min(10, 'Footer about text is required.'),
   footer_copyright: z.string().min(5, 'Copyright text is required.'),
   social_facebook: z.string().url().or(z.literal('')),
@@ -67,12 +73,18 @@ export default function WebsiteSettingsPage() {
     const [loading, setLoading] = useState(true);
     const [isHeroSubmitting, setIsHeroSubmitting] = useState(false);
     const [isContentSubmitting, setIsContentSubmitting] = useState(false);
-    const [preview, setPreview] = useState<string | null>(null);
+    const [isMissionImageSubmitting, setIsMissionImageSubmitting] = useState(false);
+    const [heroPreview, setHeroPreview] = useState<string | null>(null);
+    const [missionImagePreview, setMissionImagePreview] = useState<string | null>(null);
     const { toast } = useToast();
 
     const heroForm = useForm<HeroFormValues>({
         resolver: zodResolver(heroFormSchema),
         defaultValues: { altText: '' },
+    });
+    
+    const missionImageForm = useForm<MissionImageFormValues>({
+        resolver: zodResolver(missionImageSchema),
     });
 
     const contentForm = useForm<ContentFormValues>({
@@ -84,6 +96,7 @@ export default function WebsiteSettingsPage() {
         const { banners, content } = await getSupabaseData();
         setBanners(banners);
         contentForm.reset(content);
+        setMissionImagePreview(content.mission_image_url || null);
         setLoading(false);
     };
 
@@ -104,7 +117,7 @@ export default function WebsiteSettingsPage() {
         if (result.success) {
             toast({ title: 'Success', description: 'Hero banner added successfully.' });
             heroForm.reset();
-            setPreview(null);
+            setHeroPreview(null);
             fetchAndSetData();
         } else {
             toast({ variant: 'destructive', title: 'Error', description: result.error });
@@ -112,6 +125,21 @@ export default function WebsiteSettingsPage() {
         setIsHeroSubmitting(false);
     };
     
+    const onMissionImageSubmit: SubmitHandler<MissionImageFormValues> = async (values) => {
+        setIsMissionImageSubmitting(true);
+        const formData = new FormData();
+        formData.append('image', values.image[0]);
+
+        const result = await updateMissionImageAction(formData);
+        if (result.success) {
+            toast({ title: 'Success', description: 'Mission image updated.' });
+             fetchAndSetData(); // Refetch data to show new image
+        } else {
+            toast({ variant: 'destructive', title: 'Error', description: result.error });
+        }
+        setIsMissionImageSubmitting(false);
+    };
+
     const onContentSubmit: SubmitHandler<ContentFormValues> = async (values) => {
         setIsContentSubmitting(true);
         const result = await updateWebsiteContentAction(values);
@@ -135,12 +163,22 @@ export default function WebsiteSettingsPage() {
         }
     };
     
-     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+     const handleHeroFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
             heroForm.setValue('image', e.target.files as FileList);
             const reader = new FileReader();
-            reader.onloadend = () => setPreview(reader.result as string);
+            reader.onloadend = () => setHeroPreview(reader.result as string);
+            reader.readAsDataURL(file);
+        }
+    };
+    
+    const handleMissionImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            missionImageForm.setValue('image', e.target.files as FileList);
+            const reader = new FileReader();
+            reader.onloadend = () => setMissionImagePreview(reader.result as string);
             reader.readAsDataURL(file);
         }
     };
@@ -160,33 +198,60 @@ export default function WebsiteSettingsPage() {
                 <Card>
                     <CardHeader>
                         <CardTitle>Homepage Content</CardTitle>
-                        <CardDescription>Edit the text content for the homepage sections.</CardDescription>
+                        <CardDescription>Edit the text content and images for the homepage sections.</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <Form {...contentForm}>
                             <form onSubmit={contentForm.handleSubmit(onContentSubmit)} className="space-y-8">
                                 <h3 className="text-lg font-medium border-b pb-2">Our Mission Section</h3>
-                                <FormField control={contentForm.control} name="mission_title" render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Title</FormLabel>
-                                        <FormControl><Input {...field} /></FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}/>
-                                <FormField control={contentForm.control} name="mission_p1" render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Paragraph 1</FormLabel>
-                                        <FormControl><Textarea {...field} className="min-h-24" /></FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}/>
-                                 <FormField control={contentForm.control} name="mission_p2" render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Paragraph 2</FormLabel>
-                                        <FormControl><Textarea {...field} className="min-h-24" /></FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}/>
+                                
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    <div className="space-y-6">
+                                        <FormField control={contentForm.control} name="mission_title" render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Title</FormLabel>
+                                                <FormControl><Input {...field} /></FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}/>
+                                        <FormField control={contentForm.control} name="mission_p1" render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Paragraph 1</FormLabel>
+                                                <FormControl><Textarea {...field} className="min-h-24" /></FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}/>
+                                         <FormField control={contentForm.control} name="mission_p2" render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Paragraph 2</FormLabel>
+                                                <FormControl><Textarea {...field} className="min-h-24" /></FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}/>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <FormLabel>Mission Section Image</FormLabel>
+                                        {missionImagePreview && (
+                                            <div className="relative w-full aspect-video rounded-md overflow-hidden">
+                                                <Image src={missionImagePreview} alt="Mission section preview" fill className="object-cover" />
+                                            </div>
+                                        )}
+                                        <Form {...missionImageForm}>
+                                            <form onSubmit={missionImageForm.handleSubmit(onMissionImageSubmit)} className="space-y-4">
+                                                <FormField control={missionImageForm.control} name="image" render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormControl><Input type="file" className="text-sm" accept="image/*" onChange={handleMissionImageFileChange} /></FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}/>
+                                                <Button size="sm" type="submit" disabled={isMissionImageSubmitting}>
+                                                    {isMissionImageSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                                    Update Image
+                                                </Button>
+                                            </form>
+                                        </Form>
+                                    </div>
+                                </div>
                                 
                                 <h3 className="text-lg font-medium border-b pb-2 pt-4">Footer Content</h3>
                                 <FormField control={contentForm.control} name="footer_about" render={({ field }) => (
@@ -252,10 +317,10 @@ export default function WebsiteSettingsPage() {
                                             <FormControl>
                                                 <div className="flex justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 px-6 py-10 text-center">
                                                     <div className="text-center">
-                                                    {preview ? (
+                                                    {heroPreview ? (
                                                         <div className="relative w-48 h-24 mx-auto">
-                                                            <Image src={preview} alt="Preview" fill className="object-contain rounded-md" />
-                                                             <Button type="button" variant="destructive" size="icon" className="absolute -top-2 -right-2 h-6 w-6 rounded-full" onClick={() => { setPreview(null); heroForm.resetField("image");}}>
+                                                            <Image src={heroPreview} alt="Preview" fill className="object-contain rounded-md" />
+                                                             <Button type="button" variant="destructive" size="icon" className="absolute -top-2 -right-2 h-6 w-6 rounded-full" onClick={() => { setHeroPreview(null); heroForm.resetField("image");}}>
                                                                 <X className="h-4 w-4"/>
                                                              </Button>
                                                         </div>
@@ -265,7 +330,7 @@ export default function WebsiteSettingsPage() {
                                                             <div className="mt-4 flex text-sm leading-6 text-muted-foreground">
                                                                 <label htmlFor="image-upload" className="relative cursor-pointer rounded-md font-semibold text-primary focus-within:outline-none hover:text-primary/80">
                                                                     <span>Click to upload</span>
-                                                                    <input id="image-upload" type="file" className="sr-only" accept="image/*" onChange={handleFileChange} />
+                                                                    <input id="image-upload" type="file" className="sr-only" accept="image/*" onChange={handleHeroFileChange} />
                                                                 </label>
                                                             </div>
                                                             <p className="text-xs leading-5 text-muted-foreground">PNG, JPG, GIF up to 10MB</p>
@@ -322,5 +387,3 @@ export default function WebsiteSettingsPage() {
         </div>
     );
 }
-
-    

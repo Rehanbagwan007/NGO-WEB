@@ -1,4 +1,5 @@
 
+
 export type UserProfile = {
   id: string;
   email?: string;
@@ -50,6 +51,7 @@ export type WebsiteContent = {
     mission_title: string;
     mission_p1: string;
     mission_p2: string;
+    mission_image_url?: string;
     footer_about: string;
     footer_copyright: string;
     social_facebook: string;

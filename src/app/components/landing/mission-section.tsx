@@ -39,6 +39,8 @@ export function MissionSection({ content }: { content: WebsiteContent }) {
       }
   }
 
+  const missionImageUrl = content.mission_image_url || "https://picsum.photos/seed/about-main/600/700";
+
   return (
     <section id="about" className="py-16 lg:py-24 bg-muted/20 overflow-hidden">
       <motion.div 
@@ -54,7 +56,7 @@ export function MissionSection({ content }: { content: WebsiteContent }) {
             variants={imageVariants}
           >
             <Image
-              src="https://picsum.photos/seed/about-main/600/700"
+              src={missionImageUrl}
               alt="Diverse group of children with special needs in a classroom setting"
               width={600}
               height={700}

@@ -17,12 +17,11 @@ async function getSupabaseUser(): Promise<User> {
     return data.user;
 }
 
-async function uploadFile(file: File, user: User): Promise<string> {
+async function uploadFile(file: File, user: User, folder: string): Promise<string> {
     const cookieStore = cookies();
     const supabase = createClient(cookieStore);
-    const filePath = `${user.id}/hero-banners/${Date.now()}-${file.name}`;
-    // Note: The client-side uploadFile in NewEvent page uses a different client.
-    // This is a server-side action.
+    const filePath = `${user.id}/${folder}/${Date.now()}-${file.name}`;
+    
     const { error: uploadError } = await supabase.storage.from('images').upload(filePath, file);
 
     if (uploadError) {
@@ -45,7 +44,7 @@ export async function addHeroBannerAction(formData: FormData) {
 
     try {
         const user = await getSupabaseUser();
-        const imageUrl = await uploadFile(imageFile, user);
+        const imageUrl = await uploadFile(imageFile, user, 'hero-banners');
 
         const { error } = await supabase.from('hero_banners').insert({
             image_url: imageUrl,
@@ -71,6 +70,7 @@ export async function deleteHeroBannerAction(id: string) {
     const supabase = createClient(cookieStore);
 
     try {
+        // TODO: Also delete image from storage
         const { error } = await supabase.from('hero_banners').delete().eq('id', id);
 
         if (error) {
@@ -88,6 +88,36 @@ export async function deleteHeroBannerAction(id: string) {
     }
 }
 
+export async function updateMissionImageAction(formData: FormData) {
+    const cookieStore = cookies();
+    const supabase = createClient(cookieStore);
+    const imageFile = formData.get('image') as File;
+
+    if (!imageFile) {
+        return { success: false, error: 'Image file is required.' };
+    }
+
+    try {
+        const user = await getSupabaseUser();
+        const imageUrl = await uploadFile(imageFile, user, 'content-images');
+        
+        const { error } = await supabase
+            .from('website_content')
+            .update({ content: imageUrl })
+            .eq('id', 'mission_image_url');
+
+        if (error) throw error;
+        
+        revalidatePath('/');
+        revalidatePath('/admin/website-settings');
+
+        return { success: true };
+    } catch(error) {
+        console.error('Error updating mission image:', error);
+        return { success: false, error: error instanceof Error ? error.message : 'An unknown error has occurred.'};
+    }
+}
+
 export async function updateWebsiteContentAction(data: Partial<WebsiteContent>) {
     const cookieStore = cookies();
     const supabase = createClient(cookieStore);
@@ -98,7 +128,9 @@ export async function updateWebsiteContentAction(data: Partial<WebsiteContent>) 
     }));
 
     try {
-        const { error } = await supabase.from('website_content').upsert(updates);
+        // We filter out mission_image_url as it's handled separately
+        const textUpdates = updates.filter(u => u.id !== 'mission_image_url');
+        const { error } = await supabase.from('website_content').upsert(textUpdates);
         if (error) throw error;
         
         // Revalidate all paths that might use this content
