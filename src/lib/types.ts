@@ -58,3 +58,4 @@ export type WebsiteContent = {
     social_instagram: string;
     social_twitter: string;
 };
+
