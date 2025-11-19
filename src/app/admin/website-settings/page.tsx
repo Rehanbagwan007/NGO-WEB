@@ -197,60 +197,35 @@ export default function WebsiteSettingsPage() {
              <>
                 <Card>
                     <CardHeader>
-                        <CardTitle>Homepage Content</CardTitle>
-                        <CardDescription>Edit the text content and images for the homepage sections.</CardDescription>
+                        <CardTitle>Homepage & Footer Content</CardTitle>
+                        <CardDescription>Edit the text content for the homepage and site-wide footer.</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <Form {...contentForm}>
                             <form onSubmit={contentForm.handleSubmit(onContentSubmit)} className="space-y-8">
                                 <h3 className="text-lg font-medium border-b pb-2">Our Mission Section</h3>
-                                
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    <div className="space-y-6">
-                                        <FormField control={contentForm.control} name="mission_title" render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Title</FormLabel>
-                                                <FormControl><Input {...field} /></FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}/>
-                                        <FormField control={contentForm.control} name="mission_p1" render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Paragraph 1</FormLabel>
-                                                <FormControl><Textarea {...field} className="min-h-24" /></FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}/>
-                                         <FormField control={contentForm.control} name="mission_p2" render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Paragraph 2</FormLabel>
-                                                <FormControl><Textarea {...field} className="min-h-24" /></FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}/>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <FormLabel>Mission Section Image</FormLabel>
-                                        {missionImagePreview && (
-                                            <div className="relative w-full aspect-video rounded-md overflow-hidden">
-                                                <Image src={missionImagePreview} alt="Mission section preview" fill className="object-cover" />
-                                            </div>
-                                        )}
-                                        <Form {...missionImageForm}>
-                                            <form onSubmit={missionImageForm.handleSubmit(onMissionImageSubmit)} className="space-y-4">
-                                                <FormField control={missionImageForm.control} name="image" render={({ field }) => (
-                                                    <FormItem>
-                                                        <FormControl><Input type="file" className="text-sm" accept="image/*" onChange={handleMissionImageFileChange} /></FormControl>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}/>
-                                                <Button size="sm" type="submit" disabled={isMissionImageSubmitting}>
-                                                    {isMissionImageSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                                    Update Image
-                                                </Button>
-                                            </form>
-                                        </Form>
-                                    </div>
+                                <div className="space-y-6">
+                                    <FormField control={contentForm.control} name="mission_title" render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Title</FormLabel>
+                                            <FormControl><Input {...field} /></FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}/>
+                                    <FormField control={contentForm.control} name="mission_p1" render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Paragraph 1</FormLabel>
+                                            <FormControl><Textarea {...field} className="min-h-24" /></FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}/>
+                                     <FormField control={contentForm.control} name="mission_p2" render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Paragraph 2</FormLabel>
+                                            <FormControl><Textarea {...field} className="min-h-24" /></FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}/>
                                 </div>
                                 
                                 <h3 className="text-lg font-medium border-b pb-2 pt-4">Footer Content</h3>
@@ -265,7 +240,7 @@ export default function WebsiteSettingsPage() {
                                     <FormItem>
                                         <FormLabel>Copyright Text</FormLabel>
                                         <FormControl><Input {...field} /></FormControl>
-                                        <FormDescription>Use `{'{year}'}` to automatically insert the current year.</FormDescription>
+                                        <FormDescription>Use `{'\\{year\\}'}` to automatically insert the current year.</FormDescription>
                                         <FormMessage />
                                     </FormItem>
                                 )}/>
@@ -300,6 +275,34 @@ export default function WebsiteSettingsPage() {
                     </CardContent>
                 </Card>
 
+                <Card>
+                    <CardHeader><CardTitle>Mission Section Image</CardTitle></CardHeader>
+                    <CardContent>
+                        <div className="space-y-2">
+                            {missionImagePreview && (
+                                <div className="relative w-full max-w-sm aspect-video rounded-md overflow-hidden">
+                                    <Image src={missionImagePreview} alt="Mission section preview" fill className="object-cover" />
+                                </div>
+                            )}
+                            <Form {...missionImageForm}>
+                                <form onSubmit={missionImageForm.handleSubmit(onMissionImageSubmit)} className="space-y-4 pt-2">
+                                    <FormField control={missionImageForm.control} name="image" render={({ field }) => (
+                                        <FormItem className="max-w-xs">
+                                            <FormLabel>Upload New Image</FormLabel>
+                                            <FormControl><Input type="file" className="text-sm" accept="image/*" onChange={handleMissionImageFileChange} /></FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}/>
+                                    <Button size="sm" type="submit" disabled={isMissionImageSubmitting}>
+                                        {isMissionImageSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                        Update Image
+                                    </Button>
+                                </form>
+                            </Form>
+                        </div>
+                    </CardContent>
+                </Card>
+                
                 <Card>
                     <CardHeader>
                         <CardTitle>Hero Section Banners</CardTitle>
@@ -386,4 +389,5 @@ export default function WebsiteSettingsPage() {
             )}
         </div>
     );
-}
+
+    
