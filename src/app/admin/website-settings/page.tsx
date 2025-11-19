@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect, useTransition } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -40,7 +40,7 @@ const contentFormSchema = z.object({
   mission_title: z.string().min(3, 'Title is required.'),
   mission_p1: z.string().min(10, 'Paragraph 1 is required.'),
   mission_p2: z.string().min(10, 'Paragraph 2 is required.'),
-  mission_image_url: z.string().optional(),
+  mission_image_url: z.string().url().optional().or(z.literal('')),
   footer_about: z.string().min(10, 'Footer about text is required.'),
   footer_copyright: z.string().min(5, 'Copyright text is required.'),
   social_facebook: z.string().url().or(z.literal('')),

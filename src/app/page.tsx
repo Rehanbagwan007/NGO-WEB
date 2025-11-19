@@ -85,6 +85,9 @@ const EventCard = ({ event }: { event: Event }) => (
     </Card>
 );
 
+// Force the page to be dynamic and not cached
+export const revalidate = 0;
+
 export default async function LandingPage() {
     const { upcomingEvents, content } = await getPageData();
 

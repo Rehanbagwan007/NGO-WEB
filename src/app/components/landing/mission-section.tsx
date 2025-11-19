@@ -6,7 +6,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import type { WebsiteContent } from '@/lib/types';
-import { SupabaseClient } from '@supabase/supabase-js';
 
 export function MissionSection({ content }: { content: WebsiteContent }) {
   const containerVariants = {
@@ -40,7 +39,7 @@ export function MissionSection({ content }: { content: WebsiteContent }) {
       }
   }
 
-  const missionImageUrl = content.mission_image_url || "https://picsum.photos/seed/about-main/600/700";
+  const missionImageUrl = content?.mission_image_url || "https://picsum.photos/seed/about-main/600/700";
 
   return (
     <section id="about" className="py-16 lg:py-24 bg-muted/20 overflow-hidden">
