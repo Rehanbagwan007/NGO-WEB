@@ -33,17 +33,11 @@ async function getPageData() {
     const contentAsObject = content?.reduce((acc, item) => {
         acc[item.id as keyof WebsiteContent] = item.content || '';
         return acc;
-    }, {} as Partial<WebsiteContent>) || {};
+    }, {} as WebsiteContent) || ({} as WebsiteContent);
     
-    // Explicitly find and add the mission_image_url if it exists
-    const missionImage = content?.find(item => item.id === 'mission_image_url');
-    if (missionImage) {
-        contentAsObject.mission_image_url = missionImage.content || '';
-    }
-
     return {
         upcomingEvents: events || [],
-        content: contentAsObject as WebsiteContent,
+        content: contentAsObject,
     };
 }
 
