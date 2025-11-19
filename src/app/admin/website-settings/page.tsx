@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -91,19 +91,20 @@ export default function WebsiteSettingsPage() {
         resolver: zodResolver(contentFormSchema),
     });
 
-    const fetchAndSetData = async () => {
+    const fetchAndSetData = useCallback(async () => {
         setLoading(true);
         const { banners, content } = await getSupabaseData();
         setBanners(banners);
         contentForm.reset(content);
         setMissionImagePreview(content.mission_image_url || null);
         setLoading(false);
-    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [contentForm.reset]);
+
 
     useEffect(() => {
         fetchAndSetData();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [fetchAndSetData]);
 
 
     const onHeroSubmit: SubmitHandler<HeroFormValues> = async (values) => {
@@ -391,3 +392,4 @@ export default function WebsiteSettingsPage() {
     );
 
     
+
