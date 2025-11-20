@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -86,15 +87,15 @@ export default function LoginPage() {
         title: 'Login Failed',
         description: error.message || 'Invalid email or password. Please try again.',
       });
+       setLoading(false);
     } else {
       toast({
         title: 'Login Successful',
-        description: 'Welcome back!',
+        description: 'Redirecting to dashboard...',
       });
-      // Redirect to the admin dashboard on successful login
-      router.push('/admin');
+      // Refresh the page to allow middleware to handle the redirect
+      router.refresh();
     }
-    setLoading(false);
   };
 
   return (
