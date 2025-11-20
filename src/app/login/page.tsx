@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
@@ -80,6 +80,17 @@ export default function LoginPage() {
   const onSubmit = async (values: LoginFormValues) => {
     setLoading(true);
     const { error } = await supabase.auth.signInWithPassword(values);
+
+    const data = await supabase.auth.signInWithPassword(values);
+    const isAuth = await data?.data?.user?.aud  || null 
+    console.log(isAuth)
+
+    if(isAuth === "authenticated"){
+      redirect("/admin")
+
+    }
+     
+    
 
     if (error) {
       toast({
