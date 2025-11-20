@@ -1,3 +1,4 @@
+
 'use client';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -96,13 +97,13 @@ export default function AdminLayout({
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[280px_1fr]">
-      <div className="hidden border-r bg-sidebar text-sidebar-foreground md:block">
+      <div className="hidden border-r bg-sidebar text-sidebar-foreground md:block h-screen sticky top-0">
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
             <SanvedanaLogo />
           </div>
           <div className="flex-1 overflow-y-auto">
-            <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
+            <nav className="grid items-start px-2 text-sm font-medium lg:px-4 ">
               {adminNavLinks.map((link) => (
                 <NavLink key={link.href} link={link} />
               ))}
@@ -169,7 +170,7 @@ export default function AdminLayout({
             </DropdownMenuContent>
           </DropdownMenu>
         </header>
-        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 bg-muted/40 overflow-auto">
+        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 bg-muted/40">
           {children}
         </main>
       </div>
