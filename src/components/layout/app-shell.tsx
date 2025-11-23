@@ -19,7 +19,7 @@ import { mainNavLinks } from '@/lib/nav-links';
 import { cn } from '@/lib/utils';
 import type { WebsiteContent } from '@/lib/types';
 import { createClient } from '@/lib/supabase/client';
-
+import { LuHandHeart } from "react-icons/lu";
 
 const SanvedanaLogo = ({ scrolled = false }: { scrolled?: boolean }) => (
     <Link href="/" className="flex items-center gap-2 font-semibold transition-all duration-300">
@@ -106,7 +106,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen w-full flex-col bg-background">
       
-      <header className={cn("sticky top-0 z-50 flex h-24 w-full items-center px-4 md:px-6 transition-all duration-300", isScrolled && 'bg-background/80 backdrop-blur-sm border-b')}>
+      <header className={cn("sticky top-0 z-50 flex h-24 w-full items-center px-4 md:px-6 transition-all duration-300", isScrolled && 'bg-background/80 backdrop-blur-sm')}>
         <div className="container mx-auto flex items-center justify-between w-full">
             <div className="flex items-center gap-2">
                 <SanvedanaLogo scrolled={isScrolled} />
@@ -114,8 +114,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
             <div className="flex items-center gap-4">
                 <nav className={cn(
-                    "items-center gap-6",
-                    isScrolled ? 'hidden' : 'hidden md:flex'
+                    "items-center gap-6 hidden md:flex"
                   )}>
                   {mainNavLinks.map((link) => (
                     <Link
@@ -132,10 +131,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 </nav>
 
                 <div className={cn("flex items-center gap-4")}>
-                    <Button asChild size={isScrolled ? 'icon' : 'default'} className="transition-all duration-300">
+                    <Button asChild className="transition-all duration-300 rounded-full">
                         <Link href="/donations">
-                            <Heart className="h-4 w-4" />
-                            <span className={cn(isScrolled && 'sr-only', 'ml-2')}>Donate</span>
+                            <LuHandHeart className="h-6 w-6" />
+                            <span className={cn("hidden sm:inline ml-2", isScrolled && 'lg:hidden xl:inline')}>Donate</span>
                         </Link>
                     </Button>
                 </div>
