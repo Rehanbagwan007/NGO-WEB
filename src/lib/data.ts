@@ -1,3 +1,4 @@
+
 import type { Student, Staff, Donation, Event } from './types';
 
 export const students: Student[] = [
@@ -83,43 +84,7 @@ export const staff: Staff[] = [
   },
 ];
 
-export const donations: Donation[] = [
-  {
-    id: 'DON001',
-    donorName: 'Mr. Shree More',
-    amount: 75000,
-    date: '2024-07-20',
-    status: 'Completed',
-  },
-  {
-    id: 'DON002',
-    donorName: 'Prof. Sneha patil',
-    amount: 50000,
-    date: '2024-07-15',
-    status: 'Completed',
-  },
-  {
-    id: 'DON003',
-    donorName: 'Mr. Rehan bagwan',
-    amount: 25000,
-    date: '2024-07-12',
-    status: 'Completed',
-  },
-  {
-    id: 'DON004',
-    donorName: "",
-    amount: 12000,
-    date: '2024-07-10',
-    status: 'Pending',
-  },
-  {
-    id: 'DON005',
-    donorName: 'Local Community Drive',
-    amount: 1000,
-    date: '2024-06-28',
-    status: 'Failed',
-  },
-];
+export const donations: Donation[] = [];
 
 export const events: Event[] = [
   {
@@ -128,14 +93,13 @@ export const events: Event[] = [
     date: '2024-10-26',
     location: 'City Sports Ground',
     description: 'A day of inclusive sports and games celebrating the abilities and spirit of our wonderful students. All are welcome!',
-    bannerImage: 'https://blog.letsendorse.com/wp-content/uploads/2018/08/Sports-Day-Blog-cover-1.jpg',
-    imageHint: 'children with disabilities sports',
+    bannerimage: 'https://blog.letsendorse.com/wp-content/uploads/2018/08/Sports-Day-Blog-cover-1.jpg',
+    imagehint: 'children with disabilities sports',
     gallery: [
       { url: 'https://picsum.photos/seed/sports1/600/400', hint: 'wheelchair race' },
       { url: 'https://picsum.photos/seed/sports2/600/400', hint: 'children cheering' },
     ],
-    status: 'Published',
-    type: 'Upcoming',
+    createdAt: '2024-07-28T10:00:00Z',
   },
   {
     id: 'EVT002',
@@ -143,11 +107,10 @@ export const events: Event[] = [
     date: '2024-11-15',
     location: 'Sanvedana Center Auditorium',
     description: 'Join us for an informative session with experts and parents to foster understanding and acceptance for individuals with autism.',
-    bannerImage: 'https://www.tammana.org.in/wp-content/uploads/IMG_0143.jpg',
-    imageHint: 'autism awareness event',
+    bannerimage: 'https://www.tammana.org.in/wp-content/uploads/IMG_0143.jpg',
+    imagehint: 'autism awareness event',
     gallery: [],
-    status: 'Published',
-    type: 'Upcoming',
+    createdAt: '2024-07-27T10:00:00Z',
   },
   {
     id: 'EVT003',
@@ -155,11 +118,10 @@ export const events: Event[] = [
     date: '2024-12-05',
     location: 'City Art Gallery',
     description: 'An exhibition showcasing breathtaking artwork created by our talented students. All proceeds support our art therapy program.',
-    bannerImage: 'https://www.tammana.org.in/wp-content/uploads/Event133.jpg',
-    imageHint: 'childrens art exhibition',
+    bannerimage: 'https://www.tammana.org.in/wp-content/uploads/Event133.jpg',
+    imagehint: 'childrens art exhibition',
     gallery: [],
-    status: 'Draft',
-    type: 'Upcoming',
+    createdAt: '2024-07-26T10:00:00Z',
   },
   {
     id: 'EVT004',
@@ -167,11 +129,10 @@ export const events: Event[] = [
     date: '2025-01-20',
     location: 'Community Hall',
     description: 'Our older students will showcase products they have created as part of their vocational training. Come support their journey to independence.',
-    bannerImage: 'https://lh3.googleusercontent.com/proxy/XWsVC5AKs3-CofrH_wOTIrvsnsuPBIUQ_7OBvgsyLPXzcZqQWBxOQW3pJiBIY6PlUaNDWrV042dPS2Yc2rUsKY_6L9DrP-ud6bzo',
-    imageHint: 'vocational training fair',
+    bannerimage: 'https://lh3.googleusercontent.com/proxy/XWsVC5AKs3-CofrH_wOTIrvsnsuPBIUQ_7OBvgsyLPXzcZqQWBxOQW3pJiBIY6PlUaNDWrV042dPS2Yc2rUsKY_6L9DrP-ud6bzo',
+    imagehint: 'vocational training fair',
     gallery: [],
-    status: 'Published',
-    type: 'Upcoming',
+    createdAt: '2024-07-25T10:00:00Z',
   },
   {
     id: 'EVT005',
@@ -179,14 +140,13 @@ export const events: Event[] = [
     date: '2023-12-03',
     location: 'Sanvedana Campus',
     description: 'We celebrated the day with special performances by our students, guest speakers, and an inclusive carnival for all.',
-    bannerImage: 'https://picsum.photos/seed/eventDisabilityDay/1200/400',
-    imageHint: 'disability day celebration',
+    bannerimage: 'https://picsum.photos/seed/eventDisabilityDay/1200/400',
+    imagehint: 'disability day celebration',
     gallery: [
        { url: 'https://picsum.photos/seed/disability1/600/400', hint: 'children performing music' },
        { url: 'https://picsum.photos/seed/disability2/600/400', hint: 'motivational speaker' },
     ],
-    status: 'Published',
-    type: 'Past',
+    createdAt: '2023-11-20T10:00:00Z',
   },
   {
     id: 'EVT006',
@@ -194,11 +154,10 @@ export const events: Event[] = [
     date: '2023-10-28',
     location: 'Sanvedana Campus Grounds',
     description: 'A special Diwali mela with reduced noise and lights, featuring stalls with handmade crafts by our students.',
-    bannerImage: 'https://picsum.photos/seed/eventDiwali/1200/400',
-    imageHint: 'Diwali celebration disabled children',
+    bannerimage: 'https://picsum.photos/seed/eventDiwali/1200/400',
+    imagehint: 'Diwali celebration disabled children',
     gallery: [],
-    status: 'Published',
-    type: 'Past',
+    createdAt: '2023-10-15T10:00:00Z',
   },
 ];
 

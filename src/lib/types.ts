@@ -1,5 +1,6 @@
 
 
+
 export type UserProfile = {
   id: string;
   email?: string;
@@ -30,6 +31,7 @@ export type Staff = {
 export type Donation = {
   id: string;
   donorName: string;
+  donorEmail?: string;
   amount: number;
   date: string;
   status: 'Completed' | 'Pending' | 'Failed';
@@ -58,4 +60,5 @@ export type WebsiteContent = {
     social_instagram: string;
     social_twitter: string;
 };
+
 

@@ -1,22 +1,9 @@
-import { MoreHorizontal, Share2 } from 'lucide-react';
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-} from '@/components/ui/dropdown-menu';
+'use client';
+
+import { createClient } from '@/lib/supabase/client';
+import type { Donation } from '@/lib/types';
+import { use, useEffect, useState } from 'react';
 import {
   Table,
   TableBody,
@@ -25,11 +12,53 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { donations } from '@/lib/data';
-import type { Donation } from '@/lib/types';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
+import { DonationForm } from './components/donation-form';
+import { Skeleton } from '@/components/ui/skeleton';
+
+async function getUserDonations() {
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+        return [];
+    }
+
+    const { data, error } = await supabase
+        .from('donations')
+        .select('*')
+        .eq('donorEmail', user.email)
+        .order('date', { ascending: false });
+
+    if (error) {
+        console.error('Error fetching user donations:', error);
+        return [];
+    }
+
+    return data;
+}
 
 export default function DonationsPage() {
+  const [donations, setDonations] = useState<Donation[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadDonations() {
+        const userDonations = await getUserDonations();
+        setDonations(userDonations);
+        setLoading(false);
+    }
+    loadDonations();
+  }, []);
+
 
   const getBadgeVariant = (status: Donation['status']) => {
     switch (status) {
@@ -45,76 +74,66 @@ export default function DonationsPage() {
   };
     
   return (
-    <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 container mx-auto">
+    <main className="flex flex-1 flex-col gap-8 p-4 lg:gap-6 lg:p-6 container mx-auto">
       <div className="flex items-center">
-        <h1 className="text-lg font-semibold md:text-2xl font-headline">My Donations</h1>
+        <h1 className="text-lg font-semibold md:text-2xl font-headline">Make a Donation</h1>
       </div>
-      <Card>
-        <CardHeader>
-          <CardTitle>Donation History</CardTitle>
-          <CardDescription>
-            Thank you for your generous support of Sanvedana.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Donation ID</TableHead>
-                <TableHead>Amount</TableHead>
-                <TableHead className="hidden md:table-cell">Date</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>
-                  <span className="sr-only">Actions</span>
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {donations.map((donation) => (
-                <TableRow key={donation.id}>
-                  <TableCell className="font-mono text-sm">{donation.id}</TableCell>
-                  <TableCell>
-                    {new Intl.NumberFormat('en-IN', {
-                      style: 'currency',
-                      currency: 'INR',
-                    }).format(donation.amount)}
-                  </TableCell>
-                  <TableCell className="hidden md:table-cell">
-                    {format(new Date(donation.date), 'PPP')}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={getBadgeVariant(donation.status)}>
-                      {donation.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          aria-haspopup="true"
-                          size="icon"
-                          variant="ghost"
-                        >
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Toggle menu</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem>View Receipt</DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Share2 className="mr-2 h-4 w-4" />
-                          Share on Social Media
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+
+      <div className="grid lg:grid-cols-2 gap-8 items-start">
+        <DonationForm />
+
+        <Card>
+          <CardHeader>
+            <CardTitle>My Donation History</CardTitle>
+            <CardDescription>
+              Thank you for your generous support of Sanvedana.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {loading ? (
+                <div className="space-y-4">
+                    <Skeleton className="h-12 w-full" />
+                    <Skeleton className="h-12 w-full" />
+                    <Skeleton className="h-12 w-full" />
+                </div>
+            ) : donations.length > 0 ? (
+                <Table>
+                <TableHeader>
+                    <TableRow>
+                    <TableHead>Amount</TableHead>
+                    <TableHead className="hidden md:table-cell">Date</TableHead>
+                    <TableHead>Status</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    {donations.map((donation) => (
+                    <TableRow key={donation.id}>
+                        <TableCell>
+                        {new Intl.NumberFormat('en-IN', {
+                            style: 'currency',
+                            currency: 'INR',
+                        }).format(donation.amount)}
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell">
+                        {format(new Date(donation.date), 'PPP')}
+                        </TableCell>
+                        <TableCell>
+                        <Badge variant={getBadgeVariant(donation.status)}>
+                            {donation.status}
+                        </Badge>
+                        </TableCell>
+                    </TableRow>
+                    ))}
+                </TableBody>
+                </Table>
+            ) : (
+                <div className="text-center text-muted-foreground py-8">
+                    You haven&apos;t made any donations yet.
+                </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </main>
   );
 }
