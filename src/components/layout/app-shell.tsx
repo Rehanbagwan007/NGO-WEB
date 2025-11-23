@@ -114,7 +114,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
             <div className="flex items-center gap-4">
                 <nav className={cn(
-                    "items-center gap-6 hidden md:flex"
+                    "items-center gap-6 hidden md:flex transition-all duration-300",
+                    isScrolled && "opacity-0 scale-y-0 h-0"
                   )}>
                   {mainNavLinks.map((link) => (
                     <Link
