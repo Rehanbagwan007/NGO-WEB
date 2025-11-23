@@ -1,3 +1,4 @@
+
 import type {Config} from 'tailwindcss';
 
 export default {
@@ -20,6 +21,7 @@ export default {
         body: ['Inter', 'sans-serif'],
         headline: ['Recursive', 'sans-serif'],
         code: ['monospace'],
+        nav: ['Montserrat', 'sans-serif'],
       },
       colors: {
         background: 'hsl(var(--background))',

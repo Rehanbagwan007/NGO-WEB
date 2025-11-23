@@ -121,14 +121,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     <Link
                       key={link.href}
                       href={link.href}
-                      className={cn(`font-semibold transition-colors hover:text-primary`,
+                      className={cn(`font-nav font-medium tracking-wider uppercase text-sm transition-colors hover:text-primary`,
                         pathname === link.href ? 'text-primary' : 'text-foreground/70'
                       )}
                     >
                       {link.label}
                     </Link>
                   ))}
-                  <Link href="/admin" className="font-semibold transition-colors hover:text-primary text-foreground/70">Dashboard</Link>
+                  <Link href="/admin" className="font-nav font-medium tracking-wider uppercase text-sm transition-colors hover:text-primary text-foreground/70">Dashboard</Link>
                 </nav>
 
                 <div className={cn("flex items-center gap-4")}>
