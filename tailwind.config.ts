@@ -21,7 +21,7 @@ export default {
         body: ['Inter', 'sans-serif'],
         headline: ['Recursive', 'sans-serif'],
         code: ['monospace'],
-        nav: ['Montserrat', 'sans-serif'],
+        nav: ['Inter', 'sans-serif'],
       },
       colors: {
         background: 'hsl(var(--background))',
