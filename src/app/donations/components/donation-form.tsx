@@ -44,7 +44,8 @@ declare global {
   }
 }
 
-function SuccessView({ onReset }: { onReset: () => void }) {
+function SuccessView() {
+    const router = useRouter();
     return (
         <Card>
             <CardHeader>
@@ -60,8 +61,8 @@ function SuccessView({ onReset }: { onReset: () => void }) {
                 <p>We have successfully received your donation. A confirmation will be sent to your email shortly. We are incredibly grateful for your support in our mission to empower children with special needs.</p>
             </CardContent>
             <CardFooter>
-                <Button onClick={onReset} className="w-full">
-                    Make Another Donation
+                <Button onClick={() => router.push('/')} className="w-full">
+                    Go to home
                 </Button>
             </CardFooter>
         </Card>
@@ -183,13 +184,8 @@ export function DonationForm() {
     }
   };
 
-  const handleReset = () => {
-    setPaymentSuccess(false);
-    form.reset({ name: '', email: '', amount: 1000 });
-  }
-
   if (paymentSuccess) {
-    return <SuccessView onReset={handleReset} />;
+    return <SuccessView />;
   }
 
   return (
