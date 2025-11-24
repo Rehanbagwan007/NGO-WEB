@@ -92,9 +92,9 @@ export default async function LandingPage() {
     const { upcomingEvents, content } = await getPageData();
 
   return (
-    <div className="flex-1 bg-background">
+    <div className="flex-1 bg-background ">
       {/* Hero Section */}
-      <section className="relative w-full overflow-hidden bg-background pt-8 md:pt-16 -mt-24">
+      <section className="relative w-full overflow-hidden bg-background pt-6 md:pt-14 md:-mt-24 mt-4">
         <div className="container mx-auto px-4 py-20 lg:py-32">
           <div className="space-y-6 text-left mb-12">
             <h1 className="text-5xl lg:text-8xl font-headline font-black leading-none tracking-tighter">

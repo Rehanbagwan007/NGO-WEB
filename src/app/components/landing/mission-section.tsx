@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { motion } from 'framer-motion';
@@ -58,9 +59,8 @@ export function MissionSection({ content }: { content: WebsiteContent }) {
             <Image
               src={missionImageUrl}
               alt="Diverse group of children with special needs in a classroom setting"
-              width={600}
-              height={700}
-              className="rounded-3xl shadow-lg object-cover w-full h-full"
+              fill
+              className="rounded-3xl shadow-lg object-contain w-full h-full"
               data-ai-hint="disabled children classroom"
             />
           </motion.div>
