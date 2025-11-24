@@ -38,10 +38,8 @@ export const mainNavLinks: NavLink[] = [
 
 export const adminNavLinks: NavLink[] = [
   { href: '/admin', label: 'Dashboard', icon: <LayoutDashboard />, match: 'exact' },
-  { href: '/admin/staff', label: 'Team', icon: <Briefcase />, match: 'partial' },
   { href: '/admin/donations', label: 'Donations', icon: <HeartHandshake />, match: 'partial' },
   { href: '/admin/events', label: 'Events Manager', icon: <Calendar />, match: 'partial' },
   { href: '/admin/website-settings', label: 'Website Settings', icon: <Globe />, match: 'partial' },
   { href: '/admin/social', label: 'Social Media', icon: <Share2 />, match: 'partial' },
-  { href: '/admin/settings', label: 'Settings', icon: <Settings />, match: 'partial' },
 ];
