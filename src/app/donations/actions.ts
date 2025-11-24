@@ -36,12 +36,12 @@ interface VerifyDonationArgs {
     razorpay_payment_id: string;
     razorpay_signature: string;
     donorName: string;
-    donorEmail: string;
+    email: string;
     amount: number;
 }
 
 export async function verifyDonation(args: VerifyDonationArgs) {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, donorName, donorEmail, amount } = args;
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, donorName, email, amount } = args;
 
     const body = razorpay_order_id + '|' + razorpay_payment_id;
 
@@ -60,8 +60,8 @@ export async function verifyDonation(args: VerifyDonationArgs) {
         const supabase = createClient(cookieStore);
 
         const { data, error } = await supabase.from('donations').insert({
-            donorName: donorName,
-            email: donorEmail,
+            name: donorName,
+            email: email,
             amount: Math.round(amount),
             date: new Date().toISOString(),
             status: 'Completed',

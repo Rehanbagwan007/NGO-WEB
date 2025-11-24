@@ -1,3 +1,4 @@
+
 import { MoreHorizontal } from 'lucide-react';
 import {
   Table,
@@ -91,7 +92,7 @@ export default async function DonationsManagerPage() {
               {donations.length > 0 ? (
                 donations.map((donation) => (
                   <TableRow key={donation.id}>
-                    <TableCell className="font-medium">{donation.donorName || 'Anonymous'}</TableCell>
+                    <TableCell className="font-medium">{donation.name || 'Anonymous'}</TableCell>
                     <TableCell>{donation.email || 'N/A'}</TableCell>
                     <TableCell>{donation.amount.toLocaleString('en-IN')}</TableCell>
                     <TableCell>

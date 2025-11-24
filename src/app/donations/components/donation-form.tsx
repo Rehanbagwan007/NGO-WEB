@@ -111,7 +111,7 @@ export function DonationForm() {
             razorpay_payment_id: response.razorpay_payment_id,
             razorpay_signature: response.razorpay_signature,
             donorName: values.name,
-            donorEmail: values.email,
+            email: values.email,
             amount: values.amount
           });
           
