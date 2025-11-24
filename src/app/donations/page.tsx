@@ -74,7 +74,7 @@ export default function DonationsPage() {
   };
     
   return (
-    <main className="flex flex-1 flex-col gap-8 p-4 lg:gap-6 lg:p-6 container mx-auto">
+    <main className="flex flex-1 flex-col gap-8 p-4 lg:gap-6 lg:p-6 container mx-auto mt-12">
       <div className="flex items-center">
         <h1 className="text-lg font-semibold md:text-2xl font-headline">Make a Donation</h1>
       </div>
