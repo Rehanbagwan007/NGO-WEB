@@ -25,7 +25,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { createClient } from '@/lib/supabase/client';
 import { createDonationOrder, verifyDonation } from '../actions';
-import { Loader2 } from 'lucide-react';
+import { Loader2, PartyPopper } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
@@ -44,8 +44,33 @@ declare global {
   }
 }
 
+function SuccessView({ onReset }: { onReset: () => void }) {
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                    <PartyPopper className="h-8 w-8 text-primary" />
+                    Thank You!
+                </CardTitle>
+                <CardDescription>
+                    Your generous contribution makes a world of difference.
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                <p>We have successfully received your donation. A confirmation will be sent to your email shortly. We are incredibly grateful for your support in our mission to empower children with special needs.</p>
+            </CardContent>
+            <CardFooter>
+                <Button onClick={onReset} className="w-full">
+                    Make Another Donation
+                </Button>
+            </CardFooter>
+        </Card>
+    );
+}
+
 export function DonationForm() {
   const [loading, setLoading] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
 
@@ -65,8 +90,6 @@ export function DonationForm() {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
             form.setValue('email', user.email || '');
-            // You might need to fetch the user's name from your profiles table
-            // form.setValue('name', user.user_metadata?.full_name || '');
         }
     }
     checkUser();
@@ -80,7 +103,6 @@ export function DonationForm() {
     setLoading(true);
 
     try {
-      // 1. Create an order on the server
       const orderResult = await createDonationOrder({
         amount: values.amount,
       });
@@ -91,7 +113,6 @@ export function DonationForm() {
       
       const { order } = orderResult;
 
-      // 2. Open Razorpay Checkout
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,
         amount: order.amount,
@@ -103,7 +124,6 @@ export function DonationForm() {
             upi: true,
         },
         handler: async function (response: any) {
-          // 3. Verify the payment
           toast({ title: 'Processing payment...', description: 'Please wait while we verify your donation.' });
           
           const verificationResult = await verifyDonation({
@@ -120,18 +140,24 @@ export function DonationForm() {
                 title: 'Donation Successful!',
                 description: "Thank you so much for your generous contribution.",
             });
-            router.refresh(); // Refresh the page to show the new donation in the history
+            setPaymentSuccess(true);
           } else {
             throw new Error(verificationResult.error || 'Payment verification failed.');
           }
+          setLoading(false);
         },
         prefill: {
           name: values.name,
           email: values.email,
         },
         theme: {
-          color: '#F59E0B', // Primary color (orange)
+          color: 'hsl(var(--primary))',
         },
+        modal: {
+            ondismiss: function() {
+                setLoading(false);
+            }
+        }
       };
 
       const rzp = new window.Razorpay(options);
@@ -156,6 +182,15 @@ export function DonationForm() {
       setLoading(false);
     }
   };
+
+  const handleReset = () => {
+    setPaymentSuccess(false);
+    form.reset({ name: '', email: '', amount: 1000 });
+  }
+
+  if (paymentSuccess) {
+    return <SuccessView onReset={handleReset} />;
+  }
 
   return (
     <Card>
