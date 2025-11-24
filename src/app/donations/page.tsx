@@ -35,7 +35,7 @@ async function getUserDonations() {
     const { data, error } = await supabase
         .from('donations')
         .select('*')
-        .eq('donorEmail', user.email)
+        .eq('email', user.email)
         .order('date', { ascending: false });
 
     if (error) {

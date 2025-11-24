@@ -31,7 +31,7 @@ export type Staff = {
 export type Donation = {
   id: string;
   donorName: string;
-  donorEmail?: string;
+  email?: string;
   amount: number;
   date: string;
   status: 'Completed' | 'Pending' | 'Failed';

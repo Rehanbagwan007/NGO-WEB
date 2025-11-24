@@ -78,6 +78,7 @@ export default async function DonationsManagerPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Donor Name</TableHead>
+                <TableHead>Donor Email</TableHead>
                 <TableHead>Amount (INR)</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="hidden md:table-cell">Date</TableHead>
@@ -91,6 +92,7 @@ export default async function DonationsManagerPage() {
                 donations.map((donation) => (
                   <TableRow key={donation.id}>
                     <TableCell className="font-medium">{donation.donorName || 'Anonymous'}</TableCell>
+                    <TableCell>{donation.email || 'N/A'}</TableCell>
                     <TableCell>{donation.amount.toLocaleString('en-IN')}</TableCell>
                     <TableCell>
                       <Badge variant={getStatusVariant(donation.status)}>
@@ -123,7 +125,7 @@ export default async function DonationsManagerPage() {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={5} className="h-24 text-center">
+                  <TableCell colSpan={6} className="h-24 text-center">
                     No donations found.
                   </TableCell>
                 </TableRow>
