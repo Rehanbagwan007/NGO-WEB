@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -50,8 +51,11 @@ import {
   CartesianGrid,
 } from 'recharts';
 import Link from 'next/link';
-import { dashboardMetrics, recentDonations, recentStudents } from '@/lib/data';
+import { dashboardMetrics, recentDonations as hardcodedDonations } from '@/lib/data';
 import { format } from 'date-fns';
+
+// Note: This dashboard uses hardcoded data from /lib/data.ts for demonstration.
+// For a production app, you would fetch this data from your database.
 
 export default function Dashboard() {
   return (
@@ -207,18 +211,18 @@ export default function Dashboard() {
             </Button>
           </CardHeader>
           <CardContent className="grid gap-8">
-            {recentDonations.map((donation) => (
+            {hardcodedDonations.map((donation) => (
               <div key={donation.id} className="flex items-center gap-4">
                 <Avatar className="hidden h-9 w-9 sm:flex">
                   <AvatarImage
                     src={`https://picsum.photos/seed/${donation.id}/100/100`}
                     alt="Avatar"
                   />
-                  <AvatarFallback>{donation.donorName.charAt(0)}</AvatarFallback>
+                  <AvatarFallback>{donation.name.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div className="grid gap-1">
                   <p className="text-sm font-medium leading-none">
-                    {donation.donorName}
+                    {donation.name}
                   </p>
                   <p className="text-sm text-muted-foreground">
                     {format(new Date(donation.date), 'PPP')}

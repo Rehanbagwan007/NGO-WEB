@@ -84,7 +84,32 @@ export const staff: Staff[] = [
   },
 ];
 
-export const donations: Donation[] = [];
+export const recentDonations: Donation[] = [
+    {
+        id: 'DON001',
+        name: 'Asha Singh',
+        email: 'asha.singh@example.com',
+        amount: 5000,
+        date: '2024-07-20T10:00:00Z',
+        status: 'Completed',
+    },
+    {
+        id: 'DON002',
+        name: 'Ravi Sharma',
+        email: 'ravi.sharma@example.com',
+        amount: 2500,
+        date: '2024-07-19T14:30:00Z',
+        status: 'Completed',
+    },
+    {
+        id: 'DON003',
+        name: 'Priya Mehta',
+        email: 'priya.mehta@example.com',
+        amount: 10000,
+        date: '2024-07-18T09:00:00Z',
+        status: 'Completed',
+    }
+]
 
 export const events: Event[] = [
   {
@@ -184,4 +209,3 @@ export const dashboardMetrics = {
 };
 
 export const recentStudents = students.slice(0, 3);
-export const recentDonations = donations.slice(0, 3);
