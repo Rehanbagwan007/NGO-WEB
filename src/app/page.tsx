@@ -9,6 +9,7 @@ import { createClient } from '@/lib/supabase/server';
 import { HeroCarousel } from '@/app/components/landing/hero-carousel';
 import { MissionSection } from '@/app/components/landing/mission-section';
 import { cookies } from 'next/headers';
+import SmoothScroll from '@/components/smooth-scroll';
 
 async function getPageData() {
     const cookieStore = cookies();
@@ -92,7 +93,7 @@ export default async function LandingPage() {
     const { upcomingEvents, content } = await getPageData();
 
   return (
-    <div className="flex-1 bg-background ">
+    <SmoothScroll>
       {/* Hero Section */}
       <section className="relative w-full overflow-hidden bg-background pt-6 md:pt-14 md:-mt-24 mt-4">
         <div className="container mx-auto px-4 py-20 lg:py-32">
@@ -162,6 +163,6 @@ export default async function LandingPage() {
           </Button>
         </div>
       </section>
-    </div>
+    </SmoothScroll>
   );
 }

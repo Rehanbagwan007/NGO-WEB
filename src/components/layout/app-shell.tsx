@@ -178,7 +178,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </div>
         </div>
       </header> 
-      <main className="flex-1 -mt-24">{children}</main>
+      <main className="flex-1 -mt-24 h-full">{children}</main>
        <footer className="border-t bg-background">
           <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 items-center gap-8 px-4 py-8 md:px-6">
             <div className="text-center md:text-left">
