@@ -38,7 +38,6 @@ export const mainNavLinks: NavLink[] = [
 
 export const adminNavLinks: NavLink[] = [
   { href: '/admin', label: 'Dashboard', icon: <LayoutDashboard />, match: 'exact' },
-  { href: '/admin/students', label: 'Students', icon: <Users />, match: 'partial' },
   { href: '/admin/staff', label: 'Team', icon: <Briefcase />, match: 'partial' },
   { href: '/admin/donations', label: 'Donations', icon: <HeartHandshake />, match: 'partial' },
   { href: '/admin/events', label: 'Events Manager', icon: <Calendar />, match: 'partial' },
