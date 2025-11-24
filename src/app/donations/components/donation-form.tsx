@@ -99,6 +99,9 @@ export function DonationForm() {
         name: 'Sanvedana',
         description: 'Donation to support special needs children',
         order_id: order.id,
+        method: {
+            upi: true,
+        },
         handler: async function (response: any) {
           // 3. Verify the payment
           toast({ title: 'Processing payment...', description: 'Please wait while we verify your donation.' });
