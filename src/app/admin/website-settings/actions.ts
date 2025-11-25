@@ -120,6 +120,7 @@ export async function updateWebsiteContentAction(data: Partial<WebsiteContent>) 
         
         revalidatePath('/');
         revalidatePath('/admin/website-settings');
+        revalidatePath('/about');
 
         return { success: true };
     } catch(error) {
@@ -127,4 +128,3 @@ export async function updateWebsiteContentAction(data: Partial<WebsiteContent>) 
         return { success: false, error: error instanceof Error ? error.message : 'An unknown error has occurred.'};
     }
 }
-

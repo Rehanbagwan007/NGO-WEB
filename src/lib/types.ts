@@ -58,3 +58,12 @@ export type WebsiteContent = {
     social_instagram: string;
     social_twitter: string;
 };
+
+export type TeamMember = {
+    id: string;
+    name: string;
+    role: string;
+    type: 'member' | 'advisor';
+    avatar_url: string | null;
+    display_order: number | null;
+};
