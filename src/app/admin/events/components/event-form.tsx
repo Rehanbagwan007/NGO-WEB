@@ -193,7 +193,16 @@ export function EventForm({ event }: { event?: Event }) {
     const currentFormValue = form.getValues(fieldName);
     if (currentFormValue) {
         const dataTransfer = new DataTransfer();
-        Array.from(currentFormValue).filter(f => f !== itemToRemove.file).forEach(file => dataTransfer.items.add(file));
+        // For existing images in edit mode, the 'file' is empty, so we also need to check the preview URL
+        const updatedFiles = Array.from(currentFormValue).filter(f => {
+            if (itemToRemove.file.size === 0) { // This is likely an existing image, not a new file
+                return true; // We can't identify by file, rely on higher-level state logic
+            }
+            return f !== itemToRemove.file;
+        });
+
+        // Rebuild the file list
+        updatedFiles.forEach(file => dataTransfer.items.add(file));
         form.setValue(fieldName, dataTransfer.files, { shouldValidate: true });
     }
   };
@@ -212,8 +221,11 @@ export function EventForm({ event }: { event?: Event }) {
             bannerimageUrl = await uploadFile(values.bannerimage[0], user);
         }
 
-        const newGalleryFiles = values.galleryMedia ? Array.from(values.galleryMedia) : [];
-        const existingGalleryUrls = event?.gallery?.map(g => g.url) || [];
+        // Separate newly uploaded files from existing URLs
+        const newGalleryFiles = values.galleryMedia ? Array.from(values.galleryMedia).filter(f => f.size > 0) : [];
+        const existingGalleryUrls = isEditMode 
+            ? galleryPreviews.map(p => p.preview).filter(url => event?.gallery?.some(g => g.url === url))
+            : [];
         
         let newGalleryUrls: string[] = [];
         if (newGalleryFiles.length > 0) {
@@ -221,10 +233,7 @@ export function EventForm({ event }: { event?: Event }) {
              newGalleryUrls = await Promise.all(newGalleryFiles.map(file => uploadFile(file, user)));
         }
         
-        // This logic is flawed for edit. A better implementation would track existing vs new.
-        // For now, we combine existing (if no new files) or use new.
-        const finalGalleryUrls = newGalleryUrls.length > 0 ? newGalleryUrls : existingGalleryUrls;
-
+        const finalGalleryUrls = [...existingGalleryUrls, ...newGalleryUrls];
 
         const actionArgs = {
             ...values,
