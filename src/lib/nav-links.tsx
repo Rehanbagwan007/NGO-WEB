@@ -33,7 +33,6 @@ export const mainNavLinks: NavLink[] = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
   { href: '/events', label: 'Events' },
-  { href: '/contact', label: 'Contact' },
 ];
 
 export const adminNavLinks: NavLink[] = [

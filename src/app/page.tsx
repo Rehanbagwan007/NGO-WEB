@@ -1,4 +1,5 @@
 
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -7,7 +8,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import type { Event, WebsiteContent } from '@/lib/types';
 import { createClient } from '@/lib/supabase/server';
 import { HeroCarousel } from '@/app/components/landing/hero-carousel';
-import { MissionSection } from '@/app/components/landing/mission-section';
+import { MissionSection } from '@/components/landing/mission-section';
 import { cookies } from 'next/headers';
 import SmoothScroll from '@/components/smooth-scroll';
 
@@ -101,18 +102,7 @@ export default async function LandingPage() {
             <h1 className="text-5xl lg:text-8xl font-headline font-black leading-none tracking-tighter">
               Empowering Change,
               <br />
-              Inspiring H
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1"
-                className="inline-block h-16 w-16 lg:h-24 lg:w-24 -mb-4 text-primary"
-              >
-                <path d="M12.83,4.64a5,5,0,0,0-7.07,0,5,5,0,0,0,0,7.07l7.07,7.07,7.07-7.07a5,5,0,0,0,0-7.07,5,5,0,0,0-7.07,0Z" />
-              </svg>
-              pe.
+              Inspiring Hope.
             </h1>
           </div>
           <HeroCarousel />
