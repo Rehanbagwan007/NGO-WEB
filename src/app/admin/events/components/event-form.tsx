@@ -216,7 +216,7 @@ export function EventForm({ event }: { event?: Event }) {
         const user = await getSupabaseUser();
 
         let bannerimageUrl = event?.bannerimage || '';
-        if (values.bannerimage && values.bannerimage.length > 0) {
+        if (values.bannerimage && values.bannerimage.length > 0 && values.bannerimage[0].size > 0) {
             toast({ title: "Uploading banner image..." });
             bannerimageUrl = await uploadFile(values.bannerimage[0], user);
         }
@@ -224,7 +224,7 @@ export function EventForm({ event }: { event?: Event }) {
         // Separate newly uploaded files from existing URLs
         const newGalleryFiles = values.galleryMedia ? Array.from(values.galleryMedia).filter(f => f.size > 0) : [];
         const existingGalleryUrls = isEditMode 
-            ? galleryPreviews.map(p => p.preview).filter(url => event?.gallery?.some(g => g.url === url))
+            ? galleryPreviews.filter(p => event?.gallery?.some(g => g.url === p.preview)).map(p => p.preview)
             : [];
         
         let newGalleryUrls: string[] = [];
@@ -235,13 +235,14 @@ export function EventForm({ event }: { event?: Event }) {
         
         const finalGalleryUrls = [...existingGalleryUrls, ...newGalleryUrls];
 
+        const { address, city, state, zipCode, galleryMedia, ...restOfValues } = values;
+
         const actionArgs = {
-            ...values,
+            ...restOfValues,
             date: values.date.toISOString(),
-            location: `${values.address}, ${values.city}, ${values.state} ${values.zipCode}`,
+            location: `${address}, ${city}, ${state} ${zipCode}`,
             bannerimage: bannerimageUrl,
             gallery: finalGalleryUrls.map(url => ({ url })),
-            socialPlatforms: values.socialPlatforms || [],
         };
 
         const result = isEditMode

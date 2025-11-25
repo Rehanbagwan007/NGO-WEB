@@ -43,7 +43,6 @@ const revalidatePaths = () => {
 type EventActionArgs = Omit<Event, 'id' | 'createdAt' | 'date'> & {
     date: string;
     socialPlatforms?: string[];
-    galleryMedia?: FileList;
 }
 
 export async function createEventAction(args: EventActionArgs) {
@@ -51,7 +50,7 @@ export async function createEventAction(args: EventActionArgs) {
     const supabase = createClient(cookieStore);
 
     try {
-        const { socialPlatforms, galleryMedia, ...eventData } = args;
+        const { socialPlatforms, ...eventData } = args;
 
         const { data: newEvent, error } = await supabase.from('events').insert(eventData).select().single();
         
@@ -81,7 +80,7 @@ export async function updateEventAction(id: string, args: EventActionArgs) {
     const supabase = createClient(cookieStore);
 
     try {
-        const { socialPlatforms, galleryMedia, ...eventData } = args;
+        const { socialPlatforms, ...eventData } = args;
 
         const { data: updatedEvent, error } = await supabase.from('events').update(eventData).eq('id', id).select().single();
         
